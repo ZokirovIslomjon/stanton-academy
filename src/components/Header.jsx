@@ -1,9 +1,10 @@
 import React from 'react';
 import logo from '../assets/logo.png'; 
 
-const Header = () => {
+// We accept 'onOpenModal' as a prop to open the popup when clicking Apply
+const Header = ({ onOpenModal }) => {
   
-  // Smooth Scroll Function
+  // This function handles the smooth scrolling to sections
   const handleScroll = (e, targetId) => {
     e.preventDefault();
     const element = document.getElementById(targetId);
@@ -29,6 +30,7 @@ const Header = () => {
                 </a>
             </li>
             <li>
+                {/* Points to the #location ID we added in App.jsx */}
                 <a href="#location" onClick={(e) => handleScroll(e, 'location')}>
                     Branch
                 </a>
@@ -45,9 +47,11 @@ const Header = () => {
             </li>
           </ul>
 
-          {/* Apply Button */}
+          {/* Apply Button - triggers the Registration Modal */}
           <div className="auth-buttons">
-            <button className="btn btn-primary">Apply</button>
+            <button className="btn btn-primary" onClick={onOpenModal}>
+              Apply
+            </button>
           </div>
         </nav>
       </div>

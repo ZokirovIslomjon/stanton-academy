@@ -3,10 +3,12 @@ import bookIcon from '../assets/book.png';
 import notebookIcon from '../assets/notebook.png';
 import penIcon from '../assets/pen.png';
 
-const Hero = () => {
+// We accept 'onOpenModal' to open the popup when clicking the button
+const Hero = ({ onOpenModal }) => {
   return (
     <section className="hero new-hero-style">
       
+      {/* Floating Icons */}
       <div className="floating-icon icon-book">
         <img src={bookIcon} alt="Book" />
       </div>
@@ -23,26 +25,28 @@ const Hero = () => {
           <p>Master the English language with Stanton Academy's world-class curriculum.</p>
 
           <div className="cta-buttons centered-btns">
-              <button className="btn btn-primary">Sign up for the first lesson ✨</button>
+              {/* Connected the Modal Here 👇 */}
+              <button className="btn btn-primary" onClick={onOpenModal}>
+                Sign up for the first lesson ✨
+              </button>
+              
+              <button className="btn btn-secondary-outline">Learn More</button>
           </div>
         </div>
 
         <div className="hero-stats-container">
-            {/* 1. ADDED 'yellow-card' HERE */}
             <div className="stat-card yellow-card">
                 <div className="dot blue-dot"></div>
                 <h2>10+</h2>
                 <p>Years of experience</p>
             </div>
 
-            {/* 2. ADDED 'red-card' HERE */}
             <div className="stat-card red-card">
                 <div className="dot red-dot"></div>
                 <h2>1,000+</h2>
                 <p>Students who have learned English</p>
             </div>
 
-            {/* 3. ADDED 'green-card' HERE */}
             <div className="stat-card green-card">
                 <div className="dot green-dot"></div>
                 <h2>50+</h2>
