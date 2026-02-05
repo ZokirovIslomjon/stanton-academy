@@ -30,7 +30,6 @@ const Hero = ({ onOpenModal }) => {
                 Sign up for the first lesson ✨
               </button>
               
-              <button className="btn btn-secondary-outline">Learn More</button>
           </div>
         </div>
 
