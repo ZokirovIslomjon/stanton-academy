@@ -3,20 +3,19 @@ import bookIcon from '../assets/book.png';
 import notebookIcon from '../assets/notebook.png';
 import penIcon from '../assets/pen.png';
 
-// We accept 'onOpenModal' to open the popup when clicking the button
 const Hero = ({ onOpenModal }) => {
   return (
     <section className="hero new-hero-style">
       
-      {/* Floating Icons */}
+      {/* Floating Icons with blur */}
       <div className="floating-icon icon-book">
-        <img src={bookIcon} alt="Book" />
+        <img src={bookIcon} alt="Book" style={{ opacity: 0.7, filter: 'blur(3px)' }} />
       </div>
       <div className="floating-icon icon-notebook">
-        <img src={notebookIcon} alt="Notebook" />
+        <img src={notebookIcon} alt="Notebook" style={{ opacity: 0.7, filter: 'blur(3px)' }} />
       </div>
       <div className="floating-icon icon-pen">
-        <img src={penIcon} alt="Pen" />
+        <img src={penIcon} alt="Pen" style={{ opacity: 0.7, filter: 'blur(3px)' }} />
       </div>
 
       <div className="container">
@@ -25,14 +24,13 @@ const Hero = ({ onOpenModal }) => {
           <p>Master the English language with Stanton Academy's world-class curriculum.</p>
 
           <div className="cta-buttons centered-btns">
-              {/* Connected the Modal Here 👇 */}
               <button className="btn btn-primary" onClick={onOpenModal}>
                 Sign up for the first lesson ✨
               </button>
-              
           </div>
         </div>
 
+        {/* 2-column stats container */}
         <div className="hero-stats-container">
             <div className="stat-card yellow-card">
                 <div className="dot blue-dot"></div>

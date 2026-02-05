@@ -12,6 +12,7 @@ const WhyChooseUs = () => {
           <p>Stanton Academy has been teaching English to young people since 2014.</p>
         </div>
 
+        {/* Added wcu-grid for horizontal scroll */}
         <div className="wcu-grid">
           <div className="wcu-card">
             <div className="icon-wrapper icon-orange">
