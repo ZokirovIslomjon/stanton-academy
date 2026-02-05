@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/logo-white.png'; 
+import logo from '../assets/logo-new.png'; 
 import whatsappIcon from '../assets/whatsapp.png';
 
 const Footer = () => {
