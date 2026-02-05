@@ -15,11 +15,30 @@ const RegisterModal = ({ isOpen, onClose }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Test EmailJS connection function
+  const testEmailJSConnection = () => {
+    console.log('Testing EmailJS Connection...');
+    console.log('Service ID:', 'service_giayoc6');
+    console.log('Template ID:', 'template_1b3ug2u');
+    console.log('Public Key:', '5j3dR4oz_QORxuNJS');
+    
+    // Test if EmailJS is loaded
+    if (window.emailjs) {
+      console.log('EmailJS is loaded successfully');
+      console.log('EmailJS version:', emailjs.version);
+    } else {
+      console.error('EmailJS is NOT loaded');
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
     setIsSending(true);
+
+    // Test connection first
+    testEmailJSConnection();
 
     // Basic validation
     if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
@@ -36,35 +55,51 @@ const RegisterModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Phone validation (basic)
-    if (formData.phone.length < 5) {
-      setErrorMessage('Please enter a valid phone number');
-      setIsSending(false);
-      return;
-    }
+    // Prepare template parameters
+    const templateParams = {
+      to_name: 'Stanton Academy', // Your name/company
+      from_name: formData.name,
+      from_email: formData.email,
+      phone: formData.phone,
+      course: formData.course,
+      message: `New application from ${formData.name} for ${formData.course} course`,
+      reply_to: formData.email
+    };
 
-    // Replace these with your actual EmailJS credentials
-    const SERVICE_ID = 'service_giayoc6'; 
-    const TEMPLATE_ID = 'template_1b3ug2u';
-    const PUBLIC_KEY = '5j3dR4oz_QORxuNJS';
+    console.log('Sending with params:', templateParams);
 
     // Send the email
-    emailjs.send(SERVICE_ID, TEMPLATE_ID, formData, PUBLIC_KEY)
+    emailjs.send(
+      'service_giayoc6', 
+      'template_1b3ug2u', 
+      templateParams, 
+      '5j3dR4oz_QORxuNJS'
+    )
       .then((response) => {
-        console.log('SUCCESS!', response.status, response.text);
-        setSuccessMessage(`Thank you ${formData.name}! Your application has been submitted. We will contact you shortly.`);
+        console.log('SUCCESS!', response);
+        setSuccessMessage(`Thank you ${formData.name}! Your application has been submitted successfully. We will contact you shortly.`);
         
-        // Clear form after successful submission
+        // Clear form
+        setFormData({ name: '', email: '', phone: '', course: 'Intensive Beginner' });
+        setIsSending(false);
+        
+        // Auto-close after 5 seconds
         setTimeout(() => {
-          setFormData({ name: '', email: '', phone: '', course: 'Intensive Beginner' });
-          setIsSending(false);
-          // Close modal after 3 seconds
-          setTimeout(() => onClose(), 3000);
-        }, 2000);
+          onClose();
+        }, 5000);
       })
       .catch((error) => {
-        console.error('FAILED...', error);
-        setErrorMessage('Unable to send application. Please contact us directly at info@stanton-academy.com or WhatsApp +60 1118648860');
+        console.error('EmailJS Error Details:', error);
+        
+        // More specific error messages
+        if (error.text && error.text.includes('Invalid')) {
+          setErrorMessage('Invalid EmailJS configuration. Please check your Service ID and Template ID.');
+        } else if (error.text && error.text.includes('Key')) {
+          setErrorMessage('Invalid Public Key. Please check your EmailJS API key.');
+        } else {
+          setErrorMessage('Failed to send application. Please contact us directly at info@stanton-academy.com');
+        }
+        
         setIsSending(false);
       });
   };
@@ -88,9 +123,15 @@ const RegisterModal = ({ isOpen, onClose }) => {
             padding: '15px',
             borderRadius: '10px',
             marginBottom: '20px',
-            border: '1px solid #a7f3d0'
+            border: '1px solid #a7f3d0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
           }}>
-            <strong>✓ Success!</strong> {successMessage}
+            <span style={{ fontSize: '1.5rem' }}>✓</span>
+            <div>
+              <strong>Success!</strong> {successMessage}
+            </div>
           </div>
         )}
 
@@ -102,9 +143,15 @@ const RegisterModal = ({ isOpen, onClose }) => {
             padding: '15px',
             borderRadius: '10px',
             marginBottom: '20px',
-            border: '1px solid #fca5a5'
+            border: '1px solid #fca5a5',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
           }}>
-            <strong>⚠️ Error:</strong> {errorMessage}
+            <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+            <div>
+              <strong>Unable to send</strong> {errorMessage}
+            </div>
           </div>
         )}
 
@@ -166,34 +213,54 @@ const RegisterModal = ({ isOpen, onClose }) => {
             disabled={isSending}
             style={{ 
               opacity: isSending ? 0.7 : 1,
-              backgroundColor: successMessage ? '#22c55e' : '#006B3F'
+              backgroundColor: successMessage ? '#22c55e' : '#006B3F',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
             }}
           >
             {isSending ? (
               <>
-                <span style={{ marginRight: '8px' }}>⏳</span>
-                Sending...
+                <span className="spinner"></span>
+                Sending Application...
               </>
             ) : successMessage ? (
-              <>
-                <span style={{ marginRight: '8px' }}>✓</span>
-                Submitted Successfully!
-              </>
+              'Submitted Successfully!'
             ) : (
               'Submit Application'
             )}
           </button>
 
+          {/* WhatsApp Alternative */}
           <div style={{ 
-            marginTop: '15px', 
-            fontSize: '0.8rem', 
-            color: '#666',
-            textAlign: 'center'
+            marginTop: '20px', 
+            padding: '15px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '10px',
+            textAlign: 'center',
+            border: '1px solid #e5e7eb'
           }}>
-            <p>Having trouble? Contact us directly:</p>
-            <p style={{ marginTop: '5px' }}>
-              📞 +60 1118648860 | 📧 info@stanton-academy.com
+            <p style={{ marginBottom: '10px', color: '#666' }}>
+              <strong>Alternative:</strong> Contact us directly on WhatsApp
             </p>
+            <a 
+              href={`https://wa.me/601118648860?text=Hello! I'm interested in joining Stanton Academy. My name is ${formData.name || ''} and I'm interested in the ${formData.course} course.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-block',
+                backgroundColor: '#25D366',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '50px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                marginTop: '10px'
+              }}
+            >
+              📱 Contact on WhatsApp
+            </a>
           </div>
         </form>
 
