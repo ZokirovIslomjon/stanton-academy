@@ -22,7 +22,6 @@ const SignUpPage = () => {
     setSuccessMessage('');
     setIsSending(true);
 
-    // Validation
     if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
       setErrorMessage('Please fill in all required fields');
       setIsSending(false);
@@ -57,7 +56,6 @@ const SignUpPage = () => {
         setSuccessMessage(`Thank you ${formData.name}! Your application has been submitted successfully. We will contact you shortly.`);
         setFormData({ name: '', email: '', phone: '', course: 'Intensive Beginner' });
         setIsSending(false);
-        // Redirect to home after 3 seconds
         setTimeout(() => navigate('/'), 3000);
       })
       .catch((error) => {
