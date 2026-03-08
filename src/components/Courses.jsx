@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // 👈 Add this import
 
 // We accept 'onOpenModal' to open the popup when clicking ANY 'Sign up' button
 const Courses = ({ onOpenModal }) => {
@@ -79,10 +80,10 @@ const Courses = ({ onOpenModal }) => {
               </ul>
 
               <div className="card-footer">
-                {/* Connected the Modal Here 👇 */}
-                <button className="btn-full-width" onClick={onOpenModal}>
+                {/* Updated: Replaced button with Link to signup page */}
+                <Link to="/signup" className="btn-full-width">
                     Sign up for the first lesson
-                </button>
+                </Link>
               </div>
             </div>
           ))}
