@@ -1,10 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // 👈 Add this import
 import logo from '../assets/logo.png'; 
 
-// We accept 'onOpenModal' as a prop to open the popup when clicking Apply
-const Header = ({ onOpenModal }) => {
+const Header = () => {
   
-  // This function handles the smooth scrolling to sections
   const handleScroll = (e, targetId) => {
     e.preventDefault();
     const element = document.getElementById(targetId);
@@ -30,7 +29,6 @@ const Header = ({ onOpenModal }) => {
                 </a>
             </li>
             <li>
-                {/* Points to the #location ID we added in App.jsx */}
                 <a href="#location" onClick={(e) => handleScroll(e, 'location')}>
                     Branch
                 </a>
@@ -47,11 +45,11 @@ const Header = ({ onOpenModal }) => {
             </li>
           </ul>
 
-          {/* Apply Button - triggers the Registration Modal */}
+          {/* Apply Button - now navigates to /signup page */}
           <div className="auth-buttons">
-            <button className="btn btn-primary" onClick={onOpenModal}>
+            <Link to="/signup" className="btn btn-primary">
               Apply
-            </button>
+            </Link>
           </div>
         </nav>
       </div>
