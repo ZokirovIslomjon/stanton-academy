@@ -261,7 +261,7 @@ const styles = `
     border: 1px solid #fecaca;
   }
 
-  /* Responsive Adjustments */
+  
   /* Responsive Adjustments */
   @media (max-width: 950px) {
     .su__root {
@@ -299,16 +299,30 @@ const styles = `
   /* Specific Adjustments for Mobile Phones */
   @media (max-width: 600px) {
     .su__left-col h1 {
-      font-size: 1.8rem; /* Much smaller text for phones */
+      font-size: 1.5rem; /* Made the text smaller */
+      margin-top: 30px; /* Pushes the text down so it doesn't overlap the logo */
       margin-bottom: 20px;
     }
-    /* Shrink the poster even more on small screens */
+    
+    /* Forces the 800x450 rectangular proportion (16:9) */
     .su__promo-card {
-      max-width: 280px; 
-      border-radius: 16px;
+      width: 100%;
+      max-width: 400px; 
+      aspect-ratio: 800 / 450; /* Creates the exact dimensions you requested */
+      min-height: auto; /* Removes the old rule that made it a square */
+      margin: 0 auto; 
+      border-radius: 12px;
     }
+
+    /* Ensures the image fills the new rectangular box perfectly */
+    .su__promo-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .su__logo img {
-      height: 30px; /* Scale logo down slightly */
+      height: 35px; /* Adjusts logo size for mobile */
     }
   }
 `;
