@@ -9,11 +9,11 @@ const EMAILJS_TEMPLATE_ID = 'template_1b3ug2u';
 const EMAILJS_PUBLIC_KEY  = '5j3dR4oz_QORxuNJS';
 
 const styles = `
-  /* ----- Google Fonts ----- */
+  /* ----- Google Fonts (Updated to Poppins) ----- */
   .su__root {
     min-height: 100vh;
     background: radial-gradient(circle at 30% 20%, #004d2d 0%, #001a11 100%);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     color: white;
     padding: 30px 20px 60px 20px;
     display: flex;
@@ -41,7 +41,7 @@ const styles = `
     z-index: 1;
   }
 
-  /* ----- HEADER (Logo & Lang Selector) ----- */
+  /* ----- HEADER ----- */
   .su__header {
     display: flex;
     justify-content: space-between;
@@ -53,7 +53,6 @@ const styles = `
     display: flex;
     align-items: center;
     gap: 12px;
-    font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: 1.4rem;
     color: white;
@@ -85,7 +84,7 @@ const styles = `
     flex-wrap: wrap;
   }
 
-  /* ----- LEFT COLUMN (Headline & Promo Card) ----- */
+  /* ----- LEFT COLUMN ----- */
   .su__left-col {
     flex: 1;
     min-width: 320px;
@@ -94,21 +93,19 @@ const styles = `
   }
 
   .su__left-col h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 800;
     line-height: 1.1;
     margin: 0 0 40px 0;
     color: white;
   }
 
-  /* The looping arrow svg */
   .su__arrow {
     position: absolute;
     top: 20px;
-    right: -80px;
-    width: 60px;
-    height: 60px;
+    right: -60px;
+    width: 50px;
+    height: 50px;
     stroke: white;
     fill: none;
     stroke-width: 2.5;
@@ -116,68 +113,60 @@ const styles = `
     stroke-linejoin: round;
   }
 
+  /* Updated Yellow Promo Box for Image Poster */
   .su__promo-card {
     background: linear-gradient(135deg, #FFC72C 0%, #E5A900 100%);
     border-radius: 24px;
-    padding: 40px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    color: #002b1a;
+    overflow: hidden; /* Ensures the image respects the rounded corners */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px; /* Gives the box some body if the image takes a second to load */
   }
 
-  .su__promo-card h3 {
-    font-family: 'Syne', sans-serif;
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin: 0 0 15px 0;
-    line-height: 1.1;
+  .su__promo-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
   }
 
-  .su__promo-card p {
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0;
-    line-height: 1.5;
-    opacity: 0.9;
-  }
-
-  /* ----- RIGHT COLUMN (Floating Form) ----- */
+  /* ----- RIGHT COLUMN (Smaller Form) ----- */
   .su__right-col {
     flex: 0.8;
-    min-width: 360px;
-    max-width: 480px;
+    min-width: 320px;
+    max-width: 400px; /* Reduced width to make the form smaller */
   }
 
   .su__form-card {
     background: white;
     border-radius: 24px;
-    padding: 50px 45px;
-    /* Outer translucent halo effect to match reference */
+    padding: 40px 35px; /* Reduced padding */
     box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.1), 0 30px 60px rgba(0, 0, 0, 0.4);
     text-align: center;
   }
 
   .su__form-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.8rem;
+    font-size: 1.5rem; /* Slightly smaller title */
     font-weight: 700;
     color: #002b1a;
-    margin: 0 0 35px 0;
+    margin: 0 0 30px 0;
     line-height: 1.3;
   }
 
   .su__field {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     text-align: left;
   }
 
-  /* Minimalist input styling */
   .su__input {
     width: 100%;
     border: none;
     border-bottom: 1px solid #e5e7eb;
-    padding: 12px 0;
-    font-size: 1rem;
-    font-family: 'DM Sans', sans-serif;
+    padding: 10px 0;
+    font-size: 0.95rem;
+    font-family: inherit;
     color: #1f2937;
     background: transparent;
     transition: all 0.3s ease;
@@ -209,14 +198,14 @@ const styles = `
     width: 100%;
     background: #006B3F;
     color: white;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1.1rem;
+    font-family: inherit;
+    font-size: 1rem;
     font-weight: 600;
-    padding: 16px;
+    padding: 14px;
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    margin-top: 15px;
+    margin-top: 10px;
     transition: all 0.3s ease;
   }
 
@@ -229,13 +218,6 @@ const styles = `
   .su__submit:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-  }
-
-  .su__offline-note {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin-top: 25px;
-    line-height: 1.5;
   }
 
   .su__back {
@@ -283,7 +265,7 @@ const styles = `
       display: none;
     }
     .su__left-col h1 {
-      font-size: 3.2rem;
+      font-size: 2.8rem;
       text-align: center;
     }
     .su__form-card {
@@ -310,7 +292,8 @@ export default function SignUpPage() {
       const link = document.createElement('link');
       link.id = id;
       link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap';
+      // Changed to Poppins font
+      link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap';
       document.head.appendChild(link);
     }
   }, []);
@@ -365,7 +348,6 @@ export default function SignUpPage() {
       <div className="su__root">
         <div className="su__container">
           
-          {/* Mock Header (Logo & Language Dropdown) */}
           <header className="su__header">
             <div className="su__logo">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFC72C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -382,23 +364,26 @@ export default function SignUpPage() {
           </header>
 
           <div className="su__content">
-            {/* LEFT PANEL – Headline and Promo */}
+            {/* LEFT PANEL */}
             <div className="su__left-col">
               <h1>Want to learn<br/>new language?</h1>
               
-              {/* Floating Arrow Graphic */}
               <svg className="su__arrow" viewBox="0 0 24 24">
                 <path d="M9 5c5 0 8 3 8 8v6" />
                 <path d="M13 15l4 4 4-4" />
               </svg>
 
               <div className="su__promo-card">
-                <h3>FREE<br/>SECOND<br/>TEACHER</h3>
-                <p>If you didn't quite grasp a topic, second teachers are always on hand to re-explain any subject to you.</p>
+                {/* REPLACE the src below with the path to your actual poster image */}
+                <img 
+                  src="https://via.placeholder.com/600x400/FFC72C/002b1a?text=Your+Poster+Here" 
+                  alt="Language Learning Poster" 
+                  className="su__promo-image" 
+                />
               </div>
             </div>
 
-            {/* RIGHT PANEL – Floating Registration Form */}
+            {/* RIGHT PANEL (Smaller Form) */}
             <div className="su__right-col">
               <div className="su__form-card">
                 <h2 className="su__form-title">Register now to enroll<br/>in classes</h2>
@@ -467,9 +452,7 @@ export default function SignUpPage() {
                   </button>
                 </form>
 
-                <p className="su__offline-note">
-                  Classes are conducted offline in Tashkent, Fergana and Samarkand.
-                </p>
+                {/* Removed the offline note text here */}
 
                 <button className="su__back" onClick={() => navigate(-1)}>
                   ← Go back
