@@ -262,14 +262,15 @@ const styles = `
   }
 
   /* Responsive Adjustments */
+  /* Responsive Adjustments */
   @media (max-width: 950px) {
     .su__root {
       padding: 20px;
     }
     .su__content {
       flex-direction: column;
-      gap: 50px;
-      padding: 20px 0;
+      gap: 40px;
+      padding: 10px 0;
     }
     .su__left-col, .su__right-col {
       width: 100%;
@@ -279,11 +280,35 @@ const styles = `
       display: none;
     }
     .su__left-col h1 {
-      font-size: 2.8rem;
+      font-size: 2.5rem; /* Smaller for tablets */
       text-align: center;
+      margin-bottom: 25px;
     }
     .su__form-card {
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      padding: 30px 20px;
+    }
+    /* Center and shrink the poster container on tablets */
+    .su__promo-card {
+      max-width: 450px;
+      margin: 0 auto; 
+      min-height: auto;
+    }
+  }
+
+  /* Specific Adjustments for Mobile Phones */
+  @media (max-width: 600px) {
+    .su__left-col h1 {
+      font-size: 1.8rem; /* Much smaller text for phones */
+      margin-bottom: 20px;
+    }
+    /* Shrink the poster even more on small screens */
+    .su__promo-card {
+      max-width: 280px; 
+      border-radius: 16px;
+    }
+    .su__logo img {
+      height: 30px; /* Scale logo down slightly */
     }
   }
 `;
