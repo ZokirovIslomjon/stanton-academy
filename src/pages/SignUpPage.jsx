@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 
+import myLogo from '../assets/logo-new.png';
+
+
 emailjs.init('5j3dR4oz_QORxuNJS');
+
 
 const EMAILJS_SERVICE_ID  = 'service_giayoc6';
 const EMAILJS_TEMPLATE_ID = 'template_1b3ug2u';
@@ -358,26 +362,22 @@ export default function SignUpPage() {
         <div className="su__container">
           
           {/* HEADER (Stays at top) */}
-          <header className="su__header">
-            <div className="su__logo">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFC72C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
-              LEARNING CENTER
-            </div>
-            <div className="su__lang-selector">
-              🇬🇧 Eng
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
-            </div>
-          </header>
+{/* HEADER (Stays at top) */}
+<header className="su__header">
+  <div className="su__logo">
+    <img 
+      src={myLogo} 
+      alt="Stanton Academy Logo" 
+      style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
+    />
+  </div>
+</header>
 
           {/* MAIN CONTENT (Centers vertically and horizontally) */}
           <div className="su__content">
             
             <div className="su__left-col">
-              <h1>Want to learn<br/>new language?</h1>
+              <h1>Want to learn<br/>New Language?</h1>
               
               <svg className="su__arrow" viewBox="0 0 24 24">
                 <path d="M9 5c5 0 8 3 8 8v6" />
