@@ -298,46 +298,31 @@ const styles = `
 
   /* Specific Adjustments for Mobile Phones */
   @media (max-width: 600px) {
-    /* 1. Center the logo and create a solid block of space below it */
-    .su__header {
-      display: flex;
-      justify-content: center; /* Centers the logo perfectly */
-      width: 100%;
-      padding-bottom: 0;
-      margin-bottom: 30px; /* Pushes the H1 text down */
-    }
-
-    .su__logo {
-      justify-content: center;
-    }
-
-    .su__logo img {
-      height: 45px; /* Slightly larger, crisp logo for mobile */
-    }
-
-    /* 2. Format the heading so it sits cleanly below the logo */
     .su__left-col h1 {
-      font-size: 1.6rem; 
-      margin-top: 0; 
-      margin-bottom: 25px;
-      text-align: center;
-      line-height: 1.2;
+      font-size: 1.2rem; /* Made the text smaller */
+      margin-top: 40px; /* Pushes the text down so it doesn't overlap the logo */
+      margin-bottom: 15px;
     }
     
-    /* 3. Forces the 800x450 rectangular proportion (16:9) */
+    /* Forces the 800x450 rectangular proportion (16:9) */
     .su__promo-card {
       width: 100%;
       max-width: 400px; 
-      aspect-ratio: 800 / 450; 
-      min-height: auto; 
+      aspect-ratio: 800 / 450; /* Creates the exact dimensions you requested */
+      min-height: auto; /* Removes the old rule that made it a square */
       margin: 0 auto; 
       border-radius: 12px;
     }
 
+    /* Ensures the image fills the new rectangular box perfectly */
     .su__promo-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    .su__logo img {
+      height: 35px; /* Adjusts logo size for mobile */
     }
   }
 `;
