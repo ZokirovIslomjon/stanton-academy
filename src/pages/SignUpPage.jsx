@@ -8,7 +8,6 @@ const EMAILJS_SERVICE_ID  = 'service_giayoc6';
 const EMAILJS_TEMPLATE_ID = 'template_1b3ug2u';
 const EMAILJS_PUBLIC_KEY  = '5j3dR4oz_QORxuNJS';
 
-// Styles – adapted to the reference image (dark green gradient, yellow accents)
 const styles = `
   /* ----- Google Fonts (loaded via <link> in useEffect) ----- */
   .su__root {
@@ -56,7 +55,7 @@ const styles = `
   /* main card */
   .su__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.8fr 1.2fr; /* right panel larger, shifted left */
     max-width: 1100px;
     width: 100%;
     background: rgba(255, 255, 255, 0.05);
@@ -76,7 +75,7 @@ const styles = `
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ----- LEFT PANEL (exactly like reference) ----- */
+  /* ----- LEFT PANEL (only headline now) ----- */
   .su__left {
     background: linear-gradient(145deg, #0d2a1c 0%, #092015 100%);
     padding: 60px 45px;
@@ -92,56 +91,32 @@ const styles = `
     font-size: 2.8rem;
     font-weight: 800;
     line-height: 1.2;
-    margin: 0 0 30px 0;
+    margin: 0;
     color: white;
   }
 
   .su__left h1 .su__highlight {
-    color: #FFC72C;                /* primary gold */
+    color: #FFC72C;
     text-decoration: underline;
     text-underline-offset: 12px;
     text-decoration-thickness: 3px;
   }
 
-  .su__free-events {
-    background: rgba(0, 0, 0, 0.25);
-    border-left: 6px solid #FFC72C;
-    padding: 25px 30px;
-    border-radius: 20px;
-    backdrop-filter: blur(5px);
-  }
-
-  .su__events-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #FFC72C;
-    margin: 0 0 15px 0;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .su__events-list {
-    font-size: 1rem;
-    line-height: 1.7;
-    opacity: 0.9;
-    margin: 0;
-    color: rgba(255,255,255,0.9);
-  }
-
-  /* ----- RIGHT PANEL (form) ----- */
+  /* ----- RIGHT PANEL (form, shifted left) ----- */
   .su__right {
     background: white;
     padding: 55px 45px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-left: -20px; /* pull the right panel slightly left */
   }
 
   .su__form-title {
     font-family: 'Syne', sans-serif;
     font-size: 2rem;
     font-weight: 700;
-    color: #006B3F;                /* primary green */
+    color: #006B3F;
     margin: 0 0 10px 0;
   }
 
@@ -267,9 +242,19 @@ const styles = `
 
   /* responsive */
   @media (max-width: 800px) {
-    .su__grid { grid-template-columns: 1fr; }
-    .su__left { border-right: none; border-bottom: 1px solid rgba(255,199,44,0.2); }
-    .su__left h1 { font-size: 2.2rem; }
+    .su__grid {
+      grid-template-columns: 1fr;
+    }
+    .su__left {
+      border-right: none;
+      border-bottom: 1px solid rgba(255,199,44,0.2);
+    }
+    .su__right {
+      margin-left: 0; /* reset on mobile */
+    }
+    .su__left h1 {
+      font-size: 2.2rem;
+    }
   }
 `;
 
@@ -285,7 +270,6 @@ export default function SignUpPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Load Google Fonts once
   useEffect(() => {
     const id = 'su-google-fonts';
     if (!document.getElementById(id)) {
@@ -346,23 +330,15 @@ export default function SignUpPage() {
       <style>{styles}</style>
       <div className="su__root">
         <div className="su__grid">
-
-          {/* LEFT PANEL – exactly as the reference image */}
+          {/* LEFT PANEL – only headline */}
           <div className="su__left">
             <h1>
               Want to learn{' '}
-              <span className="su__highlight">English?</span>
+              <span className="su__highlight">new language?</span>
             </h1>
-            <div className="su__free-events">
-              <div className="su__events-title">FREE EVENTS</div>
-              <p className="su__events-list">
-                Tennis, golf, mafia, movies, conversations with celebrities, and unforgettable trips —
-                all available for free to Stanton Academy students.
-              </p>
-            </div>
           </div>
 
-          {/* RIGHT PANEL – registration form with your fields */}
+          {/* RIGHT PANEL – registration form */}
           <div className="su__right">
             <h2 className="su__form-title">Register now to enroll in classes</h2>
             <p className="su__form-sub">Fill in the form and we'll call you back.</p>
