@@ -300,7 +300,7 @@ const styles = `
   @media (max-width: 600px) {
     .su__left-col h1 {
       font-size: 1.2rem; /* Made the text smaller */
-      margin-top: 30px; /* Pushes the text down so it doesn't overlap the logo */
+      margin-top: 38px; /* Pushes the text down so it doesn't overlap the logo */
       margin-bottom: 20px;
     }
     
