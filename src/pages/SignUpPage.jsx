@@ -9,17 +9,18 @@ const EMAILJS_TEMPLATE_ID = 'template_1b3ug2u';
 const EMAILJS_PUBLIC_KEY  = '5j3dR4oz_QORxuNJS';
 
 const styles = `
-  /* ----- Google Fonts (Updated to Poppins) ----- */
+  /* ----- Google Fonts ----- */
   .su__root {
     min-height: 100vh;
     background: radial-gradient(circle at 30% 20%, #004d2d 0%, #001a11 100%);
     font-family: 'Poppins', sans-serif;
     color: white;
-    padding: 30px 20px 60px 20px;
+    padding: 30px 40px;
     display: flex;
     justify-content: center;
     position: relative;
     overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   /* Decorative Background Glow */
@@ -34,11 +35,14 @@ const styles = `
     z-index: 0;
   }
 
+  /* Use flex column to keep header at top and center content */
   .su__container {
     max-width: 1200px;
     width: 100%;
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   /* ----- HEADER ----- */
@@ -46,7 +50,8 @@ const styles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 60px;
+    flex-shrink: 0; /* Prevents header from shrinking */
+    padding-bottom: 20px;
   }
 
   .su__logo {
@@ -77,11 +82,13 @@ const styles = `
 
   /* ----- MAIN LAYOUT GRID ----- */
   .su__content {
+    flex-grow: 1; /* Takes up remaining space below header */
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 60px;
+    justify-content: center;
+    align-items: center; /* Centers items vertically */
+    gap: 80px;
     flex-wrap: wrap;
+    padding: 40px 0;
   }
 
   /* ----- LEFT COLUMN ----- */
@@ -89,21 +96,21 @@ const styles = `
     flex: 1;
     min-width: 320px;
     position: relative;
-    max-width: 550px;
+    max-width: 500px;
   }
 
   .su__left-col h1 {
     font-size: 3.5rem;
     font-weight: 800;
     line-height: 1.1;
-    margin: 0 0 40px 0;
+    margin: 0 0 30px 0;
     color: white;
   }
 
   .su__arrow {
     position: absolute;
     top: 20px;
-    right: -60px;
+    right: -40px;
     width: 50px;
     height: 50px;
     stroke: white;
@@ -113,16 +120,15 @@ const styles = `
     stroke-linejoin: round;
   }
 
-  /* Updated Yellow Promo Box for Image Poster */
   .su__promo-card {
     background: linear-gradient(135deg, #FFC72C 0%, #E5A900 100%);
     border-radius: 24px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    overflow: hidden; /* Ensures the image respects the rounded corners */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 250px; /* Gives the box some body if the image takes a second to load */
+    min-height: 250px;
   }
 
   .su__promo-image {
@@ -136,19 +142,19 @@ const styles = `
   .su__right-col {
     flex: 0.8;
     min-width: 320px;
-    max-width: 400px; /* Reduced width to make the form smaller */
+    max-width: 400px;
   }
 
   .su__form-card {
     background: white;
     border-radius: 24px;
-    padding: 40px 35px; /* Reduced padding */
+    padding: 40px 35px;
     box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.1), 0 30px 60px rgba(0, 0, 0, 0.4);
     text-align: center;
   }
 
   .su__form-title {
-    font-size: 1.5rem; /* Slightly smaller title */
+    font-size: 1.5rem;
     font-weight: 700;
     color: #002b1a;
     margin: 0 0 30px 0;
@@ -253,9 +259,13 @@ const styles = `
 
   /* Responsive Adjustments */
   @media (max-width: 950px) {
+    .su__root {
+      padding: 20px;
+    }
     .su__content {
       flex-direction: column;
-      align-items: center;
+      gap: 50px;
+      padding: 20px 0;
     }
     .su__left-col, .su__right-col {
       width: 100%;
@@ -292,7 +302,6 @@ export default function SignUpPage() {
       const link = document.createElement('link');
       link.id = id;
       link.rel = 'stylesheet';
-      // Changed to Poppins font
       link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap';
       document.head.appendChild(link);
     }
@@ -348,6 +357,7 @@ export default function SignUpPage() {
       <div className="su__root">
         <div className="su__container">
           
+          {/* HEADER (Stays at top) */}
           <header className="su__header">
             <div className="su__logo">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFC72C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -363,8 +373,9 @@ export default function SignUpPage() {
             </div>
           </header>
 
+          {/* MAIN CONTENT (Centers vertically and horizontally) */}
           <div className="su__content">
-            {/* LEFT PANEL */}
+            
             <div className="su__left-col">
               <h1>Want to learn<br/>new language?</h1>
               
@@ -374,16 +385,15 @@ export default function SignUpPage() {
               </svg>
 
               <div className="su__promo-card">
-                {/* REPLACE the src below with the path to your actual poster image */}
+                {/* INSERT YOUR POSTER IMAGE PATH HERE */}
                 <img 
-                  src="https://via.placeholder.com/600x400/FFC72C/002b1a?text=Your+Poster+Here" 
+                  src="https://via.placeholder.com/600x400/FFC72C/002b1a?text=Insert+Your+Poster+Here" 
                   alt="Language Learning Poster" 
                   className="su__promo-image" 
                 />
               </div>
             </div>
 
-            {/* RIGHT PANEL (Smaller Form) */}
             <div className="su__right-col">
               <div className="su__form-card">
                 <h2 className="su__form-title">Register now to enroll<br/>in classes</h2>
@@ -452,13 +462,12 @@ export default function SignUpPage() {
                   </button>
                 </form>
 
-                {/* Removed the offline note text here */}
-
                 <button className="su__back" onClick={() => navigate(-1)}>
                   ← Go back
                 </button>
               </div>
             </div>
+
           </div>
 
         </div>
