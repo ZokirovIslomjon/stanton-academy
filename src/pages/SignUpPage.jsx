@@ -299,7 +299,7 @@ const styles = `
   /* Specific Adjustments for Mobile Phones */
   @media (max-width: 600px) {
     .su__left-col h1 {
-      font-size: 1.5rem; /* Made the text smaller */
+      font-size: 1.2rem; /* Made the text smaller */
       margin-top: 30px; /* Pushes the text down so it doesn't overlap the logo */
       margin-bottom: 20px;
     }
