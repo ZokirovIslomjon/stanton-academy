@@ -2,22 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Courses = ({ onOpenModal }) => {
+  // Added price, frequency, and duration to the data
   const courseData = [
     {
-      id: 1, 
-      theme: 'blue', 
-      title: 'General English',
+      id: 1, theme: 'blue', title: 'General English',
+      price: '2200 RM/mo', frequency: '5x a week', duration: '4.5 hours',
       features: [ 
         'Master everyday English vocabulary and grammar structures.', 
-        'Improve listening and speaking fluency for daily use.', 
+        'Intensive focus on Reading, Writing, Listening, and Speaking.', 
         'Engage in real-life conversational practice.', 
         'Build confidence for travel, work, and socializing.' 
       ]
     },
     {
-      id: 2, 
-      theme: 'orange', 
-      title: 'IELTS Preparation',
+      id: 2, theme: 'orange', title: 'IELTS Preparation',
+      price: '2200 RM/mo', frequency: '5x a week', duration: '4 hours',
       features: [ 
         'Intensive focus on Reading, Writing, Listening, and Speaking.', 
         'Learn proven test-taking strategies and time management.', 
@@ -26,20 +25,18 @@ const Courses = ({ onOpenModal }) => {
       ]
     },
     {
-      id: 3, 
-      theme: 'red', 
-      title: 'Mandarin',
+      id: 3, theme: 'red', title: 'Mandarin',
+      price: '1250 RM/mo', frequency: '4x a week', duration: '2 hours',
       features: [ 
         'Master the Pinyin system and the 4 tones of Mandarin.', 
         'Learn essential vocabulary for daily conversations.', 
-        'Introduction to reading and writing Chinese characters (Hanzi).', 
+        'Introduction to reading and writing Chinese characters.', 
         'Explore Chinese culture, etiquette, and traditions.' 
       ]
     },
     {
-      id: 4, 
-      theme: 'green', 
-      title: 'Japanese',
+      id: 4, theme: 'green', title: 'Japanese',
+      price: '1875 RM/mo', frequency: '5x a week', duration: '4 hours',
       features: [ 
         'Learn to read and write Hiragana and Katakana fluently.', 
         'Introduction to essential everyday Kanji characters.', 
@@ -48,9 +45,8 @@ const Courses = ({ onOpenModal }) => {
       ]
     },
     {
-      id: 5, 
-      theme: 'blue', 
-      title: 'Korean',
+      id: 5, theme: 'blue', title: 'Korean',
+      price: '1120 RM/mo', frequency: '5x a week', duration: '2 hours',
       features: [ 
         'Master the Hangul alphabet quickly and easily.', 
         'Learn natural pronunciation, intonation, and honorifics.', 
@@ -59,9 +55,8 @@ const Courses = ({ onOpenModal }) => {
       ]
     },
     {
-      id: 6, 
-      theme: 'orange', 
-      title: 'Bahasa Malaysia',
+      id: 6, theme: 'orange', title: 'Bahasa Malaysia',
+      price: '520 RM/mo', frequency: '1x a week', duration: '2 hours',
       features: [ 
         'Learn proper pronunciation and fundamental grammar.', 
         'Build a strong, practical vocabulary for everyday use.', 
@@ -70,9 +65,8 @@ const Courses = ({ onOpenModal }) => {
       ]
     },
     {
-      id: 7, 
-      theme: 'red', 
-      title: 'German',
+      id: 7, theme: 'red', title: 'German',
+      price: '590 RM/mo', frequency: '2x a week', duration: '2 hours',
       features: [ 
         'Master standard German (Hochdeutsch) pronunciation.', 
         'Learn core grammar rules, including cases and sentence structure.', 
@@ -95,19 +89,30 @@ const Courses = ({ onOpenModal }) => {
             <div key={course.id} className={`pricing-card ${course.theme}-theme`}>
               <div className="card-header">
                 <div className="icon-circle">
-                   {/* Blue Icon (Graduation Cap) */}
+                   {/* Icons (Unchanged) */}
                    {course.theme === 'blue' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>}
-                   
-                   {/* Orange Icon (Clipboard/Test) */}
                    {course.theme === 'orange' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>}
-                   
-                   {/* Green Icon (Star/Badge) */}
                    {course.theme === 'green' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>}
-
-                   {/* Red Icon (Globe/Language) */}
                    {course.theme === 'red' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>}
                 </div>
                 <h3>{course.title}</h3>
+                
+                {/* NEW: Price tag prominently displayed */}
+                <div className="course-price" style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '10px 0', color: '#1f2937' }}>
+                  {course.price}
+                </div>
+
+                {/* NEW: Schedule & Duration badges */}
+                <div className="course-meta" style={{ display: 'flex', gap: '15px', justifyContent: 'center', fontSize: '0.85rem', color: '#6b7280', marginBottom: '20px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    {course.frequency}
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    {course.duration}
+                  </span>
+                </div>
               </div>
               
               <ul className="feature-list">
@@ -123,7 +128,7 @@ const Courses = ({ onOpenModal }) => {
 
               <div className="card-footer">
                 <Link to="/signup" className="btn-full-width">
-                    Sign up for the first lesson
+                    Sign up 
                 </Link>
               </div>
             </div>
