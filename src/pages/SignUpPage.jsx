@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 
 import myLogo from '../assets/logo-new.png';
+import myPoster from '../assets/poster.jpg'
 
 
 emailjs.init('5j3dR4oz_QORxuNJS');
@@ -426,7 +427,7 @@ export default function SignUpPage() {
               <div className="su__promo-card">
                 {/* INSERT YOUR POSTER IMAGE PATH HERE */}
                 <img 
-                  src="https://via.placeholder.com/600x400/FFC72C/002b1a?text=Insert+Your+Poster+Here" 
+                  src={myPoster} 
                   alt="Language Learning Poster" 
                   className="su__promo-image" 
                 />
