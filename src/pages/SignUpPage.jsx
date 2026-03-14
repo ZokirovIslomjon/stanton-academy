@@ -14,10 +14,15 @@ const EMAILJS_TEMPLATE_ID = 'template_1b3ug2u';
 const EMAILJS_PUBLIC_KEY  = '5j3dR4oz_QORxuNJS';
 
 const styles = `
-  /* ----- Google Fonts ----- */
+  /* ----- Animated Gradient Background ----- */
   .su__root {
     min-height: 100vh;
-    background: radial-gradient(circle at 30% 20%, #004d2d 0%, #001a11 100%);
+    /* Massive gradient canvas */
+    background: linear-gradient(-45deg, #001a11, #004d2d, #002216, #003b22);
+    background-size: 400% 400%;
+    /* 15-second smooth breathing animation */
+    animation: smoothGradient 15s ease infinite;
+    
     font-family: 'Poppins', sans-serif;
     color: white;
     padding: 30px 40px;
@@ -28,16 +33,47 @@ const styles = `
     box-sizing: border-box;
   }
 
-  /* Decorative Background Glow */
+  /* Keyframes for shifting the background */
+  @keyframes smoothGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Decorative Floating Gold Glow (Top Left) */
   .su__root::before {
     content: '';
     position: absolute;
     top: -10%;
     left: -10%;
-    width: 50vw;
-    height: 50vw;
-    background: radial-gradient(circle, rgba(255, 199, 44, 0.05) 0%, transparent 60%);
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(255, 199, 44, 0.08) 0%, transparent 60%);
     z-index: 0;
+    animation: floatGold 12s ease-in-out infinite alternate;
+  }
+
+  /* Decorative Floating Emerald Glow (Bottom Right) */
+  .su__root::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    right: -10%;
+    width: 70vw;
+    height: 70vw;
+    background: radial-gradient(circle, rgba(0, 107, 63, 0.15) 0%, transparent 60%);
+    z-index: 0;
+    animation: floatGreen 18s ease-in-out infinite alternate;
+  }
+
+  /* Keyframes for the floating glow orbs */
+  @keyframes floatGold {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, 30px) scale(1.1); }
+  }
+  @keyframes floatGreen {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-40px, -40px) scale(1.05); }
   }
 
   /* Use flex column to keep header at top and center content */
@@ -55,7 +91,7 @@ const styles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0; /* Prevents header from shrinking */
+    flex-shrink: 0;
     padding-bottom: 20px;
   }
 
@@ -87,10 +123,10 @@ const styles = `
 
   /* ----- MAIN LAYOUT GRID ----- */
   .su__content {
-    flex-grow: 1; /* Takes up remaining space below header */
+    flex-grow: 1;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centers items vertically */
+    align-items: center;
     gap: 80px;
     flex-wrap: wrap;
     padding: 40px 0;
@@ -262,7 +298,6 @@ const styles = `
     border: 1px solid #fecaca;
   }
 
-  
   /* Responsive Adjustments */
   @media (max-width: 950px) {
     .su__root {
@@ -281,7 +316,7 @@ const styles = `
       display: none;
     }
     .su__left-col h1 {
-      font-size: 2.5rem; /* Smaller for tablets */
+      font-size: 2.5rem;
       text-align: center;
       margin-bottom: 25px;
     }
@@ -289,7 +324,6 @@ const styles = `
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
       padding: 30px 20px;
     }
-    /* Center and shrink the poster container on tablets */
     .su__promo-card {
       max-width: 450px;
       margin: 0 auto; 
@@ -300,22 +334,20 @@ const styles = `
   /* Specific Adjustments for Mobile Phones */
   @media (max-width: 600px) {
     .su__left-col h1 {
-      font-size: 1.2rem; /* Made the text smaller */
-      margin-top: 40px; /* Pushes the text down so it doesn't overlap the logo */
+      font-size: 1.2rem; 
+      margin-top: 40px; 
       margin-bottom: 15px;
     }
     
-    /* Forces the 800x450 rectangular proportion (16:9) */
     .su__promo-card {
       width: 100%;
       max-width: 400px; 
-      aspect-ratio: 800 / 450; /* Creates the exact dimensions you requested */
-      min-height: auto; /* Removes the old rule that made it a square */
+      aspect-ratio: 800 / 450; 
+      min-height: auto; 
       margin: 0 auto; 
       border-radius: 12px;
     }
 
-    /* Ensures the image fills the new rectangular box perfectly */
     .su__promo-image {
       width: 100%;
       height: 100%;
@@ -323,7 +355,7 @@ const styles = `
     }
 
     .su__logo img {
-      height: 35px; /* Adjusts logo size for mobile */
+      height: 35px; 
     }
   }
 `;
