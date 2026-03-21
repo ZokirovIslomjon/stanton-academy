@@ -520,12 +520,16 @@ export default function SignUpPage() {
                       value={formData.course}
                       onChange={handleChange}
                       disabled={isSending}
+                      required
                     >
                       <option value="" disabled hidden>Choose a course</option>
-                      <option value="Intensive Beginner">Intensive Beginner</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Advanced">Advanced</option>
-                      <option value="Chinese Language">Chinese Language</option>
+                      <option value="General English">General English</option>
+                      <option value="IELTS Preparation">IELTS Preparation</option>
+                      <option value="Mandarin">Mandarin</option>
+                      <option value="Japanese">Japanese</option>
+                      <option value="Korean">Korean</option>
+                      <option value="Bahasa Malaysia">Bahasa Malaysia</option>
+                      <option value="German">German</option>
                     </select>
                   </div>
 
