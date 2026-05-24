@@ -79,6 +79,15 @@ const RegisterModal = ({ isOpen, onClose }) => {
         console.log('SUCCESS!', response);
         setSuccessMessage(`Thank you ${formData.name}! Your application has been submitted successfully. We will contact you shortly.`);
         
+        // --- GOOGLE ADS CONVERSION TRACKING ---
+        if (typeof window.gtag !== 'undefined') {
+          window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
+             'event_category': 'Lead Form',
+             'event_label': formData.course // This passes the selected course to your Google Ads data
+          });
+        }
+        // --------------------------------------
+        
         // Clear form
         setFormData({ name: '', email: '', phone: '', course: 'Intensive Beginner' });
         setIsSending(false);
