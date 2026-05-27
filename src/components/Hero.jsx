@@ -33,7 +33,8 @@ const Hero = () => {
     {
       id: 2,
       type: 'form',
-      headline: "Join The Summer Camp",
+      headlineStart: "Join The ",
+      headlineEnd: "Summer Camp",
       subtext: "Multicultural And English language center in Kuala Lumpur",
       callToAction: "Apply for this Summer Today!"
     }
@@ -43,7 +44,7 @@ const Hero = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000); // Changed to 6 seconds to give people more time to read/click the form
+    }, 6000); 
     return () => clearInterval(timer);
   }, [slides.length]);
 
@@ -53,7 +54,7 @@ const Hero = () => {
 
       <div className="container" style={{ position: 'relative', width: '100%' }}>
         
-        {/* SLIDES WRAPPER - Added minHeight so it doesn't collapse */}
+        {/* SLIDES WRAPPER */}
         <div style={{ position: 'relative', minHeight: '550px', width: '100%', display: 'flex', alignItems: 'center' }}>
           {slides.map((slide, index) => (
             <div
@@ -66,7 +67,7 @@ const Hero = () => {
                 top: '50%',
                 left: 0,
                 width: '100%',
-                transform: 'translateY(-50%)', // Centers the slide vertically
+                transform: 'translateY(-50%)', 
                 zIndex: index === currentSlide ? 10 : 1,
               }}
             >
@@ -75,25 +76,26 @@ const Hero = () => {
                 <div style={{ 
                   display: 'flex', 
                   flexWrap: 'wrap', 
-                  alignItems: 'stretch', // Makes both sides equal height
+                  alignItems: 'stretch', 
                   gap: '40px', 
                   textAlign: 'left', 
                   backgroundColor: '#fff9e6', 
                   padding: '40px', 
                   borderRadius: '24px',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.05)' // Adds a subtle drop shadow
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.05)' 
                 }}>
                   
                   {/* Left Side: Form */}
                   <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <h1 style={{ fontSize: '2.8rem', color: '#1a1a1a', fontWeight: '800', lineHeight: '1.2', marginBottom: '10px' }}>
-                      {slide.headline}
+                    <h1 style={{ fontSize: '2.8rem', fontWeight: '800', lineHeight: '1.2', marginBottom: '10px' }}>
+                      <span style={{ color: '#006B3F' }}>{slide.headlineStart}</span>
+                      <span style={{ color: '#FFC72C' }}>{slide.headlineEnd}</span>
                     </h1>
-                    <p style={{ fontSize: '1.1rem', color: '#666', fontStyle: 'italic', marginBottom: '30px' }}>
+                    <p style={{ fontSize: '1.1rem', color: '#006B3F', fontStyle: 'italic', marginBottom: '30px' }}>
                       {slide.subtext}
                     </p>
                     
-                    <h3 style={{ fontSize: '1.3rem', color: '#1a1a1a', marginBottom: '20px', fontWeight: '700' }}>
+                    <h3 style={{ fontSize: '1.3rem', color: '#006B3F', marginBottom: '20px', fontWeight: '700' }}>
                       {slide.callToAction}
                     </h3>
 
@@ -135,7 +137,10 @@ const Hero = () => {
                         <option value="International">International</option>
                       </select>
 
-                      <button type="submit" style={{ gridColumn: '1 / -1', backgroundColor: '#f97316', color: 'white', padding: '16px', border: 'none', borderRadius: '10px', fontWeight: '700', cursor: 'pointer', fontSize: '1.1rem', marginTop: '10px', transition: 'transform 0.2s, background-color 0.2s' }}>
+                      <button type="submit" style={{ gridColumn: '1 / -1', backgroundColor: '#006B3F', color: '#FFC72C', padding: '16px', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', fontSize: '1.1rem', marginTop: '10px', transition: 'transform 0.2s, opacity 0.2s' }}
+                        onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
+                        onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                      >
                         SUBMIT APPLICATION
                       </button>
                     </form>
@@ -169,7 +174,7 @@ const Hero = () => {
           ))}
         </div>
 
-        {/* Navigation Dots - Now locked strictly to the bottom */}
+        {/* Navigation Dots */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', position: 'absolute', bottom: '-40px', left: '0', right: '0', zIndex: 20 }}>
           {slides.map((_, idx) => (
             <button
