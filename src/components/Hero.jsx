@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 // Import your images here
-import summerCampImg from '../assets/landing.jpg'; 
+import summerCampImg from '../assets/landing.png'; 
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
