@@ -4,8 +4,8 @@ import emailjs from '@emailjs/browser';
 import logo from '../assets/logo-new.png'; 
 
 // Imported your exact file formats
-import poster1 from '../assets/poster1.jpeg';
-import poster2 from '../assets/poster2.png';
+import poster1 from '../assets/poster1.png';
+import poster2 from '../assets/poster2.jpeg';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ const SignUpPage = () => {
 
           .signup-container {
             display: flex;
-            align-items: center; /* Aligns them evenly in the center */
+            align-items: center; 
             justify-content: center;
             gap: 60px;
             max-width: 1100px;
@@ -107,14 +107,15 @@ const SignUpPage = () => {
             flex: 1;
             display: flex;
             justify-content: center;
+            width: 100%; /* Added this to prevent collapsing on mobile! */
           }
 
           /* 4:5 Aspect Ratio Slider Container */
           .slider-container {
             position: relative;
             width: 100%;
-            max-width: 450px; /* Matched the max-width of the form */
-            aspect-ratio: 4 / 5; /* Keeps your 4:5 portrait ratio */
+            max-width: 450px; 
+            aspect-ratio: 4 / 5; 
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
@@ -134,7 +135,7 @@ const SignUpPage = () => {
           /* RIGHT SIDE: Form Card */
           .signup-right {
             flex: 1;
-            max-width: 450px; /* Matched the max-width of the poster */
+            max-width: 450px; 
             width: 100%;
           }
 
@@ -230,15 +231,22 @@ const SignUpPage = () => {
           @media (max-width: 900px) {
             .signup-container {
               flex-direction: column;
-              gap: 50px;
+              gap: 40px; /* Reduced gap slightly for mobile flow */
             }
             .signup-logo {
               position: static;
-              margin-bottom: 30px;
+              margin-bottom: 10px; /* Adjusted spacing under logo */
             }
             .signup-page-wrapper {
-              padding-top: 40px;
+              padding-top: 30px;
               flex-direction: column;
+            }
+            /* Ensures poster isn't too overwhelmingly large on small phones */
+            .slider-container {
+              max-width: 320px; 
+            }
+            .signup-card {
+              padding: 30px 20px;
             }
           }
         `}
