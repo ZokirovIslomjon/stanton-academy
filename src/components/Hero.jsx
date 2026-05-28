@@ -21,6 +21,7 @@ const Hero = () => {
     setCampForm({ name: '', email: '', phone: '', location: '' });
   };
 
+  // 1. ADDED DURATIONS TO EACH SLIDE
   const slides = [
     {
       id: 1,
@@ -29,6 +30,7 @@ const Hero = () => {
       highlight: "we change people's lives!",
       subtext: "Master the English language with Stanton Academy's world-class curriculum.",
       btnText: "Sign up for the first lesson ✨",
+      duration: 5000 // 5 seconds
     },
     {
       id: 2,
@@ -36,17 +38,20 @@ const Hero = () => {
       headlineStart: "Join The ",
       headlineEnd: "Summer Camp",
       subtext: "Multicultural And English language center in Kuala Lumpur",
-      callToAction: "Apply for this Summer Today!"
+      callToAction: "Apply for this Summer Today!",
+      duration: 60000 // 60 seconds (1 full minute)
     }
   ];
 
-  // Auto-play timer
+  // 2. UPDATED TIMER LOGIC
   useEffect(() => {
-    const timer = setInterval(() => {
+    // We use setTimeout instead of setInterval so it reads the specific duration of the active slide
+    const timer = setTimeout(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000); 
-    return () => clearInterval(timer);
-  }, [slides.length]);
+    }, slides[currentSlide].duration); 
+    
+    return () => clearTimeout(timer);
+  }, [currentSlide, slides.length]); // This re-runs every time the slide changes
 
   return (
     <section className="hero new-hero-style" style={{ minHeight: '750px', display: 'flex', alignItems: 'center', position: 'relative', paddingBottom: '60px' }}>
