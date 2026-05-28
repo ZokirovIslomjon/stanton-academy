@@ -1,553 +1,362 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
+import logo from '../assets/logo-new.png'; 
 
-import myLogo from '../assets/logo-new.png';
-import myPoster from '../assets/poster.jpg'
+// 1. IMPORT YOUR 4:5 POSTER IMAGES HERE
+import poster1 from '../assets/poster1.jpg';
+import poster2 from '../assets/poster2.png';
+// import poster3 from '../assets/poster3.jpg';
 
-
-emailjs.init('5j3dR4oz_QORxuNJS');
-
-
-const EMAILJS_SERVICE_ID  = 'service_giayoc6';
-const EMAILJS_TEMPLATE_ID = 'template_1b3ug2u';
-const EMAILJS_PUBLIC_KEY  = '5j3dR4oz_QORxuNJS';
-
-const styles = `
-  /* ----- Animated Gradient Background ----- */
-  .su__root {
-    min-height: 100vh;
-    /* Massive gradient canvas */
-    background: linear-gradient(-45deg, #001a11, #004d2d, #002216, #003b22);
-    background-size: 400% 400%;
-    /* 15-second smooth breathing animation */
-    animation: smoothGradient 15s ease infinite;
-    
-    font-family: 'Poppins', sans-serif;
-    color: white;
-    padding: 30px 40px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    overflow-x: hidden;
-    box-sizing: border-box;
-  }
-
-  /* Keyframes for shifting the background */
-  @keyframes smoothGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  /* Decorative Floating Gold Glow (Top Left) */
-  .su__root::before {
-    content: '';
-    position: absolute;
-    top: -10%;
-    left: -10%;
-    width: 60vw;
-    height: 60vw;
-    background: radial-gradient(circle, rgba(255, 199, 44, 0.08) 0%, transparent 60%);
-    z-index: 0;
-    animation: floatGold 12s ease-in-out infinite alternate;
-  }
-
-  /* Decorative Floating Emerald Glow (Bottom Right) */
-  .su__root::after {
-    content: '';
-    position: absolute;
-    bottom: -20%;
-    right: -10%;
-    width: 70vw;
-    height: 70vw;
-    background: radial-gradient(circle, rgba(0, 107, 63, 0.15) 0%, transparent 60%);
-    z-index: 0;
-    animation: floatGreen 18s ease-in-out infinite alternate;
-  }
-
-  /* Keyframes for the floating glow orbs */
-  @keyframes floatGold {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(50px, 30px) scale(1.1); }
-  }
-  @keyframes floatGreen {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(-40px, -40px) scale(1.05); }
-  }
-
-  /* Use flex column to keep header at top and center content */
-  .su__container {
-    max-width: 1200px;
-    width: 100%;
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* ----- HEADER ----- */
-  .su__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    padding-bottom: 20px;
-  }
-
-  .su__logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 700;
-    font-size: 1.4rem;
-    color: white;
-  }
-
-  .su__lang-selector {
-    color: white;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 16px;
-    border-radius: 50px;
-    transition: background 0.2s;
-  }
-
-  .su__lang-selector:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  /* ----- MAIN LAYOUT GRID ----- */
-  .su__content {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 80px;
-    flex-wrap: wrap;
-    padding: 40px 0;
-  }
-
-  /* ----- LEFT COLUMN ----- */
-  .su__left-col {
-    flex: 1;
-    min-width: 320px;
-    position: relative;
-    max-width: 500px;
-  }
-
-  .su__left-col h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    line-height: 1.1;
-    margin: 0 0 30px 0;
-    color: white;
-  }
-
-  .su__arrow {
-    position: absolute;
-    top: 20px;
-    right: -40px;
-    width: 50px;
-    height: 50px;
-    stroke: white;
-    fill: none;
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .su__promo-card {
-    background: linear-gradient(135deg, #FFC72C 0%, #E5A900 100%);
-    border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 250px;
-  }
-
-  .su__promo-image {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-  }
-
-  /* ----- RIGHT COLUMN (Smaller Form) ----- */
-  .su__right-col {
-    flex: 0.8;
-    min-width: 320px;
-    max-width: 400px;
-  }
-
-  .su__form-card {
-    background: white;
-    border-radius: 24px;
-    padding: 40px 35px;
-    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.1), 0 30px 60px rgba(0, 0, 0, 0.4);
-    text-align: center;
-  }
-
-  .su__form-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #002b1a;
-    margin: 0 0 30px 0;
-    line-height: 1.3;
-  }
-
-  .su__field {
-    margin-bottom: 20px;
-    text-align: left;
-  }
-
-  .su__input {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #e5e7eb;
-    padding: 10px 0;
-    font-size: 0.95rem;
-    font-family: inherit;
-    color: #1f2937;
-    background: transparent;
-    transition: all 0.3s ease;
-    outline: none;
-    box-sizing: border-box;
-  }
-
-  .su__input::placeholder {
-    color: #9ca3af;
-  }
-
-  .su__input:focus {
-    border-bottom-color: #006B3F;
-  }
-
-  .su__select {
-    cursor: pointer;
-    appearance: none;
-    color: #9ca3af;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right center;
-  }
-  .su__select:focus {
-    color: #1f2937;
-  }
-
-  .su__submit {
-    width: 100%;
-    background: #006B3F;
-    color: white;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 14px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: all 0.3s ease;
-  }
-
-  .su__submit:hover:not(:disabled) {
-    background: #008f54;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 107, 63, 0.3);
-  }
-
-  .su__submit:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-
-  .su__back {
-    background: none;
-    border: none;
-    color: #9ca3af;
-    font-size: 0.85rem;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: color 0.2s;
-  }
-  .su__back:hover {
-    color: #006B3F;
-  }
-
-  .su__alert {
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  .su__alert--success {
-    background: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
-  }
-  .su__alert--error {
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
-  }
-
-  /* Responsive Adjustments */
-  @media (max-width: 950px) {
-    .su__root {
-      padding: 20px;
-    }
-    .su__content {
-      flex-direction: column;
-      gap: 40px;
-      padding: 10px 0;
-    }
-    .su__left-col, .su__right-col {
-      width: 100%;
-      max-width: 100%;
-    }
-    .su__arrow {
-      display: none;
-    }
-    .su__left-col h1 {
-      font-size: 2.5rem;
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    .su__form-card {
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-      padding: 30px 20px;
-    }
-    .su__promo-card {
-      max-width: 450px;
-      margin: 0 auto; 
-      min-height: auto;
-    }
-  }
-
-  /* Specific Adjustments for Mobile Phones */
-  @media (max-width: 600px) {
-    .su__left-col h1 {
-      font-size: 1.2rem; 
-      margin-top: 40px; 
-      margin-bottom: 15px;
-    }
-    
-    .su__promo-card {
-      width: 100%;
-      max-width: 400px; 
-      aspect-ratio: 800 / 450; 
-      min-height: auto; 
-      margin: 0 auto; 
-      border-radius: 12px;
-    }
-
-    .su__promo-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .su__logo img {
-      height: 35px; 
-    }
-  }
-`;
-
-export default function SignUpPage() {
+const SignUpPage = () => {
   const navigate = useNavigate();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isSending, setIsSending] = useState(false);
+
+  // Array of images for the slider (Replace these placeholder URLs with your imported variables above)
+  const sliderImages = [
+    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop', 
+    'https://images.unsplash.com/photo-1571260899304-425dea4cf367?q=80&w=800&auto=format&fit=crop', 
+    'https://images.unsplash.com/photo-1510519138130-474bd69be305?q=80&w=800&auto=format&fit=crop'  
+  ];
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     course: ''
   });
-  const [isSending, setIsSending] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
 
+  // Slider Timer: Changes every 5 seconds
   useEffect(() => {
-    const id = 'su-google-fonts';
-    if (!document.getElementById(id)) {
-      const link = document.createElement('link');
-      link.id = id;
-      link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap';
-      document.head.appendChild(link);
-    }
-  }, []);
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === sliderImages.length - 1 ? 0 : prev + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [sliderImages.length]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-
-    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
-      setErrorMessage('Please fill in all required fields.');
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setErrorMessage('Please enter a valid email address.');
-      return;
-    }
-
     setIsSending(true);
+
+    const templateParams = {
+      to_name: 'Stanton Academy',
+      from_name: formData.name,
+      from_email: formData.email,
+      phone: formData.phone,
+      course: formData.course,
+      message: `New application from ${formData.name} for ${formData.course} course`,
+      reply_to: formData.email
+    };
+
     emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
-      {
-        to_name: 'Stanton Academy',
-        from_name: formData.name,
-        from_email: formData.email,
-        phone: formData.phone,
-        course: formData.course || 'Intensive Beginner',
-        message: `New application from ${formData.name} for the ${formData.course || 'Intensive Beginner'} course.`,
-        reply_to: formData.email,
-      },
-      EMAILJS_PUBLIC_KEY
+      'service_giayoc6', 
+      'template_1b3ug2u', 
+      templateParams, 
+      '5j3dR4oz_QORxuNJS'
     )
-      .then(() => {
-        setSuccessMessage(`Thank you, ${formData.name}! We'll contact you shortly.`);
+      .then((response) => {
+        console.log('SUCCESS!', response);
+        alert(`Thank you ${formData.name}! Your application has been submitted successfully. We will contact you shortly.`);
+        
+        // --- GOOGLE ADS CONVERSION TRACKING ---
+        if (typeof window.gtag !== 'undefined') {
+          window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
+             'event_category': 'Lead Form',
+             'event_label': formData.course 
+          });
+        }
+        
         setFormData({ name: '', email: '', phone: '', course: '' });
         setIsSending(false);
-        setTimeout(() => navigate('/'), 3000);
       })
-      .catch((err) => {
-        console.error(err);
-        setErrorMessage('Failed to send. Please try again or reach us on WhatsApp.');
+      .catch((error) => {
+        console.error('EmailJS Error Details:', error);
+        alert('Failed to send application. Please contact us directly at info@stanton-academy.com');
         setIsSending(false);
       });
   };
 
   return (
-    <>
-      <style>{styles}</style>
-      <div className="su__root">
-        <div className="su__container">
+    <div className="signup-page-wrapper">
+      <style>
+        {`
+          .signup-page-wrapper {
+            min-height: 100vh;
+            background-color: #022c19; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+          }
           
-          {/* HEADER (Stays at top) */}
-{/* HEADER (Stays at top) */}
-<header className="su__header">
-  <div className="su__logo">
-    <img 
-      src={myLogo} 
-      alt="Stanton Academy Logo" 
-      style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
-    />
-  </div>
-</header>
+          .signup-logo {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            height: 50px;
+          }
 
-          {/* MAIN CONTENT (Centers vertically and horizontally) */}
-          <div className="su__content">
-            
-            <div className="su__left-col">
-              <h1>Want to learn<br/>New Language?</h1>
-              
-              <svg className="su__arrow" viewBox="0 0 24 24">
-                <path d="M9 5c5 0 8 3 8 8v6" />
-                <path d="M13 15l4 4 4-4" />
-              </svg>
+          .signup-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 80px;
+            max-width: 1100px;
+            width: 100%;
+          }
 
-              <div className="su__promo-card">
-                {/* INSERT YOUR POSTER IMAGE PATH HERE */}
-                <img 
-                  src={myPoster} 
-                  alt="Language Learning Poster" 
-                  className="su__promo-image" 
-                />
-              </div>
-            </div>
+          /* LEFT SIDE: Text and Slider */
+          .signup-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
 
-            <div className="su__right-col">
-              <div className="su__form-card">
-                <h2 className="su__form-title">Register now to enroll<br/>in classes</h2>
+          .signup-headline {
+            color: #ffffff;
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 30px;
+          }
 
-                {successMessage && <div className="su__alert su__alert--success">✓ {successMessage}</div>}
-                {errorMessage && <div className="su__alert su__alert--error">⚠️ {errorMessage}</div>}
+          /* 4:5 Aspect Ratio Slider Container */
+          .slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 360px; 
+            aspect-ratio: 4 / 5; /* Forces the exact 4:5 portrait ratio */
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            border: 5px solid #e5f0ea; /* Soft frame for the poster */
+          }
 
-                <form onSubmit={handleSubmit}>
-                  <div className="su__field">
-                    <input
-                      type="text"
-                      name="name"
-                      className="su__input"
-                      placeholder="Name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      disabled={isSending}
-                      required
-                    />
-                  </div>
+          .slider-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transition: opacity 1s ease-in-out;
+          }
 
-                  <div className="su__field">
-                    <input
-                      type="tel"
-                      name="phone"
-                      className="su__input"
-                      placeholder="Phone Number"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      disabled={isSending}
-                      required
-                    />
-                  </div>
+          /* RIGHT SIDE: Form Card */
+          .signup-right {
+            flex: 1;
+            max-width: 450px;
+            width: 100%;
+          }
 
-                  <div className="su__field">
-                    <input
-                      type="email"
-                      name="email"
-                      className="su__input"
-                      placeholder="Email Address"
-                      value={formData.email}
-                      onChange={handleChange}
-                      disabled={isSending}
-                      required
-                    />
-                  </div>
+          .signup-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+          }
 
-                  <div className="su__field">
-                    <select
-                      name="course"
-                      className="su__input su__select"
-                      value={formData.course}
-                      onChange={handleChange}
-                      disabled={isSending}
-                      required
-                    >
-                      <option value="" disabled hidden>Choose a course</option>
-                      <option value="General English">General English</option>
-                      <option value="IELTS Preparation">IELTS Preparation</option>
-                      <option value="Mandarin">Mandarin</option>
-                      <option value="Japanese">Japanese</option>
-                      <option value="Korean">Korean</option>
-                      <option value="Bahasa Malaysia">Bahasa Malaysia</option>
-                      <option value="German">German</option>
-                    </select>
-                  </div>
+          .signup-card h2 {
+            font-size: 1.6rem;
+            color: #1a1a1a;
+            font-weight: 800;
+            margin-bottom: 30px;
+            line-height: 1.3;
+          }
 
-                  <button type="submit" className="su__submit" disabled={isSending}>
-                    {isSending ? 'Sending...' : 'Yes, call me!'}
-                  </button>
-                </form>
+          .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+          }
 
-                <button className="su__back" onClick={() => navigate(-1)}>
-                  ← Go back
-                </button>
-              </div>
-            </div>
+          .signup-input {
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            border-bottom: 2px solid #f3f4f6;
+            font-size: 1rem;
+            color: #1a1a1a;
+            outline: none;
+            background: transparent;
+            transition: border-color 0.3s;
+          }
 
+          .signup-input::placeholder {
+            color: #9ca3af;
+          }
+
+          .signup-input:focus {
+            border-bottom: 2px solid #006B3F;
+          }
+
+          select.signup-input {
+            color: #9ca3af;
+            cursor: pointer;
+          }
+          
+          select.signup-input:valid {
+            color: #1a1a1a;
+          }
+
+          .btn-call {
+            background-color: #006B3F;
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+
+          .btn-call:hover:not(:disabled) {
+            background-color: #00502f;
+            transform: translateY(-2px);
+          }
+          
+          .btn-call:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+          }
+
+          .btn-back {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 0.95rem;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+          }
+
+          .btn-back:hover {
+            color: #4b5563;
+          }
+
+          /* Mobile Responsiveness */
+          @media (max-width: 900px) {
+            .signup-container {
+              flex-direction: column;
+              gap: 50px;
+            }
+            .signup-logo {
+              position: static;
+              margin-bottom: 20px;
+            }
+            .signup-headline {
+              font-size: 2.4rem;
+            }
+            .signup-page-wrapper {
+              padding-top: 30px;
+              flex-direction: column;
+            }
+            .slider-container {
+               max-width: 300px;
+            }
+          }
+        `}
+      </style>
+
+      {/* Top Left Logo */}
+      <Link to="/">
+        <img src={logo} alt="Stanton Academy" className="signup-logo" />
+      </Link>
+
+      <div className="signup-container">
+        
+        {/* LEFT SIDE */}
+        <div className="signup-left">
+          <h1 className="signup-headline">Want to learn<br/>New Language?</h1>
+          
+          {/* Automatically changing 4:5 Image Slider */}
+          <div className="slider-container">
+            {sliderImages.map((img, index) => (
+              <img 
+                key={index}
+                src={img} 
+                alt={`Slide ${index + 1}`} 
+                className="slider-image"
+                style={{ 
+                  opacity: index === currentSlide ? 1 : 0,
+                  zIndex: index === currentSlide ? 2 : 1
+                }}
+              />
+            ))}
           </div>
-
         </div>
+
+        {/* RIGHT SIDE */}
+        <div className="signup-right">
+          <div className="signup-card">
+            <h2>Register now to enroll<br/>in classes</h2>
+            
+            <form onSubmit={handleSubmit} className="signup-form">
+              <input 
+                type="text" 
+                placeholder="Name" 
+                required 
+                className="signup-input"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                disabled={isSending}
+              />
+              
+              <input 
+                type="tel" 
+                placeholder="Phone Number" 
+                required 
+                className="signup-input"
+                value={formData.phone}
+                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                disabled={isSending}
+              />
+              
+              <input 
+                type="email" 
+                placeholder="Email Address" 
+                required 
+                className="signup-input"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                disabled={isSending}
+              />
+              
+              <select 
+                required 
+                className="signup-input"
+                value={formData.course}
+                onChange={(e) => setFormData({...formData, course: e.target.value})}
+                disabled={isSending}
+              >
+                <option value="" disabled hidden>Choose a course</option>
+                <option value="Intensive Beginner">Intensive Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Chinese Language">Chinese Language</option>
+              </select>
+
+              <button type="submit" className="btn-call" disabled={isSending}>
+                {isSending ? 'Sending...' : 'Yes, call me!'}
+              </button>
+            </form>
+
+            <button className="btn-back" onClick={() => navigate(-1)}>
+              &larr; Go back
+            </button>
+          </div>
+        </div>
+
       </div>
-    </>
+    </div>
   );
-}
+};
+
+export default SignUpPage;

@@ -1,46 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import logo from '../assets/logo-new.png'; 
 
-// 1. IMPORT YOUR 4:5 POSTER IMAGES HERE
-import poster1 from '../assets/poster1.jpg';
-import poster2 from '../assets/poster2.png';
-// import poster3 from '../assets/poster3.jpg';
-
-const SignUpPage = () => {
-  const navigate = useNavigate();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isSending, setIsSending] = useState(false);
-
-  // Array of images for the slider (Replace these placeholder URLs with your imported variables above)
-  const sliderImages = [
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop', 
-    'https://images.unsplash.com/photo-1571260899304-425dea4cf367?q=80&w=800&auto=format&fit=crop', 
-    'https://images.unsplash.com/photo-1510519138130-474bd69be305?q=80&w=800&auto=format&fit=crop'  
-  ];
+const RegisterModal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    course: ''
+    course: 'Intensive Beginner'
   });
 
-  // Slider Timer: Changes every 5 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev === sliderImages.length - 1 ? 0 : prev + 1));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [sliderImages.length]);
+  const [isSending, setIsSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  // Test EmailJS connection function
+  const testEmailJSConnection = () => {
+    console.log('Testing EmailJS Connection...');
+    console.log('Service ID:', 'service_giayoc6');
+    console.log('Template ID:', 'template_1b3ug2u');
+    console.log('Public Key:', '5j3dR4oz_QORxuNJS');
+    
+    // Test if EmailJS is loaded
+    if (window.emailjs) {
+      console.log('EmailJS is loaded successfully');
+      console.log('EmailJS version:', emailjs.version);
+    } else {
+      console.error('EmailJS is NOT loaded');
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
     setIsSending(true);
 
+    // Test connection first
+    testEmailJSConnection();
+
+    // Basic validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
+      setErrorMessage('Please fill in all required fields');
+      setIsSending(false);
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage('Please enter a valid email address');
+      setIsSending(false);
+      return;
+    }
+
+    // Prepare template parameters
     const templateParams = {
-      to_name: 'Stanton Academy',
+      to_name: 'Stanton Academy', // Your name/company
       from_name: formData.name,
       from_email: formData.email,
       phone: formData.phone,
@@ -49,6 +66,9 @@ const SignUpPage = () => {
       reply_to: formData.email
     };
 
+    console.log('Sending with params:', templateParams);
+
+    // Send the email
     emailjs.send(
       'service_giayoc6', 
       'template_1b3ug2u', 
@@ -57,306 +77,205 @@ const SignUpPage = () => {
     )
       .then((response) => {
         console.log('SUCCESS!', response);
-        alert(`Thank you ${formData.name}! Your application has been submitted successfully. We will contact you shortly.`);
+        setSuccessMessage(`Thank you ${formData.name}! Your application has been submitted successfully. We will contact you shortly.`);
         
         // --- GOOGLE ADS CONVERSION TRACKING ---
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
              'event_category': 'Lead Form',
-             'event_label': formData.course 
+             'event_label': formData.course // This passes the selected course to your Google Ads data
           });
         }
+        // --------------------------------------
         
-        setFormData({ name: '', email: '', phone: '', course: '' });
+        // Clear form
+        setFormData({ name: '', email: '', phone: '', course: 'Intensive Beginner' });
         setIsSending(false);
+        
+        // Auto-close after 5 seconds
+        setTimeout(() => {
+          onClose();
+        }, 5000);
       })
       .catch((error) => {
         console.error('EmailJS Error Details:', error);
-        alert('Failed to send application. Please contact us directly at info@stanton-academy.com');
+        
+        // More specific error messages
+        if (error.text && error.text.includes('Invalid')) {
+          setErrorMessage('Invalid EmailJS configuration. Please check your Service ID and Template ID.');
+        } else if (error.text && error.text.includes('Key')) {
+          setErrorMessage('Invalid Public Key. Please check your EmailJS API key.');
+        } else {
+          setErrorMessage('Failed to send application. Please contact us directly at info@stanton-academy.com');
+        }
+        
         setIsSending(false);
       });
   };
 
   return (
-    <div className="signup-page-wrapper">
-      <style>
-        {`
-          .signup-page-wrapper {
-            min-height: 100vh;
-            background-color: #022c19; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            position: relative;
-          }
-          
-          .signup-logo {
-            position: absolute;
-            top: 30px;
-            left: 40px;
-            height: 50px;
-          }
-
-          .signup-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 80px;
-            max-width: 1100px;
-            width: 100%;
-          }
-
-          /* LEFT SIDE: Text and Slider */
-          .signup-left {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-          }
-
-          .signup-headline {
-            color: #ffffff;
-            font-size: 3.2rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 30px;
-          }
-
-          /* 4:5 Aspect Ratio Slider Container */
-          .slider-container {
-            position: relative;
-            width: 100%;
-            max-width: 360px; 
-            aspect-ratio: 4 / 5; /* Forces the exact 4:5 portrait ratio */
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            border: 5px solid #e5f0ea; /* Soft frame for the poster */
-          }
-
-          .slider-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            transition: opacity 1s ease-in-out;
-          }
-
-          /* RIGHT SIDE: Form Card */
-          .signup-right {
-            flex: 1;
-            max-width: 450px;
-            width: 100%;
-          }
-
-          .signup-card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            text-align: center;
-          }
-
-          .signup-card h2 {
-            font-size: 1.6rem;
-            color: #1a1a1a;
-            font-weight: 800;
-            margin-bottom: 30px;
-            line-height: 1.3;
-          }
-
-          .signup-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-          }
-
-          .signup-input {
-            width: 100%;
-            padding: 12px 0;
-            border: none;
-            border-bottom: 2px solid #f3f4f6;
-            font-size: 1rem;
-            color: #1a1a1a;
-            outline: none;
-            background: transparent;
-            transition: border-color 0.3s;
-          }
-
-          .signup-input::placeholder {
-            color: #9ca3af;
-          }
-
-          .signup-input:focus {
-            border-bottom: 2px solid #006B3F;
-          }
-
-          select.signup-input {
-            color: #9ca3af;
-            cursor: pointer;
-          }
-          
-          select.signup-input:valid {
-            color: #1a1a1a;
-          }
-
-          .btn-call {
-            background-color: #006B3F;
-            color: #ffffff;
-            border: none;
-            padding: 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-top: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-          }
-
-          .btn-call:hover:not(:disabled) {
-            background-color: #00502f;
-            transform: translateY(-2px);
-          }
-          
-          .btn-call:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-          }
-
-          .btn-back {
-            background: none;
-            border: none;
-            color: #9ca3af;
-            font-size: 0.95rem;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: color 0.3s;
-          }
-
-          .btn-back:hover {
-            color: #4b5563;
-          }
-
-          /* Mobile Responsiveness */
-          @media (max-width: 900px) {
-            .signup-container {
-              flex-direction: column;
-              gap: 50px;
-            }
-            .signup-logo {
-              position: static;
-              margin-bottom: 20px;
-            }
-            .signup-headline {
-              font-size: 2.4rem;
-            }
-            .signup-page-wrapper {
-              padding-top: 30px;
-              flex-direction: column;
-            }
-            .slider-container {
-               max-width: 300px;
-            }
-          }
-        `}
-      </style>
-
-      {/* Top Left Logo */}
-      <Link to="/">
-        <img src={logo} alt="Stanton Academy" className="signup-logo" />
-      </Link>
-
-      <div className="signup-container">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         
-        {/* LEFT SIDE */}
-        <div className="signup-left">
-          <h1 className="signup-headline">Want to learn<br/>New Language?</h1>
+        <button className="close-btn" onClick={onClose}>&times;</button>
+        
+        <div className="modal-header">
+          <h2>Join <span>Stanton Academy</span></h2>
+          <p>Start your journey to fluency today!</p>
+        </div>
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="success-message" style={{
+            backgroundColor: '#d1fae5',
+            color: '#065f46',
+            padding: '15px',
+            borderRadius: '10px',
+            marginBottom: '20px',
+            border: '1px solid #a7f3d0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <span style={{ fontSize: '1.5rem' }}>✓</span>
+            <div>
+              <strong>Success!</strong> {successMessage}
+            </div>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="error-message" style={{
+            backgroundColor: '#fee2e2',
+            color: '#991b1b',
+            padding: '15px',
+            borderRadius: '10px',
+            marginBottom: '20px',
+            border: '1px solid #fca5a5',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+            <div>
+              <strong>Unable to send</strong> {errorMessage}
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
           
-          {/* Automatically changing 4:5 Image Slider */}
-          <div className="slider-container">
-            {sliderImages.map((img, index) => (
-              <img 
-                key={index}
-                src={img} 
-                alt={`Slide ${index + 1}`} 
-                className="slider-image"
-                style={{ 
-                  opacity: index === currentSlide ? 1 : 0,
-                  zIndex: index === currentSlide ? 2 : 1
-                }}
-              />
-            ))}
+          <div className="form-group">
+            <label>Full Name *</label>
+            <input 
+              type="text" 
+              placeholder="Enter your name" 
+              required 
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              disabled={isSending}
+            />
           </div>
-        </div>
 
-        {/* RIGHT SIDE */}
-        <div className="signup-right">
-          <div className="signup-card">
-            <h2>Register now to enroll<br/>in classes</h2>
-            
-            <form onSubmit={handleSubmit} className="signup-form">
-              <input 
-                type="text" 
-                placeholder="Name" 
-                required 
-                className="signup-input"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                disabled={isSending}
-              />
-              
-              <input 
-                type="tel" 
-                placeholder="Phone Number" 
-                required 
-                className="signup-input"
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                disabled={isSending}
-              />
-              
-              <input 
-                type="email" 
-                placeholder="Email Address" 
-                required 
-                className="signup-input"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                disabled={isSending}
-              />
-              
-              <select 
-                required 
-                className="signup-input"
-                value={formData.course}
-                onChange={(e) => setFormData({...formData, course: e.target.value})}
-                disabled={isSending}
-              >
-                <option value="" disabled hidden>Choose a course</option>
-                <option value="Intensive Beginner">Intensive Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-                <option value="Chinese Language">Chinese Language</option>
-              </select>
-
-              <button type="submit" className="btn-call" disabled={isSending}>
-                {isSending ? 'Sending...' : 'Yes, call me!'}
-              </button>
-            </form>
-
-            <button className="btn-back" onClick={() => navigate(-1)}>
-              &larr; Go back
-            </button>
+          <div className="form-group">
+            <label>Email Address *</label>
+            <input 
+              type="email" 
+              placeholder="name@example.com" 
+              required 
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              disabled={isSending}
+            />
           </div>
-        </div>
+
+          <div className="form-group">
+            <label>Phone Number *</label>
+            <input 
+              type="tel" 
+              placeholder="+60 12-345-6789" 
+              required 
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              disabled={isSending}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Select Course</label>
+            <select 
+              value={formData.course}
+              onChange={(e) => setFormData({...formData, course: e.target.value})}
+              disabled={isSending}
+            >
+              <option value="Intensive Beginner">Intensive Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+              <option value="Chinese Language">Chinese Language</option>
+            </select>
+          </div>
+
+          <button 
+            type="submit" 
+            className="btn-submit" 
+            disabled={isSending}
+            style={{ 
+              opacity: isSending ? 0.7 : 1,
+              backgroundColor: successMessage ? '#22c55e' : '#006B3F',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
+            }}
+          >
+            {isSending ? (
+              <>
+                <span className="spinner"></span>
+                Sending Application...
+              </>
+            ) : successMessage ? (
+              'Submitted Successfully!'
+            ) : (
+              'Submit Application'
+            )}
+          </button>
+
+          {/* WhatsApp Alternative */}
+          <div style={{ 
+            marginTop: '20px', 
+            padding: '15px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '10px',
+            textAlign: 'center',
+            border: '1px solid #e5e7eb'
+          }}>
+            <p style={{ marginBottom: '10px', color: '#666' }}>
+              <strong>Alternative:</strong> Contact us directly on WhatsApp
+            </p>
+            <a 
+              href={`https://wa.me/601118648860?text=Hello! I'm interested in joining Stanton Academy. My name is ${formData.name || ''} and I'm interested in the ${formData.course} course.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-block',
+                backgroundColor: '#25D366',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '50px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                marginTop: '10px'
+              }}
+            >
+              📱 Contact on WhatsApp
+            </a>
+          </div>
+        </form>
 
       </div>
     </div>
   );
 };
 
-export default SignUpPage;
+export default RegisterModal;
