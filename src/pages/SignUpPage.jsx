@@ -3,22 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import logo from '../assets/logo-new.png'; 
 
-// 1. IMPORT YOUR 4:5 POSTER IMAGES HERE
-import poster1 from '../assets/poster1.jpeg';
-import poster2 from '../assets/poster2.png';
-// import poster3 from '../assets/poster3.jpg';
+// Imported your exact file formats
+import poster1 from '../assets/poster1.png';
+import poster2 from '../assets/poster2.jpeg';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSending, setIsSending] = useState(false);
 
-  // Array of images for the slider (Replace these placeholder URLs with your imported variables above)
-  const sliderImages = [
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop', 
-    'https://images.unsplash.com/photo-1571260899304-425dea4cf367?q=80&w=800&auto=format&fit=crop', 
-    'https://images.unsplash.com/photo-1510519138130-474bd69be305?q=80&w=800&auto=format&fit=crop'  
-  ];
+  // Array updated to use only your two posters
+  const sliderImages = [poster1, poster2];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -59,7 +54,7 @@ const SignUpPage = () => {
         console.log('SUCCESS!', response);
         alert(`Thank you ${formData.name}! Your application has been submitted successfully. We will contact you shortly.`);
         
-        // --- GOOGLE ADS CONVERSION TRACKING ---
+        // Google Ads Conversion Tracking
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
              'event_category': 'Lead Form',
@@ -100,40 +95,30 @@ const SignUpPage = () => {
 
           .signup-container {
             display: flex;
-            align-items: center;
+            align-items: center; /* Aligns them evenly in the center */
             justify-content: center;
-            gap: 80px;
+            gap: 60px;
             max-width: 1100px;
             width: 100%;
           }
 
-          /* LEFT SIDE: Text and Slider */
+          /* LEFT SIDE: Slider */
           .signup-left {
             flex: 1;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-          }
-
-          .signup-headline {
-            color: #ffffff;
-            font-size: 3.2rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 30px;
+            justify-content: center;
           }
 
           /* 4:5 Aspect Ratio Slider Container */
           .slider-container {
             position: relative;
             width: 100%;
-            max-width: 360px; 
-            aspect-ratio: 4 / 5; /* Forces the exact 4:5 portrait ratio */
+            max-width: 450px; /* Matched the max-width of the form */
+            aspect-ratio: 4 / 5; /* Keeps your 4:5 portrait ratio */
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            border: 5px solid #e5f0ea; /* Soft frame for the poster */
+            border: 5px solid #e5f0ea; 
           }
 
           .slider-image {
@@ -149,7 +134,7 @@ const SignUpPage = () => {
           /* RIGHT SIDE: Form Card */
           .signup-right {
             flex: 1;
-            max-width: 450px;
+            max-width: 450px; /* Matched the max-width of the poster */
             width: 100%;
           }
 
@@ -249,17 +234,11 @@ const SignUpPage = () => {
             }
             .signup-logo {
               position: static;
-              margin-bottom: 20px;
-            }
-            .signup-headline {
-              font-size: 2.4rem;
+              margin-bottom: 30px;
             }
             .signup-page-wrapper {
-              padding-top: 30px;
+              padding-top: 40px;
               flex-direction: column;
-            }
-            .slider-container {
-               max-width: 300px;
             }
           }
         `}
@@ -272,11 +251,8 @@ const SignUpPage = () => {
 
       <div className="signup-container">
         
-        {/* LEFT SIDE */}
+        {/* LEFT SIDE (Poster Slider) */}
         <div className="signup-left">
-          <h1 className="signup-headline">Want to learn<br/>New Language?</h1>
-          
-          {/* Automatically changing 4:5 Image Slider */}
           <div className="slider-container">
             {sliderImages.map((img, index) => (
               <img 
@@ -293,7 +269,7 @@ const SignUpPage = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT SIDE (Form) */}
         <div className="signup-right">
           <div className="signup-card">
             <h2>Register now to enroll<br/>in classes</h2>
