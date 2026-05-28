@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import emailjs from '@emailjs/browser'; // <-- Added EmailJS import
 
 // Make sure this path is correct for your project!
-import summerCampImg from '../assets/landing.png'; 
+import summerCampImg from '../assets/landing.jpg'; 
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
