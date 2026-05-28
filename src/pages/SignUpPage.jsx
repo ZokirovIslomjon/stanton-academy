@@ -4,8 +4,8 @@ import emailjs from '@emailjs/browser';
 import logo from '../assets/logo-new.png'; 
 
 // Imported your exact file formats
-import poster1 from '../assets/poster1.png';
-import poster2 from '../assets/poster2.jpeg';
+import poster1 from '../assets/poster1.jpeg';
+import poster2 from '../assets/poster2.png';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
