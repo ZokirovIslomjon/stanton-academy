@@ -4,7 +4,7 @@ import emailjs from '@emailjs/browser';
 import logo from '../assets/logo-new.png'; 
 
 // 1. IMPORT YOUR 4:5 POSTER IMAGES HERE
-import poster1 from '../assets/poster1.jpg';
+import poster1 from '../assets/poster1.jpeg';
 import poster2 from '../assets/poster2.png';
 // import poster3 from '../assets/poster3.jpg';
 
