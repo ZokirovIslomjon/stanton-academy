@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -12,32 +12,68 @@ import './index.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
-  
-  // Inject Google Ads Tag when the app mounts
-  useEffect(() => {
-    // 1. Create the external script tag
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16099290042';
-    document.head.appendChild(script);
-
-    // 2. Initialize the dataLayer and gtag function
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      window.dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', 'AW-16099290042');
-
-    // Cleanup function (optional, but good practice)
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []); // Empty dependency array ensures this runs only once
-
   return (
     <BrowserRouter>
       <div className="App">
+        
+        {/* --- FLOATING SOCIAL MEDIA ICONS --- */}
+        <style>
+          {`
+            .floating-social-container {
+              position: fixed;
+              left: 20px;
+              bottom: 40px; /* Places them cleanly on the bottom left */
+              display: flex;
+              flex-direction: column;
+              gap: 15px;
+              z-index: 9999; /* Ensures they always sit on top of other content */
+            }
+            .float-icon {
+              width: 55px;
+              height: 55px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: white !important;
+              font-size: 30px;
+              text-decoration: none;
+              box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+              transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .float-icon:hover {
+              transform: scale(1.1);
+              box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            }
+            .float-whatsapp { background-color: #25D366; }
+            .float-telegram { background-color: #0088cc; }
+            
+            /* Shrink slightly on mobile screens */
+            @media (max-width: 768px) {
+              .floating-social-container {
+                left: 15px;
+                bottom: 25px;
+                gap: 10px;
+              }
+              .float-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 24px;
+              }
+            }
+          `}
+        </style>
+
+        <div className="floating-social-container">
+          <a href="https://wa.me/601118648860" target="_blank" rel="noopener noreferrer" className="float-icon float-whatsapp" aria-label="WhatsApp">
+            <i className="fab fa-whatsapp"></i>
+          </a>
+          <a href="https://t.me/stantonacademykl" target="_blank" rel="noopener noreferrer" className="float-icon float-telegram" aria-label="Telegram">
+            <i className="fab fa-telegram-plane"></i>
+          </a>
+        </div>
+        {/* --------------------------------- */}
+
         <Routes>
           <Route path="/" element={
             <>
