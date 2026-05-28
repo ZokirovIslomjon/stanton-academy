@@ -87,7 +87,6 @@ const Hero = () => {
   }, [currentSlide, slides.length]); 
 
   return (
-    // Adjusted padding and minHeight so the container breathes naturally
     <section className="hero new-hero-style" style={{ display: 'flex', alignItems: 'center', position: 'relative', padding: '140px 0 80px', minHeight: '100vh' }}>
       
       <style>
@@ -109,14 +108,28 @@ const Hero = () => {
           .camp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
           .camp-img-container { flex: 1 1 400px; display: flex; border-radius: 16px; overflow: hidden; min-height: 350px; }
           
+          /* Controls the first slide vertical alignment */
+          .standard-slide-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+          }
+
           @media (max-width: 768px) {
             .camp-card { padding: 25px; gap: 20px; }
             .camp-headline { font-size: 2.1rem; }
             .camp-subtitle { font-size: 0.95rem; margin-bottom: 20px; }
             .camp-cta { font-size: 1.1rem; margin-bottom: 15px; }
             .camp-form-grid { grid-template-columns: 1fr; }
-            /* Controls image height gracefully on mobile to prevent cropping */
             .camp-img-container { flex: 1 1 100%; min-height: 220px; max-height: 280px; }
+            
+            /* Pushes the text to the top on mobile so it doesn't sink! */
+            .standard-slide-wrapper {
+              justify-content: flex-start;
+              padding-top: 40px; 
+            }
           }
         `}
       </style>
@@ -125,14 +138,15 @@ const Hero = () => {
 
       <div className="container" style={{ position: 'relative', width: '100%' }}>
         
-        {/* SLIDES WRAPPER: Using CSS Grid to overlap slides safely without absolute positioning bugs */}
-        <div style={{ display: 'grid', width: '100%', placeItems: 'center' }}>
+        {/* Removed placeItems: 'center' so we can control alignment individually */}
+        <div style={{ display: 'grid', width: '100%' }}>
           {slides.map((slide, index) => (
             <div
               key={slide.id}
               style={{
-                gridArea: '1 / 1', /* This forces both slides into the exact same space */
+                gridArea: '1 / 1',
                 width: '100%',
+                height: '100%',
                 opacity: index === currentSlide ? 1 : 0,
                 visibility: index === currentSlide ? 'visible' : 'hidden',
                 transition: 'opacity 0.8s ease-in-out, visibility 0.8s',
@@ -221,13 +235,15 @@ const Hero = () => {
 
                 </div>
               ) : (
-                <div className="hero-text-centered">
-                  <h1>{slide.headline} <span style={{ color: '#FFC72C' }}>{slide.highlight}</span></h1>
-                  <p>{slide.subtext}</p>
-                  <div className="cta-buttons centered-btns">
-                    <Link to="/signup" className="btn btn-primary">
-                      {slide.btnText}
-                    </Link>
+                <div className="standard-slide-wrapper">
+                  <div className="hero-text-centered">
+                    <h1>{slide.headline} <span style={{ color: '#FFC72C' }}>{slide.highlight}</span></h1>
+                    <p>{slide.subtext}</p>
+                    <div className="cta-buttons centered-btns">
+                      <Link to="/signup" className="btn btn-primary">
+                        {slide.btnText}
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
@@ -235,7 +251,7 @@ const Hero = () => {
           ))}
         </div>
 
-        {/* Navigation Dots - Moved out of absolute positioning to flow naturally below the slides */}
+        {/* Navigation Dots */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '30px', position: 'relative', zIndex: 20 }}>
           {slides.map((_, idx) => (
             <button
