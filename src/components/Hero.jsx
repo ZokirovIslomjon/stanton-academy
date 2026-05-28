@@ -21,7 +21,6 @@ const Hero = () => {
     setCampForm({ name: '', email: '', phone: '', location: '' });
   };
 
-  // 1. ADDED DURATIONS TO EACH SLIDE
   const slides = [
     {
       id: 1,
@@ -30,7 +29,7 @@ const Hero = () => {
       highlight: "we change people's lives!",
       subtext: "Master the English language with Stanton Academy's world-class curriculum.",
       btnText: "Sign up for the first lesson ✨",
-      duration: 5000 // 5 seconds
+      duration: 5000 
     },
     {
       id: 2,
@@ -39,72 +38,102 @@ const Hero = () => {
       headlineEnd: "Summer Camp",
       subtext: "Multicultural And English language center in Kuala Lumpur",
       callToAction: "Apply for this Summer Today!",
-      duration: 60000 // 60 seconds (1 full minute)
+      duration: 60000 
     }
   ];
 
-  // 2. UPDATED TIMER LOGIC
   useEffect(() => {
-    // We use setTimeout instead of setInterval so it reads the specific duration of the active slide
     const timer = setTimeout(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, slides[currentSlide].duration); 
     
     return () => clearTimeout(timer);
-  }, [currentSlide, slides.length]); // This re-runs every time the slide changes
+  }, [currentSlide, slides.length]); 
 
   return (
     <section className="hero new-hero-style" style={{ minHeight: '750px', display: 'flex', alignItems: 'center', position: 'relative', paddingBottom: '60px' }}>
+      
+      {/* This style block handles the responsive layout. 
+        When the screen is below 768px (phones), the text shrinks and the form stacks! 
+      */}
+      <style>
+        {`
+          .slide-content-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+          }
+          .camp-card {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 40px;
+            text-align: left;
+            background-color: #fff9e6;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+          }
+          .camp-headline { font-size: 2.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+          .camp-subtitle { font-size: 1.1rem; margin-bottom: 30px; }
+          .camp-cta { font-size: 1.3rem; margin-bottom: 20px; font-weight: 700; }
+          .camp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+          
+          /* Mobile Adjustments */
+          @media (max-width: 768px) {
+            .slide-content-wrapper {
+              top: 55%; /* Pushes the slide down slightly so it doesn't hit the logo */
+            }
+            .camp-card {
+              padding: 25px;
+              gap: 20px;
+            }
+            .camp-headline { font-size: 2.1rem; }
+            .camp-subtitle { font-size: 0.95rem; margin-bottom: 20px; }
+            .camp-cta { font-size: 1.1rem; margin-bottom: 15px; }
+            .camp-form-grid { grid-template-columns: 1fr; } /* Changes form to 1 column */
+          }
+        `}
+      </style>
+
       <div className="hero-background-blobs"></div>
 
       <div className="container" style={{ position: 'relative', width: '100%' }}>
         
         {/* SLIDES WRAPPER */}
-        <div style={{ position: 'relative', minHeight: '550px', width: '100%', display: 'flex', alignItems: 'center' }}>
+        <div style={{ position: 'relative', minHeight: '600px', width: '100%', display: 'flex', alignItems: 'center' }}>
           {slides.map((slide, index) => (
             <div
               key={slide.id}
+              className="slide-content-wrapper"
               style={{
                 opacity: index === currentSlide ? 1 : 0,
                 visibility: index === currentSlide ? 'visible' : 'hidden',
                 transition: 'opacity 0.8s ease-in-out, visibility 0.8s',
-                position: 'absolute', 
-                top: '50%',
-                left: 0,
-                width: '100%',
-                transform: 'translateY(-50%)', 
                 zIndex: index === currentSlide ? 10 : 1,
               }}
             >
               {slide.type === 'form' ? (
                 // --- SLIDE 2: SUMMER CAMP FORM LAYOUT ---
-                <div style={{ 
-                  display: 'flex', 
-                  flexWrap: 'wrap', 
-                  alignItems: 'stretch', 
-                  gap: '40px', 
-                  textAlign: 'left', 
-                  backgroundColor: '#fff9e6', 
-                  padding: '40px', 
-                  borderRadius: '24px',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.05)' 
-                }}>
+                <div className="camp-card">
                   
                   {/* Left Side: Form */}
                   <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <h1 style={{ fontSize: '2.8rem', fontWeight: '800', lineHeight: '1.2', marginBottom: '10px' }}>
+                    <h1 className="camp-headline">
                       <span style={{ color: '#006B3F' }}>{slide.headlineStart}</span>
                       <span style={{ color: '#FFC72C' }}>{slide.headlineEnd}</span>
                     </h1>
-                    <p style={{ fontSize: '1.1rem', color: '#006B3F', fontStyle: 'italic', marginBottom: '30px' }}>
+                    <p className="camp-subtitle" style={{ color: '#006B3F', fontStyle: 'italic' }}>
                       {slide.subtext}
                     </p>
                     
-                    <h3 style={{ fontSize: '1.3rem', color: '#006B3F', marginBottom: '20px', fontWeight: '700' }}>
+                    <h3 className="camp-cta" style={{ color: '#006B3F' }}>
                       {slide.callToAction}
                     </h3>
 
-                    <form onSubmit={handleCampSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                    <form onSubmit={handleCampSubmit} className="camp-form-grid">
                       <input 
                         type="text" 
                         placeholder="Your Name*" 
