@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import emailjs from '@emailjs/browser'; // <-- Added EmailJS import
 
 // Make sure this path is correct for your project!
-import summerCampImg from '../assets/landing.png'; 
+import summerCampImg from '../assets/landing.jpg'; 
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isSending, setIsSending] = useState(false); // Added sending state
 
   const [campForm, setCampForm] = useState({
     name: '',
@@ -14,11 +16,50 @@ const Hero = () => {
     location: ''
   });
 
+  // --- FULLY WIRED EMAILJS FUNCTION ---
   const handleCampSubmit = (e) => {
     e.preventDefault();
-    console.log("Summer Camp Form Submitted:", campForm);
-    alert("Application submitted successfully!");
-    setCampForm({ name: '', email: '', phone: '', location: '' });
+    setIsSending(true);
+
+    // Prepare template parameters specifically for the Summer Camp
+    const templateParams = {
+      to_name: 'Stanton Academy',
+      from_name: campForm.name,
+      from_email: campForm.email,
+      phone: campForm.phone,
+      course: 'Summer Camp 2026', // Hardcoded so you know which form they used
+      message: `New Summer Camp application from ${campForm.name}. Location: ${campForm.location}`,
+      reply_to: campForm.email
+    };
+
+    // Send the email using your existing credentials
+    emailjs.send(
+      'service_giayoc6', 
+      'template_1b3ug2u', 
+      templateParams, 
+      '5j3dR4oz_QORxuNJS'
+    )
+      .then((response) => {
+        console.log('SUCCESS!', response);
+        alert(`Thank you ${campForm.name}! Your Summer Camp application has been submitted successfully.`);
+        
+        // Google Ads Conversion Tracking
+        if (typeof window.gtag !== 'undefined') {
+          window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
+             'event_category': 'Lead Form',
+             'event_label': 'Summer Camp 2026' 
+          });
+        }
+        
+        // Clear form and reset button
+        setCampForm({ name: '', email: '', phone: '', location: '' });
+        setIsSending(false);
+      })
+      .catch((error) => {
+        console.error('EmailJS Error Details:', error);
+        alert('Failed to send application. Please contact us directly on WhatsApp or info@stanton-academy.com');
+        setIsSending(false);
+      });
   };
 
   const slides = [
@@ -53,9 +94,6 @@ const Hero = () => {
   return (
     <section className="hero new-hero-style" style={{ minHeight: '750px', display: 'flex', alignItems: 'center', position: 'relative', paddingBottom: '60px' }}>
       
-      {/* This style block handles the responsive layout. 
-        When the screen is below 768px (phones), the text shrinks and the form stacks! 
-      */}
       <style>
         {`
           .slide-content-wrapper {
@@ -81,19 +119,13 @@ const Hero = () => {
           .camp-cta { font-size: 1.3rem; margin-bottom: 20px; font-weight: 700; }
           .camp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
           
-          /* Mobile Adjustments */
           @media (max-width: 768px) {
-            .slide-content-wrapper {
-              top: 55%; /* Pushes the slide down slightly so it doesn't hit the logo */
-            }
-            .camp-card {
-              padding: 25px;
-              gap: 20px;
-            }
+            .slide-content-wrapper { top: 55%; }
+            .camp-card { padding: 25px; gap: 20px; }
             .camp-headline { font-size: 2.1rem; }
             .camp-subtitle { font-size: 0.95rem; margin-bottom: 20px; }
             .camp-cta { font-size: 1.1rem; margin-bottom: 15px; }
-            .camp-form-grid { grid-template-columns: 1fr; } /* Changes form to 1 column */
+            .camp-form-grid { grid-template-columns: 1fr; }
           }
         `}
       </style>
@@ -102,7 +134,6 @@ const Hero = () => {
 
       <div className="container" style={{ position: 'relative', width: '100%' }}>
         
-        {/* SLIDES WRAPPER */}
         <div style={{ position: 'relative', minHeight: '600px', width: '100%', display: 'flex', alignItems: 'center' }}>
           {slides.map((slide, index) => (
             <div
@@ -116,7 +147,6 @@ const Hero = () => {
               }}
             >
               {slide.type === 'form' ? (
-                // --- SLIDE 2: SUMMER CAMP FORM LAYOUT ---
                 <div className="camp-card">
                   
                   {/* Left Side: Form */}
@@ -140,6 +170,7 @@ const Hero = () => {
                         required 
                         value={campForm.name}
                         onChange={(e) => setCampForm({...campForm, name: e.target.value})}
+                        disabled={isSending}
                         style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
                       />
                       <input 
@@ -148,6 +179,7 @@ const Hero = () => {
                         required 
                         value={campForm.email}
                         onChange={(e) => setCampForm({...campForm, email: e.target.value})}
+                        disabled={isSending}
                         style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
                       />
                       <input 
@@ -156,12 +188,14 @@ const Hero = () => {
                         required 
                         value={campForm.phone}
                         onChange={(e) => setCampForm({...campForm, phone: e.target.value})}
+                        disabled={isSending}
                         style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
                       />
                       <select 
                         required
                         value={campForm.location}
                         onChange={(e) => setCampForm({...campForm, location: e.target.value})}
+                        disabled={isSending}
                         style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', color: campForm.location ? '#1a1a1a' : '#9ca3af', transition: 'border 0.3s' }}
                       >
                         <option value="" disabled>Where do you live?*</option>
@@ -171,11 +205,14 @@ const Hero = () => {
                         <option value="International">International</option>
                       </select>
 
-                      <button type="submit" style={{ gridColumn: '1 / -1', backgroundColor: '#006B3F', color: '#FFC72C', padding: '16px', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', fontSize: '1.1rem', marginTop: '10px', transition: 'transform 0.2s, opacity 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
-                        onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                      <button 
+                        type="submit" 
+                        disabled={isSending}
+                        style={{ gridColumn: '1 / -1', backgroundColor: '#006B3F', color: '#FFC72C', padding: '16px', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: isSending ? 'not-allowed' : 'pointer', fontSize: '1.1rem', marginTop: '10px', transition: 'transform 0.2s, opacity 0.2s', opacity: isSending ? '0.7' : '1' }}
+                        onMouseOver={(e) => !isSending && (e.currentTarget.style.opacity = '0.9')}
+                        onMouseOut={(e) => !isSending && (e.currentTarget.style.opacity = '1')}
                       >
-                        SUBMIT APPLICATION
+                        {isSending ? 'SENDING...' : 'SUBMIT APPLICATION'}
                       </button>
                     </form>
                   </div>
@@ -193,7 +230,6 @@ const Hero = () => {
 
                 </div>
               ) : (
-                // --- SLIDE 1: STANDARD HERO LAYOUT ---
                 <div className="hero-text-centered">
                   <h1>{slide.headline} <span style={{ color: '#FFC72C' }}>{slide.highlight}</span></h1>
                   <p>{slide.subtext}</p>
