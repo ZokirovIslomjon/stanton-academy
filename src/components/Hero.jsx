@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import emailjs from '@emailjs/browser'; // <-- Added EmailJS import
+import emailjs from '@emailjs/browser';
 
 // Make sure this path is correct for your project!
 import summerCampImg from '../assets/landing.jpg'; 
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isSending, setIsSending] = useState(false); // Added sending state
+  const [isSending, setIsSending] = useState(false);
 
   const [campForm, setCampForm] = useState({
     name: '',
@@ -16,23 +16,20 @@ const Hero = () => {
     location: ''
   });
 
-  // --- FULLY WIRED EMAILJS FUNCTION ---
   const handleCampSubmit = (e) => {
     e.preventDefault();
     setIsSending(true);
 
-    // Prepare template parameters specifically for the Summer Camp
     const templateParams = {
       to_name: 'Stanton Academy',
       from_name: campForm.name,
       from_email: campForm.email,
       phone: campForm.phone,
-      course: 'Summer Camp 2026', // Hardcoded so you know which form they used
+      course: 'Summer Camp 2026',
       message: `New Summer Camp application from ${campForm.name}. Location: ${campForm.location}`,
       reply_to: campForm.email
     };
 
-    // Send the email using your existing credentials
     emailjs.send(
       'service_giayoc6', 
       'template_1b3ug2u', 
@@ -43,7 +40,6 @@ const Hero = () => {
         console.log('SUCCESS!', response);
         alert(`Thank you ${campForm.name}! Your Summer Camp application has been submitted successfully.`);
         
-        // Google Ads Conversion Tracking
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
              'event_category': 'Lead Form',
@@ -51,7 +47,6 @@ const Hero = () => {
           });
         }
         
-        // Clear form and reset button
         setCampForm({ name: '', email: '', phone: '', location: '' });
         setIsSending(false);
       })
@@ -92,17 +87,11 @@ const Hero = () => {
   }, [currentSlide, slides.length]); 
 
   return (
-    <section className="hero new-hero-style" style={{ minHeight: '750px', display: 'flex', alignItems: 'center', position: 'relative', paddingBottom: '60px' }}>
+    // Adjusted padding and minHeight so the container breathes naturally
+    <section className="hero new-hero-style" style={{ display: 'flex', alignItems: 'center', position: 'relative', padding: '140px 0 80px', minHeight: '100vh' }}>
       
       <style>
         {`
-          .slide-content-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            transform: translateY(-50%);
-          }
           .camp-card {
             display: flex;
             flex-wrap: wrap;
@@ -118,14 +107,16 @@ const Hero = () => {
           .camp-subtitle { font-size: 1.1rem; margin-bottom: 30px; }
           .camp-cta { font-size: 1.3rem; margin-bottom: 20px; font-weight: 700; }
           .camp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+          .camp-img-container { flex: 1 1 400px; display: flex; border-radius: 16px; overflow: hidden; min-height: 350px; }
           
           @media (max-width: 768px) {
-            .slide-content-wrapper { top: 55%; }
             .camp-card { padding: 25px; gap: 20px; }
             .camp-headline { font-size: 2.1rem; }
             .camp-subtitle { font-size: 0.95rem; margin-bottom: 20px; }
             .camp-cta { font-size: 1.1rem; margin-bottom: 15px; }
             .camp-form-grid { grid-template-columns: 1fr; }
+            /* Controls image height gracefully on mobile to prevent cropping */
+            .camp-img-container { flex: 1 1 100%; min-height: 220px; max-height: 280px; }
           }
         `}
       </style>
@@ -134,12 +125,14 @@ const Hero = () => {
 
       <div className="container" style={{ position: 'relative', width: '100%' }}>
         
-        <div style={{ position: 'relative', minHeight: '600px', width: '100%', display: 'flex', alignItems: 'center' }}>
+        {/* SLIDES WRAPPER: Using CSS Grid to overlap slides safely without absolute positioning bugs */}
+        <div style={{ display: 'grid', width: '100%', placeItems: 'center' }}>
           {slides.map((slide, index) => (
             <div
               key={slide.id}
-              className="slide-content-wrapper"
               style={{
+                gridArea: '1 / 1', /* This forces both slides into the exact same space */
+                width: '100%',
                 opacity: index === currentSlide ? 1 : 0,
                 visibility: index === currentSlide ? 'visible' : 'hidden',
                 transition: 'opacity 0.8s ease-in-out, visibility 0.8s',
@@ -218,14 +211,12 @@ const Hero = () => {
                   </div>
 
                   {/* Right Side: Poster Image */}
-                  <div style={{ flex: '1 1 400px', display: 'flex' }}>
-                    <div style={{ width: '100%', borderRadius: '16px', overflow: 'hidden', display: 'flex' }}>
-                      <img 
-                        src={summerCampImg} 
-                        alt="Summer Camp Poster" 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} 
-                      />
-                    </div>
+                  <div className="camp-img-container">
+                    <img 
+                      src={summerCampImg} 
+                      alt="Summer Camp Poster" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} 
+                    />
                   </div>
 
                 </div>
@@ -244,8 +235,8 @@ const Hero = () => {
           ))}
         </div>
 
-        {/* Navigation Dots */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', position: 'absolute', bottom: '-40px', left: '0', right: '0', zIndex: 20 }}>
+        {/* Navigation Dots - Moved out of absolute positioning to flow naturally below the slides */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '30px', position: 'relative', zIndex: 20 }}>
           {slides.map((_, idx) => (
             <button
               key={idx}
