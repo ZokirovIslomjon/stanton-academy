@@ -87,10 +87,18 @@ const Hero = () => {
   }, [currentSlide, slides.length]); 
 
   return (
-    <section className="hero new-hero-style" style={{ display: 'flex', alignItems: 'center', position: 'relative', padding: '140px 0 80px', minHeight: '100vh' }}>
+    <section className="hero new-hero-style hero-section-wrapper">
       
       <style>
         {`
+          /* Controls the main section height */
+          .hero-section-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 140px 0 80px;
+            min-height: 750px;
+          }
           .camp-card {
             display: flex;
             flex-wrap: wrap;
@@ -108,28 +116,25 @@ const Hero = () => {
           .camp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
           .camp-img-container { flex: 1 1 400px; display: flex; border-radius: 16px; overflow: hidden; min-height: 350px; }
           
-          /* Controls the first slide vertical alignment */
           .standard-slide-wrapper {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 100%;
             width: 100%;
           }
 
           @media (max-width: 768px) {
+            /* Removes the forced height on mobile so the empty space disappears */
+            .hero-section-wrapper {
+              min-height: auto;
+              padding: 120px 0 40px; 
+            }
             .camp-card { padding: 25px; gap: 20px; }
             .camp-headline { font-size: 2.1rem; }
             .camp-subtitle { font-size: 0.95rem; margin-bottom: 20px; }
             .camp-cta { font-size: 1.1rem; margin-bottom: 15px; }
             .camp-form-grid { grid-template-columns: 1fr; }
             .camp-img-container { flex: 1 1 100%; min-height: 220px; max-height: 280px; }
-            
-            /* Pushes the text to the top on mobile so it doesn't sink! */
-            .standard-slide-wrapper {
-              justify-content: flex-start;
-              padding-top: 40px; 
-            }
           }
         `}
       </style>
@@ -138,15 +143,17 @@ const Hero = () => {
 
       <div className="container" style={{ position: 'relative', width: '100%' }}>
         
-        {/* Removed placeItems: 'center' so we can control alignment individually */}
-        <div style={{ display: 'grid', width: '100%' }}>
+        {/* Dynamic Wrapper: Resizes exactly to the currently active slide */}
+        <div style={{ position: 'relative', width: '100%' }}>
           {slides.map((slide, index) => (
             <div
               key={slide.id}
               style={{
-                gridArea: '1 / 1',
+                /* If active, it dictates the height. If hidden, it takes up no space */
+                position: index === currentSlide ? 'relative' : 'absolute',
+                top: 0,
+                left: 0,
                 width: '100%',
-                height: '100%',
                 opacity: index === currentSlide ? 1 : 0,
                 visibility: index === currentSlide ? 'visible' : 'hidden',
                 transition: 'opacity 0.8s ease-in-out, visibility 0.8s',
@@ -252,7 +259,7 @@ const Hero = () => {
         </div>
 
         {/* Navigation Dots */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '30px', position: 'relative', zIndex: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '40px', position: 'relative', zIndex: 20 }}>
           {slides.map((_, idx) => (
             <button
               key={idx}
