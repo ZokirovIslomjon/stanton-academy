@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import emailjs from '@emailjs/browser';
 import logo from '../assets/logo-new.png'; 
 
 import poster1 from '../assets/poster1.jpeg';
@@ -76,44 +75,44 @@ const SignUpPage = () => {
     return () => clearInterval(timer);
   }, [sliderImages.length]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSending(true);
 
     const finalHearAbout = formData.hearAbout === 'Other' ? `Other: ${formData.hearAboutOther}` : formData.hearAbout;
 
-    const fullMessageDetails = `
-      New Application Received:
-      Name: ${formData.fullName}
-      Nationality: ${formData.nationality}
-      Age: ${formData.age}
-      Phone: ${formData.countryCode} ${formData.phone}
-      Email: ${formData.email}
-      Course: ${formData.course}
-      Heard About Us: ${finalHearAbout}
-      Message: ${formData.message || 'No additional message provided.'}
-    `;
-
-    const templateParams = {
-      to_name: 'Stanton Academy',
-      from_name: formData.fullName,
-      from_email: formData.email,
-      phone: `${formData.countryCode} ${formData.phone}`,
-      course: formData.course,
-      message: fullMessageDetails,
-      reply_to: formData.email
+    // Prepare data to match your Google Sheet columns
+    const sheetData = {
+      data: [
+        {
+          Name: formData.fullName,
+          Nationality: formData.nationality,
+          Age: formData.age,
+          Phone: `${formData.countryCode} ${formData.phone}`,
+          Email: formData.email,
+          Course: formData.course,
+          HearAbout: finalHearAbout,
+          Message: formData.message || 'None',
+          Date: new Date().toLocaleString()
+        }
+      ]
     };
 
-    emailjs.send(
-      'service_giayoc6', 
-      'template_1b3ug2u', 
-      templateParams, 
-      '5j3dR4oz_QORxuNJS'
-    )
-      .then((response) => {
-        console.log('SUCCESS!', response);
-        alert(`Thank you ${formData.fullName}! Your application has been submitted successfully. We will contact you shortly.`);
+    try {
+      // Sending data to your specific SheetDB API URL
+      const response = await fetch('https://sheetdb.io/api/v1/k5ohu0497ek0x', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sheetData)
+      });
+
+      if (response.ok) {
+        alert(`Thank you ${formData.fullName}! Your application has been submitted successfully.`);
         
+        // Google Ads Conversion Tracking
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
              'event_category': 'Lead Form',
@@ -121,16 +120,19 @@ const SignUpPage = () => {
           });
         }
         
+        // Clear the form
         setFormData({
           fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', hearAbout: '', hearAboutOther: '', message: ''
         });
-        setIsSending(false);
-      })
-      .catch((error) => {
-        console.error('EmailJS Error Details:', error);
-        alert('Failed to send application. Please contact us directly at info@stanton-academy.com');
-        setIsSending(false);
-      });
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('Submission Error:', error);
+      alert('Failed to send application. Please try again or contact us directly on WhatsApp.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -159,7 +161,7 @@ const SignUpPage = () => {
             align-items: flex-start; 
             justify-content: center;
             gap: 60px;
-            max-width: 1200px; /* Made slightly wider to comfortably fit the compact form */
+            max-width: 1200px; 
             width: 100%;
           }
 
@@ -194,15 +196,15 @@ const SignUpPage = () => {
           }
 
           .signup-right {
-            flex: 1.2; /* Gives the form slightly more room so it isn't cramped */
-            max-width: 600px; /* Wider card to fit side-by-side elements gracefully */
+            flex: 1.2; 
+            max-width: 600px; 
             width: 100%;
           }
 
           .signup-card {
             background: #ffffff;
-            border-radius: 16px; /* Slightly sharper corners */
-            padding: 35px 40px; /* Reduced padding slightly to save height */
+            border-radius: 16px; 
+            padding: 35px 40px; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             text-align: left;
           }
@@ -219,7 +221,7 @@ const SignUpPage = () => {
           .signup-form {
             display: flex;
             flex-direction: column;
-            gap: 15px; /* Tighter gap between rows */
+            gap: 15px; 
           }
 
           .form-row {
@@ -234,10 +236,10 @@ const SignUpPage = () => {
           }
 
           .form-label {
-            font-size: 0.8rem; /* Smaller, neater labels */
+            font-size: 0.8rem; 
             font-weight: 600;
             color: #374151;
-            margin-bottom: 4px; /* Tighter gap below label */
+            margin-bottom: 4px; 
           }
 
           .form-label span {
@@ -246,12 +248,12 @@ const SignUpPage = () => {
 
           .form-control {
             width: 100%;
-            padding: 10px 12px; /* Thinner inputs */
+            padding: 10px 12px; 
             border: 1px solid #d1d5db;
-            border-radius: 4px; /* Sharper borders like the screenshot */
+            border-radius: 4px; 
             font-size: 0.9rem;
             color: #1a1a1a;
-            background-color: #f9fafb; /* Light grayish blue background */
+            background-color: #f9fafb; 
             outline: none;
             transition: all 0.2s ease;
             font-family: inherit;
@@ -269,7 +271,7 @@ const SignUpPage = () => {
 
           textarea.form-control {
             resize: vertical;
-            min-height: 70px; /* Shorter message box */
+            min-height: 70px; 
           }
 
           .phone-group {
@@ -357,7 +359,7 @@ const SignUpPage = () => {
             }
             .form-row {
               flex-direction: column;
-              gap: 15px; /* Stacks gracefully on mobile */
+              gap: 15px; 
             }
             .signup-card {
               padding: 30px 20px;
@@ -435,7 +437,6 @@ const SignUpPage = () => {
                 </div>
               </div>
               
-              {/* Phone and Email are now side-by-side to save height! */}
               <div className="form-row">
                 <div className="form-col">
                   <label className="form-label">Phone number<span>*</span></label>
