@@ -72,7 +72,7 @@ const Hero = () => {
       type: 'form',
       headlineStart: "Join The ",
       headlineEnd: "Summer Camp",
-      subtext: "Multicultural And English language center in Kuala Lumpur",
+      subtext: "Explore Malaysia with English & Fun",
       callToAction: "Apply for this Summer Today!",
       duration: 60000 
     }
