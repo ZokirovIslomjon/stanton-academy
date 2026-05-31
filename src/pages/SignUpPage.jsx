@@ -88,8 +88,8 @@ const SignUpPage = () => {
           Name: formData.fullName,
           Nationality: formData.nationality,
           Age: formData.age,
-          // Added an apostrophe (') so Google Sheets treats the + symbol as plain text!
-          Phone: `'${formData.countryCode} ${formData.phone}`,
+          // FIX: Wrapped country code in parentheses to prevent math formulas in Google Sheets!
+          Phone: `(${formData.countryCode}) ${formData.phone}`,
           Email: formData.email,
           Course: formData.course,
           HearAbout: finalHearAbout,
