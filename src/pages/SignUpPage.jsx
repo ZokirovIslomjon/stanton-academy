@@ -5,7 +5,6 @@ import logo from '../assets/logo-new.png';
 import poster1 from '../assets/poster1.jpeg';
 import poster2 from '../assets/poster2.png';
 
-// Complete list of world country calling codes
 const countryCodes = [
   { name: 'Afghanistan', code: '+93' }, { name: 'Albania', code: '+355' }, { name: 'Algeria', code: '+213' }, { name: 'Andorra', code: '+376' }, { name: 'Angola', code: '+244' },
   { name: 'Antigua & Barbuda', code: '+1-268' }, { name: 'Argentina', code: '+54' }, { name: 'Armenia', code: '+374' }, { name: 'Australia', code: '+61' }, { name: 'Austria', code: '+43' },
@@ -52,6 +51,7 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSending, setIsSending] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // NEW: Controls the success screen
 
   const sliderImages = [poster1, poster2];
 
@@ -81,14 +81,12 @@ const SignUpPage = () => {
 
     const finalHearAbout = formData.hearAbout === 'Other' ? `Other: ${formData.hearAboutOther}` : formData.hearAbout;
 
-    // Prepare data to match your Google Sheet columns
     const sheetData = {
       data: [
         {
           Name: formData.fullName,
           Nationality: formData.nationality,
           Age: formData.age,
-          // FIX: Wrapped country code in parentheses to prevent math formulas in Google Sheets!
           Phone: `(${formData.countryCode}) ${formData.phone}`,
           Email: formData.email,
           Course: formData.course,
@@ -100,7 +98,6 @@ const SignUpPage = () => {
     };
 
     try {
-      // Sending data to your specific SheetDB API URL
       const response = await fetch('https://sheetdb.io/api/v1/k5ohu0497ek0x', {
         method: 'POST',
         headers: {
@@ -111,8 +108,6 @@ const SignUpPage = () => {
       });
 
       if (response.ok) {
-        alert(`Thank you ${formData.fullName}! Your application has been submitted successfully.`);
-        
         // Google Ads Conversion Tracking
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
@@ -121,10 +116,9 @@ const SignUpPage = () => {
           });
         }
         
-        // Clear the form
-        setFormData({
-          fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', hearAbout: '', hearAboutOther: '', message: ''
-        });
+        // Show success screen instead of an alert!
+        setIsSubmitted(true);
+        
       } else {
         throw new Error('Network response was not ok');
       }
@@ -134,6 +128,13 @@ const SignUpPage = () => {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleResetForm = () => {
+    setFormData({
+      fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', hearAbout: '', hearAboutOther: '', message: ''
+    });
+    setIsSubmitted(false);
   };
 
   return (
@@ -208,6 +209,8 @@ const SignUpPage = () => {
             padding: 35px 40px; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             text-align: left;
+            position: relative;
+            overflow: hidden;
           }
 
           .signup-card h2 {
@@ -298,6 +301,7 @@ const SignUpPage = () => {
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
+            width: 100%;
           }
 
           .btn-call:hover:not(:disabled) {
@@ -327,12 +331,55 @@ const SignUpPage = () => {
             color: #4b5563;
           }
 
+          /* --- SUCCESS STATE STYLES --- */
+          .success-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: 400px;
+          }
+          
+          .success-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background-color: #e6f4ea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: 0 0 0 10px rgba(0, 107, 63, 0.05);
+          }
+
+          .success-icon-wrapper svg {
+            width: 40px;
+            height: 40px;
+            color: #006B3F;
+          }
+
+          .success-state h3 {
+            font-size: 1.8rem;
+            color: #1a1a1a;
+            font-weight: 800;
+            margin-bottom: 15px;
+          }
+
+          .success-state p {
+            color: #4b5563;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+          }
+
           .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.4s ease-in-out;
           }
           
           @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
           }
 
@@ -394,165 +441,188 @@ const SignUpPage = () => {
 
         <div className="signup-right">
           <div className="signup-card">
-            <h2>ENQUIRE NOW</h2>
             
-            <form onSubmit={handleSubmit} className="signup-form">
-              
-              <div className="form-col">
-                <label className="form-label">Full Name (As in IC/ Passport)<span>*</span></label>
-                <input 
-                  type="text" 
-                  required 
-                  className="form-control"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                  disabled={isSending}
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-col">
-                  <label className="form-label">Nationality<span>*</span></label>
-                  <input 
-                    type="text" 
-                    placeholder="Please Select"
-                    required 
-                    className="form-control"
-                    value={formData.nationality}
-                    onChange={(e) => setFormData({...formData, nationality: e.target.value})}
-                    disabled={isSending}
-                  />
+            {/* Conditional Rendering: Show Success State OR Form */}
+            {isSubmitted ? (
+              <div className="success-state fade-in">
+                <div className="success-icon-wrapper">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <div className="form-col">
-                  <label className="form-label">Age<span>*</span></label>
-                  <input 
-                    type="number" 
-                    required 
-                    min="1"
-                    max="100"
-                    className="form-control"
-                    value={formData.age}
-                    onChange={(e) => setFormData({...formData, age: e.target.value})}
-                    disabled={isSending}
-                  />
-                </div>
+                <h3>Application Received!</h3>
+                <p>
+                  Thank you, <strong>{formData.fullName}</strong>. Your enquiry has been successfully submitted. <br/><br/>
+                  Our admissions team at Stanton Academy will review your details and contact you shortly.
+                </p>
+                <button className="btn-call" onClick={handleResetForm} style={{ maxWidth: '300px' }}>
+                  Done
+                </button>
               </div>
-              
-              <div className="form-row">
-                <div className="form-col">
-                  <label className="form-label">Phone number<span>*</span></label>
-                  <div className="phone-group">
-                    <select 
-                      className="form-control" 
-                      value={formData.countryCode} 
-                      onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
-                      disabled={isSending}
-                    >
-                      {countryCodes.map((country, index) => (
-                        <option key={index} value={country.code}>
-                          {country.name} ({country.code})
-                        </option>
-                      ))}
-                    </select>
+            ) : (
+              <>
+                <h2>ENQUIRE NOW</h2>
+                
+                <form onSubmit={handleSubmit} className="signup-form fade-in">
+                  
+                  <div className="form-col">
+                    <label className="form-label">Full Name (As in IC/ Passport)<span>*</span></label>
                     <input 
-                      type="tel" 
+                      type="text" 
                       required 
                       className="form-control"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                       disabled={isSending}
                     />
                   </div>
-                </div>
 
-                <div className="form-col">
-                  <label className="form-label">Email<span>*</span></label>
-                  <input 
-                    type="email" 
-                    required 
-                    className="form-control"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    disabled={isSending}
-                  />
-                </div>
-              </div>
-              
-              <div className="form-col">
-                <label className="form-label">Courses<span>*</span></label>
-                <select 
-                  required 
-                  className="form-control"
-                  value={formData.course}
-                  onChange={(e) => setFormData({...formData, course: e.target.value})}
-                  disabled={isSending}
-                >
-                  <option value="" disabled hidden>Please Select</option>
-                  <option value="General English">General English</option>
-                  <option value="IELTS Preparation">IELTS Preparation</option>
-                  <option value="Intensive Speaking English">Intensive Speaking English</option>
-                  <option value="Business English">Business English</option>
-                  <option value="Mandarin">Mandarin</option>
-                  <option value="Japanese">Japanese</option>
-                  <option value="Korean">Korean</option>
-                  <option value="Bahasa Malaysia">Bahasa Malaysia</option>
-                  <option value="German">German</option>
-                  <option value="Summer Camp">Summer Camp</option>
-                </select>
-              </div>
+                  <div className="form-row">
+                    <div className="form-col">
+                      <label className="form-label">Nationality<span>*</span></label>
+                      <input 
+                        type="text" 
+                        placeholder="Please Select"
+                        required 
+                        className="form-control"
+                        value={formData.nationality}
+                        onChange={(e) => setFormData({...formData, nationality: e.target.value})}
+                        disabled={isSending}
+                      />
+                    </div>
+                    <div className="form-col">
+                      <label className="form-label">Age<span>*</span></label>
+                      <input 
+                        type="number" 
+                        required 
+                        min="1"
+                        max="100"
+                        className="form-control"
+                        value={formData.age}
+                        onChange={(e) => setFormData({...formData, age: e.target.value})}
+                        disabled={isSending}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="form-row">
+                    <div className="form-col">
+                      <label className="form-label">Phone number<span>*</span></label>
+                      <div className="phone-group">
+                        <select 
+                          className="form-control" 
+                          value={formData.countryCode} 
+                          onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
+                          disabled={isSending}
+                        >
+                          {countryCodes.map((country, index) => (
+                            <option key={index} value={country.code}>
+                              {country.name} ({country.code})
+                            </option>
+                          ))}
+                        </select>
+                        <input 
+                          type="tel" 
+                          required 
+                          className="form-control"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          disabled={isSending}
+                        />
+                      </div>
+                    </div>
 
-              <div className="form-col">
-                <label className="form-label">How did you hear about us?<span>*</span></label>
-                <select 
-                  required 
-                  className="form-control"
-                  value={formData.hearAbout}
-                  onChange={(e) => setFormData({...formData, hearAbout: e.target.value})}
-                  disabled={isSending}
-                >
-                  <option value="" disabled hidden>Please Select</option>
-                  <option value="Google Search">Google Search</option>
-                  <option value="Instagram">Instagram</option>
-                  <option value="Facebook">Facebook</option>
-                  <option value="Friends">Friends</option>
-                  <option value="Family">Family</option>
-                  <option value="Agent or Agency">Agent or Agency</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
+                    <div className="form-col">
+                      <label className="form-label">Email<span>*</span></label>
+                      <input 
+                        type="email" 
+                        required 
+                        className="form-control"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        disabled={isSending}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="form-col">
+                    <label className="form-label">Courses<span>*</span></label>
+                    <select 
+                      required 
+                      className="form-control"
+                      value={formData.course}
+                      onChange={(e) => setFormData({...formData, course: e.target.value})}
+                      disabled={isSending}
+                    >
+                      <option value="" disabled hidden>Please Select</option>
+                      <option value="General English">General English</option>
+                      <option value="IELTS Preparation">IELTS Preparation</option>
+                      <option value="Intensive Speaking English">Intensive Speaking English</option>
+                      <option value="Business English">Business English</option>
+                      <option value="Mandarin">Mandarin</option>
+                      <option value="Japanese">Japanese</option>
+                      <option value="Korean">Korean</option>
+                      <option value="Bahasa Malaysia">Bahasa Malaysia</option>
+                      <option value="German">German</option>
+                      <option value="Summer Camp">Summer Camp</option>
+                    </select>
+                  </div>
 
-              {formData.hearAbout === 'Other' && (
-                <div className="form-col fade-in">
-                  <label className="form-label">If you have selected Other, please specify here:<span>*</span></label>
-                  <input 
-                    type="text" 
-                    required 
-                    className="form-control"
-                    value={formData.hearAboutOther}
-                    onChange={(e) => setFormData({...formData, hearAboutOther: e.target.value})}
-                    disabled={isSending}
-                  />
-                </div>
-              )}
+                  <div className="form-col">
+                    <label className="form-label">How did you hear about us?<span>*</span></label>
+                    <select 
+                      required 
+                      className="form-control"
+                      value={formData.hearAbout}
+                      onChange={(e) => setFormData({...formData, hearAbout: e.target.value})}
+                      disabled={isSending}
+                    >
+                      <option value="" disabled hidden>Please Select</option>
+                      <option value="Google Search">Google Search</option>
+                      <option value="Instagram">Instagram</option>
+                      <option value="Facebook">Facebook</option>
+                      <option value="Friends">Friends</option>
+                      <option value="Family">Family</option>
+                      <option value="Agent or Agency">Agent or Agency</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
 
-              <div className="form-col">
-                <label className="form-label">Any questions or messages for us?</label>
-                <textarea 
-                  className="form-control"
-                  value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  disabled={isSending}
-                ></textarea>
-              </div>
+                  {formData.hearAbout === 'Other' && (
+                    <div className="form-col fade-in">
+                      <label className="form-label">If you have selected Other, please specify here:<span>*</span></label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="form-control"
+                        value={formData.hearAboutOther}
+                        onChange={(e) => setFormData({...formData, hearAboutOther: e.target.value})}
+                        disabled={isSending}
+                      />
+                    </div>
+                  )}
 
-              <button type="submit" className="btn-call" disabled={isSending}>
-                {isSending ? 'SENDING...' : 'SUBMIT ENQUIRY'}
-              </button>
-            </form>
+                  <div className="form-col">
+                    <label className="form-label">Any questions or messages for us?</label>
+                    <textarea 
+                      className="form-control"
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      disabled={isSending}
+                    ></textarea>
+                  </div>
 
-            <button className="btn-back" onClick={() => navigate(-1)}>
-              &larr; Go back
-            </button>
+                  <button type="submit" className="btn-call" disabled={isSending}>
+                    {isSending ? 'SENDING...' : 'SUBMIT ENQUIRY'}
+                  </button>
+                </form>
+
+                <button className="btn-back" onClick={() => navigate(-1)}>
+                  &larr; Go back
+                </button>
+              </>
+            )}
+
           </div>
         </div>
 
