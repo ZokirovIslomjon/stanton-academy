@@ -7,6 +7,7 @@ import summerCampImg from '../assets/landing.jpg';
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSending, setIsSending] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // NEW: Controls the success screen
 
   const [campForm, setCampForm] = useState({
     name: '',
@@ -48,8 +49,6 @@ const Hero = () => {
       });
 
       if (response.ok) {
-        alert(`Thank you ${campForm.name}! Your Summer Camp application has been submitted successfully.`);
-        
         // Google Ads Conversion Tracking
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
@@ -58,8 +57,8 @@ const Hero = () => {
           });
         }
         
-        // Clear the form
-        setCampForm({ name: '', email: '', phone: '', location: '' });
+        // Show success screen!
+        setIsSubmitted(true);
       } else {
         throw new Error('Network response was not ok');
       }
@@ -69,6 +68,11 @@ const Hero = () => {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleResetCampForm = () => {
+    setCampForm({ name: '', email: '', phone: '', location: '' });
+    setIsSubmitted(false);
   };
 
   const slides = [
@@ -136,6 +140,16 @@ const Hero = () => {
             justify-content: center;
             width: 100%;
           }
+          
+          /* Success State Animations */
+          .fade-in-up {
+            animation: fadeInUp 0.4s ease-out;
+          }
+          
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
 
           @media (max-width: 768px) {
             /* Removes the forced height on mobile so the empty space disappears */
@@ -177,72 +191,99 @@ const Hero = () => {
               {slide.type === 'form' ? (
                 <div className="camp-card">
                   
-                  {/* Left Side: Form */}
+                  {/* Left Side: Form OR Success State */}
                   <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <h1 className="camp-headline">
-                      <span style={{ color: '#006B3F' }}>{slide.headlineStart}</span>
-                      <span style={{ color: '#FFC72C' }}>{slide.headlineEnd}</span>
-                    </h1>
-                    <p className="camp-subtitle" style={{ color: '#006B3F', fontStyle: 'italic' }}>
-                      {slide.subtext}
-                    </p>
                     
-                    <h3 className="camp-cta" style={{ color: '#006B3F' }}>
-                      {slide.callToAction}
-                    </h3>
+                    {isSubmitted ? (
+                      <div className="fade-in-up" style={{ textAlign: 'center', padding: '20px' }}>
+                        <div style={{ width: '80px', height: '80px', backgroundColor: '#e6f4ea', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 0 0 10px rgba(0, 107, 63, 0.05)' }}>
+                          <svg fill="none" viewBox="0 0 24 24" stroke="#006B3F" strokeWidth={3} style={{ width: '40px', height: '40px' }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <h2 style={{ color: '#006B3F', fontSize: '2rem', fontWeight: '800', marginBottom: '15px' }}>
+                          Application Received!
+                        </h2>
+                        <p style={{ color: '#374151', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '30px' }}>
+                          Thank you, <strong>{campForm.name}</strong>. Your Summer Camp application has been successfully submitted. We will be in touch with you shortly!
+                        </p>
+                        <button 
+                          onClick={handleResetCampForm}
+                          style={{ backgroundColor: '#006B3F', color: '#FFC72C', padding: '14px 40px', border: 'none', borderRadius: '50px', fontWeight: '800', cursor: 'pointer', fontSize: '1.1rem', transition: 'transform 0.2s' }}
+                          onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                          onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                        >
+                          Done
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="fade-in-up">
+                        <h1 className="camp-headline">
+                          <span style={{ color: '#006B3F' }}>{slide.headlineStart}</span>
+                          <span style={{ color: '#FFC72C' }}>{slide.headlineEnd}</span>
+                        </h1>
+                        <p className="camp-subtitle" style={{ color: '#006B3F', fontStyle: 'italic' }}>
+                          {slide.subtext}
+                        </p>
+                        
+                        <h3 className="camp-cta" style={{ color: '#006B3F' }}>
+                          {slide.callToAction}
+                        </h3>
 
-                    <form onSubmit={handleCampSubmit} className="camp-form-grid">
-                      <input 
-                        type="text" 
-                        placeholder="Your Name*" 
-                        required 
-                        value={campForm.name}
-                        onChange={(e) => setCampForm({...campForm, name: e.target.value})}
-                        disabled={isSending}
-                        style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
-                      />
-                      <input 
-                        type="email" 
-                        placeholder="Your Email*" 
-                        required 
-                        value={campForm.email}
-                        onChange={(e) => setCampForm({...campForm, email: e.target.value})}
-                        disabled={isSending}
-                        style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
-                      />
-                      <input 
-                        type="tel" 
-                        placeholder="Phone Number*" 
-                        required 
-                        value={campForm.phone}
-                        onChange={(e) => setCampForm({...campForm, phone: e.target.value})}
-                        disabled={isSending}
-                        style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
-                      />
-                      <select 
-                        required
-                        value={campForm.location}
-                        onChange={(e) => setCampForm({...campForm, location: e.target.value})}
-                        disabled={isSending}
-                        style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', color: campForm.location ? '#1a1a1a' : '#9ca3af', transition: 'border 0.3s' }}
-                      >
-                        <option value="" disabled>Where do you live?*</option>
-                        <option value="Kuala Lumpur">Kuala Lumpur</option>
-                        <option value="Selangor">Selangor</option>
-                        <option value="Other Malaysia">Other (Malaysia)</option>
-                        <option value="International">International</option>
-                      </select>
+                        <form onSubmit={handleCampSubmit} className="camp-form-grid">
+                          <input 
+                            type="text" 
+                            placeholder="Your Name*" 
+                            required 
+                            value={campForm.name}
+                            onChange={(e) => setCampForm({...campForm, name: e.target.value})}
+                            disabled={isSending}
+                            style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
+                          />
+                          <input 
+                            type="email" 
+                            placeholder="Your Email*" 
+                            required 
+                            value={campForm.email}
+                            onChange={(e) => setCampForm({...campForm, email: e.target.value})}
+                            disabled={isSending}
+                            style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
+                          />
+                          <input 
+                            type="tel" 
+                            placeholder="Phone Number*" 
+                            required 
+                            value={campForm.phone}
+                            onChange={(e) => setCampForm({...campForm, phone: e.target.value})}
+                            disabled={isSending}
+                            style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border 0.3s' }}
+                          />
+                          <select 
+                            required
+                            value={campForm.location}
+                            onChange={(e) => setCampForm({...campForm, location: e.target.value})}
+                            disabled={isSending}
+                            style={{ padding: '14px 20px', border: '2px solid #e5e7eb', borderRadius: '10px', width: '100%', backgroundColor: '#ffffff', fontSize: '0.95rem', outline: 'none', color: campForm.location ? '#1a1a1a' : '#9ca3af', transition: 'border 0.3s' }}
+                          >
+                            <option value="" disabled>Where do you live?*</option>
+                            <option value="Kuala Lumpur">Kuala Lumpur</option>
+                            <option value="Selangor">Selangor</option>
+                            <option value="Other Malaysia">Other (Malaysia)</option>
+                            <option value="International">International</option>
+                          </select>
 
-                      <button 
-                        type="submit" 
-                        disabled={isSending}
-                        style={{ gridColumn: '1 / -1', backgroundColor: '#006B3F', color: '#FFC72C', padding: '16px', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: isSending ? 'not-allowed' : 'pointer', fontSize: '1.1rem', marginTop: '10px', transition: 'transform 0.2s, opacity 0.2s', opacity: isSending ? '0.7' : '1' }}
-                        onMouseOver={(e) => !isSending && (e.currentTarget.style.opacity = '0.9')}
-                        onMouseOut={(e) => !isSending && (e.currentTarget.style.opacity = '1')}
-                      >
-                        {isSending ? 'SENDING...' : 'SUBMIT APPLICATION'}
-                      </button>
-                    </form>
+                          <button 
+                            type="submit" 
+                            disabled={isSending}
+                            style={{ gridColumn: '1 / -1', backgroundColor: '#006B3F', color: '#FFC72C', padding: '16px', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: isSending ? 'not-allowed' : 'pointer', fontSize: '1.1rem', marginTop: '10px', transition: 'transform 0.2s, opacity 0.2s', opacity: isSending ? '0.7' : '1' }}
+                            onMouseOver={(e) => !isSending && (e.currentTarget.style.opacity = '0.9')}
+                            onMouseOut={(e) => !isSending && (e.currentTarget.style.opacity = '1')}
+                          >
+                            {isSending ? 'SENDING...' : 'SUBMIT APPLICATION'}
+                          </button>
+                        </form>
+                      </div>
+                    )}
                   </div>
 
                   {/* Right Side: Poster Image */}
