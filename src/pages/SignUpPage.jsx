@@ -56,7 +56,6 @@ const SignUpPage = () => {
 
   const sliderImages = [poster1, poster2];
 
-  // Added hearAboutOther to capture custom input
   const [formData, setFormData] = useState({
     fullName: '',
     nationality: '',
@@ -81,7 +80,6 @@ const SignUpPage = () => {
     e.preventDefault();
     setIsSending(true);
 
-    // Determine the actual "hear about" value based on selection
     const finalHearAbout = formData.hearAbout === 'Other' ? `Other: ${formData.hearAboutOther}` : formData.hearAbout;
 
     const fullMessageDetails = `
@@ -161,7 +159,7 @@ const SignUpPage = () => {
             align-items: flex-start; 
             justify-content: center;
             gap: 60px;
-            max-width: 1100px;
+            max-width: 1200px; /* Made slightly wider to comfortably fit the compact form */
             width: 100%;
           }
 
@@ -196,24 +194,24 @@ const SignUpPage = () => {
           }
 
           .signup-right {
-            flex: 1;
-            max-width: 500px; 
+            flex: 1.2; /* Gives the form slightly more room so it isn't cramped */
+            max-width: 600px; /* Wider card to fit side-by-side elements gracefully */
             width: 100%;
           }
 
           .signup-card {
             background: #ffffff;
-            border-radius: 24px;
-            padding: 40px;
+            border-radius: 16px; /* Slightly sharper corners */
+            padding: 35px 40px; /* Reduced padding slightly to save height */
             box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             text-align: left;
           }
 
           .signup-card h2 {
-            font-size: 1.8rem;
-            color: #1a1a1a;
+            font-size: 1.7rem;
+            color: #333333;
             font-weight: 800;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             line-height: 1.2;
             text-transform: uppercase;
           }
@@ -221,7 +219,7 @@ const SignUpPage = () => {
           .signup-form {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px; /* Tighter gap between rows */
           }
 
           .form-row {
@@ -236,10 +234,10 @@ const SignUpPage = () => {
           }
 
           .form-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem; /* Smaller, neater labels */
             font-weight: 600;
             color: #374151;
-            margin-bottom: 6px;
+            margin-bottom: 4px; /* Tighter gap below label */
           }
 
           .form-label span {
@@ -248,21 +246,21 @@ const SignUpPage = () => {
 
           .form-control {
             width: 100%;
-            padding: 12px 15px;
+            padding: 10px 12px; /* Thinner inputs */
             border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border-radius: 4px; /* Sharper borders like the screenshot */
+            font-size: 0.9rem;
             color: #1a1a1a;
-            background-color: #f9fafb;
+            background-color: #f9fafb; /* Light grayish blue background */
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-family: inherit;
           }
 
           .form-control:focus {
             border-color: #006B3F;
             background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(0, 107, 63, 0.1);
+            box-shadow: 0 0 0 2px rgba(0, 107, 63, 0.1);
           }
 
           select.form-control {
@@ -271,12 +269,12 @@ const SignUpPage = () => {
 
           textarea.form-control {
             resize: vertical;
-            min-height: 100px;
+            min-height: 70px; /* Shorter message box */
           }
 
           .phone-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
           }
           .phone-group select {
             width: 45%;
@@ -289,11 +287,11 @@ const SignUpPage = () => {
             background-color: #006B3F;
             color: #ffffff;
             border: none;
-            padding: 16px;
+            padding: 14px;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 1.1rem;
-            margin-top: 15px;
+            font-size: 1.05rem;
+            margin-top: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
@@ -314,8 +312,8 @@ const SignUpPage = () => {
             background: none;
             border: none;
             color: #9ca3af;
-            font-size: 0.95rem;
-            margin-top: 20px;
+            font-size: 0.9rem;
+            margin-top: 15px;
             cursor: pointer;
             transition: color 0.3s;
             width: 100%;
@@ -326,7 +324,6 @@ const SignUpPage = () => {
             color: #4b5563;
           }
 
-          /* Animation for the Other input field */
           .fade-in {
             animation: fadeIn 0.3s ease-in-out;
           }
@@ -360,7 +357,7 @@ const SignUpPage = () => {
             }
             .form-row {
               flex-direction: column;
-              gap: 20px;
+              gap: 15px; /* Stacks gracefully on mobile */
             }
             .signup-card {
               padding: 30px 20px;
@@ -415,7 +412,7 @@ const SignUpPage = () => {
                   <label className="form-label">Nationality<span>*</span></label>
                   <input 
                     type="text" 
-                    placeholder="e.g. Malaysian"
+                    placeholder="Please Select"
                     required 
                     className="form-control"
                     value={formData.nationality}
@@ -438,42 +435,45 @@ const SignUpPage = () => {
                 </div>
               </div>
               
-              <div className="form-col">
-                <label className="form-label">Phone number<span>*</span></label>
-                <div className="phone-group">
-                  <select 
-                    className="form-control" 
-                    value={formData.countryCode} 
-                    onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
-                    disabled={isSending}
-                  >
-                    {countryCodes.map((country, index) => (
-                      <option key={index} value={country.code}>
-                        {country.name} ({country.code})
-                      </option>
-                    ))}
-                  </select>
+              {/* Phone and Email are now side-by-side to save height! */}
+              <div className="form-row">
+                <div className="form-col">
+                  <label className="form-label">Phone number<span>*</span></label>
+                  <div className="phone-group">
+                    <select 
+                      className="form-control" 
+                      value={formData.countryCode} 
+                      onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
+                      disabled={isSending}
+                    >
+                      {countryCodes.map((country, index) => (
+                        <option key={index} value={country.code}>
+                          {country.name} ({country.code})
+                        </option>
+                      ))}
+                    </select>
+                    <input 
+                      type="tel" 
+                      required 
+                      className="form-control"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      disabled={isSending}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-col">
+                  <label className="form-label">Email<span>*</span></label>
                   <input 
-                    type="tel" 
+                    type="email" 
                     required 
                     className="form-control"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                     disabled={isSending}
                   />
                 </div>
-              </div>
-              
-              <div className="form-col">
-                <label className="form-label">Email<span>*</span></label>
-                <input 
-                  type="email" 
-                  required 
-                  className="form-control"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  disabled={isSending}
-                />
               </div>
               
               <div className="form-col">
@@ -519,14 +519,12 @@ const SignUpPage = () => {
                 </select>
               </div>
 
-              {/* Conditionally render the 'Other' input box */}
               {formData.hearAbout === 'Other' && (
                 <div className="form-col fade-in">
-                  <label className="form-label">Please specify:<span>*</span></label>
+                  <label className="form-label">If you have selected Other, please specify here:<span>*</span></label>
                   <input 
                     type="text" 
                     required 
-                    placeholder="e.g. TikTok, Flyer, Event..."
                     className="form-control"
                     value={formData.hearAboutOther}
                     onChange={(e) => setFormData({...formData, hearAboutOther: e.target.value})}
@@ -542,7 +540,6 @@ const SignUpPage = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
                   disabled={isSending}
-                  placeholder="Type your message here..."
                 ></textarea>
               </div>
 
