@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import emailjs from '@emailjs/browser';
 
 // Make sure this path is correct for your project!
 import summerCampImg from '../assets/landing.jpg'; 
@@ -16,30 +15,42 @@ const Hero = () => {
     location: ''
   });
 
-  const handleCampSubmit = (e) => {
+  const handleCampSubmit = async (e) => {
     e.preventDefault();
     setIsSending(true);
 
-    const templateParams = {
-      to_name: 'Stanton Academy',
-      from_name: campForm.name,
-      from_email: campForm.email,
-      phone: campForm.phone,
-      course: 'Summer Camp 2026',
-      message: `New Summer Camp application from ${campForm.name}. Location: ${campForm.location}`,
-      reply_to: campForm.email
+    // Map the Summer Camp fields to match your Google Sheet columns
+    const sheetData = {
+      data: [
+        {
+          Name: campForm.name,
+          Nationality: 'N/A', // Not asked on this form
+          Age: 'N/A', // Not asked on this form
+          Phone: `'${campForm.phone}`, // Apostrophe prevents Google Sheets math errors!
+          Email: campForm.email,
+          Course: 'Summer Camp 2026',
+          HearAbout: 'N/A',
+          Message: `Location: ${campForm.location}`,
+          Date: new Date().toLocaleString()
+        }
+      ]
     };
 
-    emailjs.send(
-      'service_giayoc6', 
-      'template_1b3ug2u', 
-      templateParams, 
-      '5j3dR4oz_QORxuNJS'
-    )
-      .then((response) => {
-        console.log('SUCCESS!', response);
+    try {
+      // Sending data to your SheetDB API
+      const response = await fetch('https://sheetdb.io/api/v1/k5ohu0497ek0x', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sheetData)
+      });
+
+      if (response.ok) {
         alert(`Thank you ${campForm.name}! Your Summer Camp application has been submitted successfully.`);
         
+        // Google Ads Conversion Tracking
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
              'event_category': 'Lead Form',
@@ -47,14 +58,17 @@ const Hero = () => {
           });
         }
         
+        // Clear the form
         setCampForm({ name: '', email: '', phone: '', location: '' });
-        setIsSending(false);
-      })
-      .catch((error) => {
-        console.error('EmailJS Error Details:', error);
-        alert('Failed to send application. Please contact us directly on WhatsApp or info@stanton-academy.com');
-        setIsSending(false);
-      });
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('Submission Error:', error);
+      alert('Failed to send application. Please try again or contact us directly on WhatsApp.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const slides = [
@@ -72,7 +86,7 @@ const Hero = () => {
       type: 'form',
       headlineStart: "Join The ",
       headlineEnd: "Summer Camp",
-      subtext: "Explore Malaysia with English & Fun",
+      subtext: "Multicultural And English language center in Kuala Lumpur",
       callToAction: "Apply for this Summer Today!",
       duration: 60000 
     }
