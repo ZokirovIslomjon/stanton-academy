@@ -7,6 +7,7 @@ import Courses from './components/Courses';
 import Location from './components/Location';
 import Footer from './components/Footer';
 import SignUpPage from './pages/SignUpPage';
+import ChatWidget from './components/ChatWidget';
 
 import './index.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -87,6 +88,9 @@ function App() {
           } />
           <Route path="/signup" element={<SignUpPage />} />
         </Routes>
+
+{/* ← AI CHAT WIDGET — renders on all pages, bottom right corner */}
+        <ChatWidget />
       </div>
     </BrowserRouter>
   );
