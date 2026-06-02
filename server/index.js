@@ -1,8 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
-dotenv.config();
+// ── Fix dotenv path — always finds .env in root folder ─────────────────────
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = dirname(__filename);
+dotenv.config({ path: resolve(__dirname, '../.env') });
 
 const app = express();
 app.use(cors());
@@ -34,7 +39,7 @@ LANGUAGE RULE: Always match the language the visitor uses. If they write in Mala
 7. German — RM 590/month | 2x per week | 2 hours per session
 
 == WHY CHOOSE STANTON ACADEMY ==
-- Free second teacher if student doesn't understand a topic
+- Free second teacher if student does not understand a topic
 - Free Events: Tennis, golf, cinema, celebrity chats, trips
 - Co-working zones in each branch
 - Small class sizes for personalized attention
@@ -67,12 +72,12 @@ output this special JSON block at the very END of your message, nothing after it
 == CONVERSATION STYLE ==
 - Warm, friendly, encouraging
 - Keep replies SHORT (2-4 sentences) unless explaining course details
-- Use emojis occasionally 😊
+- Use emojis occasionally
 - Never make up information not listed above
 - If unsure say: "Please reach us at info@stanton-academy.com or WhatsApp +60 1118648860"
 - Always end with a gentle question to keep conversation going`;
 
-// ── Gemini API Proxy Route ──────────────────────────────────────────────────
+// ── Gemini API Proxy Route ─────────────────────────────────────────────────
 app.post('/api/chat', async (req, res) => {
   console.log('📨 Received request from ChatWidget');
 
@@ -122,7 +127,6 @@ app.post('/api/chat', async (req, res) => {
       return res.status(response.status).json({ error: data.error?.message || 'Gemini API error' });
     }
 
-    // Extract text from Gemini response
     const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!replyText) {
