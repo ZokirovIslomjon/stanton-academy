@@ -4,73 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 const SHEETDB_URL = 'https://sheetdb.io/api/v1/k5ohu0497ek0x';
 const WHATSAPP_URL = 'https://wa.me/601118648860';
 
-// ─── Stanton Academy full knowledge base for Claude AI ───────────────────────
-const SYSTEM_PROMPT = `You are a friendly and professional AI assistant for Stanton Academy, a modern language school in Kuala Lumpur, Malaysia.
-
-LANGUAGE RULE: Always match the language the visitor uses. If they write in Malay/Bahasa Malaysia, reply in Malay. If English, reply in English. You can mix if they mix.
-
-== ABOUT STANTON ACADEMY ==
-- Name: Stanton Academy
-- Location: No 112 & 114, 5th Floor, Wisma Hainan, Jalan Pudu 55100, Kuala Lumpur
-- Phone: +60 1118648860
-- Email: info@stanton-academy.com
-- WhatsApp: https://wa.me/601118648860
-- Instagram: https://www.instagram.com/stantonacademy_kl
-- Facebook: https://www.facebook.com/share/1Cmmp4ahQV/
-- Telegram: https://t.me/stantonacademykl
-- Founded: 2014
-
-== COURSES & PRICING ==
-1. General English — RM 2,200/month | 5x per week | 4.5 hours per session
-2. IELTS Preparation — RM 2,200/month | 5x per week | 4 hours per session (Target Band 7.0+)
-3. Mandarin — RM 1,250/month | 4x per week | 2 hours per session
-4. Japanese — RM 1,875/month | 5x per week | 4 hours per session (JLPT N5 foundation)
-5. Korean — RM 1,120/month | 5x per week | 2 hours per session
-6. Bahasa Malaysia — RM 520/month | 1x per week | 2 hours per session
-7. German — RM 590/month | 2x per week | 2 hours per session (Goethe-Institut foundation)
-
-== WHY CHOOSE STANTON ACADEMY ==
-- Free second teacher if student doesn't understand a topic
-- Free Events: Tennis, golf, cinema, celebrity chats, trips
-- Co-working zones in each branch
-- Small class sizes for personalized attention
-- Certified native speakers and qualified bilingual instructors
-- Teaching languages since 2014
-
-== ENROLLMENT SITUATION ==
-- The school just opened a new branch in KL
-- NO free trial classes yet — collecting 5-10 students per group first
-- Once group is formed, owner contacts ALL students to arrange schedule together
-- Students get to choose a time that works for everyone
-- Interested students should register and we will contact them personally
-
-== LEVELS AVAILABLE ==
-Beginner, Elementary, Intermediate, Upper Intermediate, Advanced
-
-== HANDLING COMPLAINTS ==
-- Always be empathetic and apologetic
-- Never argue or be defensive
-- Acknowledge concern, apologize sincerely, offer to connect with team
-- Example reply: "I'm really sorry to hear that. Please reach us at info@stanton-academy.com or WhatsApp +60 1118648860 so our team can resolve this personally."
-
-== YOUR PRIMARY GOAL — LEAD COLLECTION ==
-Answer questions helpfully AND collect visitor contact information naturally.
-After answering 1-2 questions, guide toward registration.
-Collect: Full Name, Email Address, Phone Number, Course Interest, Level.
-
-IMPORTANT: Once you have collected ALL 5 pieces of info (name, email, phone, course, level), 
-you MUST output this special JSON block at the very END of your message, with nothing after it:
-%%LEAD%%{"name":"...","email":"...","phone":"...","course":"...","level":"..."}%%END%%
-
-== CONVERSATION STYLE ==
-- Warm, friendly, encouraging — like a helpful school counselor
-- Keep replies SHORT (2-4 sentences) unless explaining course details
-- Use emojis occasionally 😊
-- Never make up information not listed above
-- If unsure, say: "Great question! Please reach us at info@stanton-academy.com or WhatsApp +60 1118648860"
-- Always end with a gentle question to keep conversation going`;
-
-// ─── Initial greeting message ─────────────────────────────────────────────────
 const INITIAL_MESSAGES = [
   {
     id: 1,
@@ -79,7 +12,6 @@ const INITIAL_MESSAGES = [
   },
 ];
 
-// ─── Suggestion chips shown on first open ────────────────────────────────────
 const SUGGESTIONS = [
   '📚 Course prices?',
   '📍 Where are you?',
@@ -116,7 +48,6 @@ function WhatsAppButton() {
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function ChatWidget() {
   const [open, setOpen]           = useState(false);
   const [messages, setMessages]   = useState(INITIAL_MESSAGES);
@@ -143,7 +74,7 @@ export default function ChatWidget() {
     if (open) setTimeout(() => inputRef.current?.focus(), 300);
   }, [open]);
 
-  // ── Save lead to Google Sheets ────────────────────────────────────────────
+  // ── Save lead to Google Sheets ──────────────────────────────────────────
   async function saveToSheet(lead) {
     if (leadSaved) return;
     try {
@@ -159,7 +90,7 @@ export default function ChatWidget() {
             Email:       lead.email,
             Course:      `${lead.course} (${lead.level})`,
             HearAbout:   'AI Chat Widget',
-            Message:     'Lead collected via Claude AI Chat Widget',
+            Message:     'Lead collected via Gemini AI Chat Widget',
             Date:        new Date().toLocaleString(),
           }],
         }),
@@ -179,65 +110,73 @@ export default function ChatWidget() {
     }
   }
 
-  // ── Extract lead JSON from Claude response ────────────────────────────────
+  // ── Extract lead JSON from AI response ─────────────────────────────────
   function extractLead(text) {
     const match = text.match(/%%LEAD%%({.*?})%%END%%/s);
     if (!match) return null;
     try { return JSON.parse(match[1]); } catch { return null; }
   }
 
-  // ── Remove the JSON block from display text ───────────────────────────────
+  // ── Remove JSON block from display text ────────────────────────────────
   function cleanText(text) {
     return text.replace(/%%LEAD%%.*?%%END%%/s, '').trim();
   }
 
-  // ── Call Claude API via your backend proxy ────────────────────────────────
-  async function callClaude(userText) {
+  // ── Call Gemini API via backend proxy ───────────────────────────────────
+  async function callGemini(userText) {
     const newHistory = [...history, { role: 'user', content: userText }];
     setHistory(newHistory);
 
-    const response = await fetch('/api/chat', {        // ← goes to your server/index.js
+    console.log('📤 Sending to /api/chat...');
+
+    const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model:      'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system:     SYSTEM_PROMPT,
-        messages:   newHistory,
-      }),
+      body: JSON.stringify({ messages: newHistory }),
     });
 
-    if (!response.ok) throw new Error('API error');
-    const data = await response.json();
-    const rawText = data.content?.[0]?.text || "Sorry, I couldn't process that. Please try again!";
+    console.log('📡 Response status:', response.status);
 
-    // Check if Claude collected all lead info
+    const data = await response.json();
+    console.log('📦 Response data:', JSON.stringify(data));
+
+    if (!response.ok) {
+      throw new Error(data.error || 'API error');
+    }
+
+    const rawText = data.content?.[0]?.text;
+
+    if (!rawText) {
+      throw new Error('No text in response');
+    }
+
+    // Check if Gemini collected all lead info
     const lead = extractLead(rawText);
     if (lead && !leadSaved) {
       await saveToSheet(lead);
     }
 
-    // Update conversation history with Claude's reply
+    // Update conversation history
     setHistory(prev => [...prev, { role: 'assistant', content: rawText }]);
 
     return cleanText(rawText);
   }
 
-  // ── Handle send ───────────────────────────────────────────────────────────
+  // ── Handle send ─────────────────────────────────────────────────────────
   async function handleSend(overrideText) {
     const value = (overrideText || input).trim();
     if (!value || isTyping) return;
     setInput('');
 
-    // Add user message to chat
     setMessages(prev => [...prev, { id: Date.now(), from: 'user', text: value }]);
     setIsTyping(true);
 
     try {
-      const reply = await callClaude(value);
+      const reply = await callGemini(value);
       setIsTyping(false);
       setMessages(prev => [...prev, { id: Date.now(), from: 'bot', text: reply }]);
-    } catch {
+    } catch (err) {
+      console.error('❌ Chat error:', err.message);
       setIsTyping(false);
       setMessages(prev => [...prev, {
         id: Date.now(), from: 'bot',
@@ -258,7 +197,6 @@ export default function ChatWidget() {
     setShowWA(false);
   }
 
-  // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <>
       <style>{`
@@ -317,7 +255,7 @@ export default function ChatWidget() {
         @keyframes sa-dot { 0%,60%,100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-6px); opacity: 1; } }
         .sa-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 14px 8px; background: var(--sa-gray-50); flex-shrink: 0; border-top: 1px solid var(--sa-gray-200); }
         .sa-suggestion { background: white; border: 1.5px solid var(--sa-green); color: var(--sa-green); padding: 5px 12px; border-radius: 20px; font-size: 0.73rem; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-        .sa-suggestion:hover { background: var(--sa-green); color: white; transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,107,63,0.25); }
+        .sa-suggestion:hover { background: var(--sa-green); color: white; transform: translateY(-1px); }
         .sa-whatsapp-bar { padding: 8px 12px; background: var(--sa-gray-50); border-top: 1px solid var(--sa-gray-200); flex-shrink: 0; }
         .sa-whatsapp-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: #25D366; color: white; border-radius: 12px; text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; }
         .sa-whatsapp-btn:hover { background: #1ebe5d; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,211,102,0.35); }
@@ -332,11 +270,9 @@ export default function ChatWidget() {
         .sa-footer a { color: var(--sa-green); text-decoration: none; }
       `}</style>
 
-      {/* Pulse ring */}
       {!open && showPulse && <div className="sa-pulse" />}
       {!open && showPulse && <div className="sa-tooltip">💬 Ask me anything!</div>}
 
-      {/* FAB toggle button */}
       <button className={`sa-fab${open ? ' sa-fab--open' : ''}`} onClick={() => setOpen(o => !o)} aria-label={open ? 'Close chat' : 'Open chat'}>
         <svg className="sa-icon-chat" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -346,11 +282,8 @@ export default function ChatWidget() {
         </svg>
       </button>
 
-      {/* Chat panel */}
       {open && (
         <div className="sa-panel sa-widget">
-
-          {/* Header */}
           <div className="sa-header">
             <div className="sa-header-avatar">SA</div>
             <div className="sa-header-info">
@@ -362,7 +295,7 @@ export default function ChatWidget() {
               </div>
             </div>
             <div className="sa-header-actions">
-              <button className="sa-header-btn" onClick={handleReset} title="Restart conversation">
+              <button className="sa-header-btn" onClick={handleReset} title="Restart">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
               </button>
               <button className="sa-header-btn" onClick={() => setOpen(false)} title="Close">
@@ -371,7 +304,6 @@ export default function ChatWidget() {
             </div>
           </div>
 
-          {/* Messages */}
           <div className="sa-messages">
             {messages.map(msg => (
               <div key={msg.id} className={`sa-msg sa-msg--${msg.from}`}>
@@ -386,7 +318,6 @@ export default function ChatWidget() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Suggestion chips — only shown on first message */}
           {messages.length === 1 && !isTyping && (
             <div className="sa-suggestions">
               {SUGGESTIONS.map(s => (
@@ -395,14 +326,12 @@ export default function ChatWidget() {
             </div>
           )}
 
-          {/* WhatsApp button — appears after lead is saved */}
           {showWA && (
             <div className="sa-whatsapp-bar">
               <WhatsAppButton />
             </div>
           )}
 
-          {/* Input bar */}
           <div className="sa-input-bar">
             <input
               ref={inputRef}
@@ -414,14 +343,14 @@ export default function ChatWidget() {
               onKeyDown={handleKeyDown}
               disabled={isTyping}
             />
-            <button className="sa-send-btn" onClick={() => handleSend()} disabled={!input.trim() || isTyping} aria-label="Send">
+            <button className="sa-send-btn" onClick={() => handleSend()} disabled={!input.trim() || isTyping}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
               </svg>
             </button>
           </div>
 
-          <div className="sa-footer">Powered by <a href="https://stanton-academy.com">Stanton Academy</a> · Claude AI</div>
+          <div className="sa-footer">Powered by <a href="https://stanton-academy.com">Stanton Academy</a> · Gemini AI</div>
         </div>
       )}
     </>
