@@ -1,23 +1,82 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// ─── SheetDB API ──────────────────────────────────────────────────────────────
 const SHEETDB_URL = 'https://sheetdb.io/api/v1/k5ohu0497ek0x';
 const WHATSAPP_URL = 'https://wa.me/601118648860';
+
+const COURSES = [
+  'General English',
+  'IELTS Preparation',
+  'Mandarin',
+  'Japanese',
+  'Korean',
+  'Bahasa Malaysia',
+  'German',
+];
+
+const LEVELS = ['Beginner', 'Elementary', 'Intermediate', 'Upper Intermediate', 'Advanced'];
+
+const STEPS = {
+  GREETING: 'greeting',
+  LANGUAGE: 'language',
+  LEVEL:    'level',
+  NAME:     'name',
+  EMAIL:    'email',
+  PHONE:    'phone',
+  CONFIRM:  'confirm',
+  DONE:     'done',
+};
+
+// ─── FAQ Knowledge Base ───────────────────────────────────────────────────────
+const FAQ = [
+  {
+    keywords: ['where', 'location', 'address', 'campus', 'located', 'kl', 'place'],
+    reply: "📍 We are located at **No 112 & 114, 5th Floor, Wisma Hainan, Jalan Pudu 55100, Kuala Lumpur**. Easy to reach by public transport! 🚇"
+  },
+  {
+    keywords: ['price', 'fee', 'cost', 'how much', 'rm', 'payment', 'expensive', 'harga', 'bayaran'],
+    reply: "💰 Our course fees:\n\n📚 General English & IELTS — **RM 2,200/mo**\n🇯🇵 Japanese — **RM 1,875/mo**\n🇨🇳 Mandarin — **RM 1,250/mo**\n🇰🇷 Korean — **RM 1,120/mo**\n🇩🇪 German — **RM 590/mo**\n🇲🇾 Bahasa Malaysia — **RM 520/mo**"
+  },
+  {
+    keywords: ['schedule', 'time', 'when', 'weekend', 'evening', 'morning', 'night', 'duration', 'jadual', 'masa'],
+    reply: "🗓️ We offer flexible timetables — **weekday mornings, evenings** for working professionals, and **weekend intensive** classes. Once your group is formed, we arrange a schedule that works for everyone!"
+  },
+  {
+    keywords: ['teacher', 'lecturer', 'instructor', 'native', 'staff', 'guru', 'cikgu'],
+    reply: "👨‍🏫 All our trainers are **certified native speakers** or highly qualified bilingual specialists with years of international teaching experience!"
+  },
+  {
+    keywords: ['ielts', 'band', 'exam', 'test', 'score'],
+    reply: "🎯 Our **IELTS Preparation** course targets **Band 7.0+**! We run 5x per week, 4 hours per session with mock tests and personalized feedback. RM 2,200/month."
+  },
+  {
+    keywords: ['why', 'benefit', 'advantage', 'special', 'different', 'kenapa', 'sebab'],
+    reply: "🌟 Why choose Stanton Academy?\n\n✅ **Free second teacher** if you don't understand\n✅ **Free Events** — cinema, trips, activities\n✅ **Co-working zones** for students\n✅ **Small class sizes** for personal attention\n✅ Teaching languages since **2014**!"
+  },
+  {
+    keywords: ['register', 'sign up', 'enroll', 'join', 'start', 'daftar', 'mula'],
+    reply: "🎉 Great that you want to join! We are currently forming groups. Once we have **5-10 students**, we arrange the schedule together. Let me get your details so we can contact you!"
+  },
+  {
+    keywords: ['trial', 'free', 'demo', 'percuma', 'cuba'],
+    reply: "😊 We don't have free trial classes yet as we are forming new groups. But once we have enough students, we will contact you to arrange everything together! Would you like to register your interest?"
+  },
+  {
+    keywords: ['contact', 'whatsapp', 'call', 'email', 'hubungi'],
+    reply: "📞 You can reach us at:\n\n📱 **WhatsApp:** +60 1118648860\n📧 **Email:** info@stanton-academy.com\n💬 **Telegram:** @stantonacademykl"
+  },
+  {
+    keywords: ['bahasa', 'malay', 'melayu', 'malaysia'],
+    reply: "🇲🇾 Ya! Kami ada kelas **Bahasa Malaysia** — **RM 520/bulan**, 1x seminggu, 2 jam setiap sesi. Sesuai untuk ekspatriat dan pelajar antarabangsa yang ingin belajar Bahasa Malaysia!"
+  },
+];
 
 const INITIAL_MESSAGES = [
   {
     id: 1,
     from: 'bot',
-    text: "👋 Hi there! Welcome to **Stanton Academy**!\n\nI'm your AI assistant. I can answer any questions about our courses, fees, schedule and more — in English or Bahasa Malaysia! 😊\n\nWhat would you like to know?",
+    text: "👋 Hi there! Welcome to **Stanton Academy**!\n\nI can answer your questions about our courses, fees, schedule and more — in English or Bahasa Malaysia! 😊\n\nWhich language are you interested in learning?",
   },
-];
-
-const SUGGESTIONS = [
-  '📚 Course prices?',
-  '📍 Where are you?',
-  '🗓️ Class schedule?',
-  '👨‍🏫 About teachers?',
-  '🇲🇾 Ada kelas Bahasa?',
 ];
 
 function parseMarkdown(text) {
@@ -51,12 +110,13 @@ function WhatsAppButton() {
 export default function ChatWidget() {
   const [open, setOpen]           = useState(false);
   const [messages, setMessages]   = useState(INITIAL_MESSAGES);
+  const [step, setStep]           = useState(STEPS.GREETING);
   const [input, setInput]         = useState('');
   const [isTyping, setIsTyping]   = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
-  const [leadSaved, setLeadSaved] = useState(false);
   const [showWA, setShowWA]       = useState(false);
-  const [history, setHistory]     = useState([]);
+  const [lead, setLead]           = useState({ course: '', level: '', name: '', email: '', phone: '', question: '' });
 
   const bottomRef = useRef(null);
   const inputRef  = useRef(null);
@@ -74,114 +134,203 @@ export default function ChatWidget() {
     if (open) setTimeout(() => inputRef.current?.focus(), 300);
   }, [open]);
 
-  // ── Save lead to Google Sheets ──────────────────────────────────────────
-  async function saveToSheet(lead) {
-    if (leadSaved) return;
-    try {
-      const res = await fetch(SHEETDB_URL, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          data: [{
-            Name:        lead.name,
-            Nationality: 'N/A',
-            Age:         'N/A',
-            Phone:       `(${lead.phone})`,
-            Email:       lead.email,
-            Course:      `${lead.course} (${lead.level})`,
-            HearAbout:   'AI Chat Widget',
-            Message:     'Lead collected via Gemini AI Chat Widget',
-            Date:        new Date().toLocaleString(),
-          }],
-        }),
-      });
-      if (res.ok) {
-        setLeadSaved(true);
-        setShowWA(true);
-        if (typeof window.gtag !== 'undefined') {
-          window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
-            event_category: 'Lead Form',
-            event_label: lead.course,
-          });
-        }
-      }
-    } catch (err) {
-      console.error('SheetDB error:', err);
+  function botReply(text, delay = 800) {
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      setMessages(prev => [...prev, { id: Date.now(), from: 'bot', text }]);
+    }, delay);
+  }
+
+  function userMsg(text) {
+    setMessages(prev => [...prev, { id: Date.now(), from: 'user', text }]);
+  }
+
+  function getReminder(currentStep, currentLead) {
+    switch (currentStep) {
+      case STEPS.GREETING: return "\n\n👇 Which **language** would you like to learn?";
+      case STEPS.LANGUAGE: return "\n\n👇 What is your **current level**?";
+      case STEPS.LEVEL:    return "\n\nMay I get your **full name**?";
+      case STEPS.NAME:     return `\n\nWhat is your **email address**, **${currentLead.name || 'there'}**?`;
+      case STEPS.EMAIL:    return "\n\nAnd your **phone number**?";
+      case STEPS.CONFIRM:  return "\n\nPlease reply **Yes** to confirm or **No** to start over.";
+      default:             return "";
     }
   }
 
-  // ── Extract lead JSON from AI response ─────────────────────────────────
-  function extractLead(text) {
-    const match = text.match(/%%LEAD%%({.*?})%%END%%/s);
-    if (!match) return null;
-    try { return JSON.parse(match[1]); } catch { return null; }
-  }
-
-  // ── Remove JSON block from display text ────────────────────────────────
-  function cleanText(text) {
-    return text.replace(/%%LEAD%%.*?%%END%%/s, '').trim();
-  }
-
-  // ── Call Gemini API via backend proxy ───────────────────────────────────
-  async function callGemini(userText) {
-    const newHistory = [...history, { role: 'user', content: userText }];
-    setHistory(newHistory);
-
-    console.log('📤 Sending to /api/chat...');
-
-    const response = await fetch('/api/chat', {
+  // ── Save to Google Sheets ──────────────────────────────────────────────────
+  async function saveToSheet(finalLead) {
+    const res = await fetch(SHEETDB_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: newHistory }),
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: [{
+          Name:        finalLead.name,
+          Nationality: 'N/A',
+          Age:         'N/A',
+          Phone:       `(${finalLead.phone})`,
+          Email:       finalLead.email,
+          Course:      `${finalLead.course} (${finalLead.level})`,
+          HearAbout:   'AI Chat Widget',
+          Message:     finalLead.question ? `Asked: "${finalLead.question}"` : 'Lead from AI Chat Widget',
+          Date:        new Date().toLocaleString(),
+        }],
+      }),
     });
-
-    console.log('📡 Response status:', response.status);
-
-    const data = await response.json();
-    console.log('📦 Response data:', JSON.stringify(data));
-
-    if (!response.ok) {
-      throw new Error(data.error || 'API error');
+    if (!res.ok) throw new Error('SheetDB error');
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'ads_conversion_Submit_lead_form_1', {
+        event_category: 'Lead Form',
+        event_label: finalLead.course,
+      });
     }
-
-    const rawText = data.content?.[0]?.text;
-
-    if (!rawText) {
-      throw new Error('No text in response');
-    }
-
-    // Check if Gemini collected all lead info
-    const lead = extractLead(rawText);
-    if (lead && !leadSaved) {
-      await saveToSheet(lead);
-    }
-
-    // Update conversation history
-    setHistory(prev => [...prev, { role: 'assistant', content: rawText }]);
-
-    return cleanText(rawText);
   }
 
-  // ── Handle send ─────────────────────────────────────────────────────────
+  // ── Handle chip & text input ───────────────────────────────────────────────
+  function handleCourseSelect(course) {
+    if (step !== STEPS.GREETING) return;
+    userMsg(course);
+    setLead(prev => ({ ...prev, course }));
+    setStep(STEPS.LANGUAGE);
+    botReply(`Great choice! 🎉 **${course}** is one of our most popular courses.\n\nWhat is your current level?`, 900);
+  }
+
+  function handleLevelSelect(level) {
+    if (step !== STEPS.LANGUAGE) return;
+    userMsg(level);
+    setLead(prev => ({ ...prev, level }));
+    setStep(STEPS.LEVEL);
+    botReply(`Perfect! We have a **${level}** group forming for **${lead.course}**.\n\nWe will contact you once we have enough students to arrange the schedule together! 🗓️\n\nMay I get your **full name**?`, 1000);
+  }
+
   async function handleSend(overrideText) {
     const value = (overrideText || input).trim();
-    if (!value || isTyping) return;
+    if (!value || isTyping || isSending) return;
     setInput('');
 
-    setMessages(prev => [...prev, { id: Date.now(), from: 'user', text: value }]);
-    setIsTyping(true);
+    const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    const isPhone = v => /^[\d\s\+\-\(\)]{7,}$/.test(v);
+    const lower   = value.toLowerCase();
 
-    try {
-      const reply = await callGemini(value);
-      setIsTyping(false);
-      setMessages(prev => [...prev, { id: Date.now(), from: 'bot', text: reply }]);
-    } catch (err) {
-      console.error('❌ Chat error:', err.message);
-      setIsTyping(false);
-      setMessages(prev => [...prev, {
-        id: Date.now(), from: 'bot',
-        text: "Sorry, I'm having trouble connecting right now 😔 Please reach us on WhatsApp at **+60 1118648860** and we'll be happy to help!",
-      }]);
+    // ── FAQ Interceptor ──────────────────────────────────────────────────────
+    if (step !== STEPS.CONFIRM && step !== STEPS.DONE) {
+      const faq = FAQ.find(f => f.keywords.some(k => lower.includes(k)));
+      const isQuestion = lower.includes('?') || lower.startsWith('how') || lower.startsWith('what') || lower.startsWith('where') || lower.startsWith('why') || lower.startsWith('when') || lower.startsWith('ada') || lower.startsWith('berapa');
+
+      if (faq) {
+        userMsg(value);
+        botReply(faq.reply + getReminder(step, lead), 1000);
+        return;
+      }
+
+      if (isQuestion && step === STEPS.GREETING) {
+        userMsg(value);
+        setLead(prev => ({ ...prev, question: value }));
+        botReply(`💡 Great question! I've noted that for our admissions team to answer personally.\n\nMeanwhile, which **language** would you like to learn? 👇`, 1000);
+        return;
+      }
+    }
+
+    // ── Step: Greeting (course selection by text) ────────────────────────────
+    if (step === STEPS.GREETING) {
+      userMsg(value);
+      setLead(prev => ({ ...prev, course: value }));
+      setStep(STEPS.LANGUAGE);
+      botReply(`Got it! We'll look at **${value}** options for you.\n\nWhat is your current level?`, 900);
+      return;
+    }
+
+    // ── Step: Language (level selection by text) ─────────────────────────────
+    if (step === STEPS.LANGUAGE) {
+      userMsg(value);
+      setLead(prev => ({ ...prev, level: value }));
+      setStep(STEPS.LEVEL);
+      botReply(`Got it! **${value}** level noted.\n\nMay I get your **full name**?`, 900);
+      return;
+    }
+
+    // ── Step: Name ───────────────────────────────────────────────────────────
+    if (step === STEPS.LEVEL) {
+      userMsg(value);
+      setLead(prev => ({ ...prev, name: value }));
+      setStep(STEPS.NAME);
+      botReply(`Nice to meet you, **${value}**! 😊\n\nWhat is your **email address**?`);
+      return;
+    }
+
+    // ── Step: Email ──────────────────────────────────────────────────────────
+    if (step === STEPS.NAME) {
+      if (!isEmail(value)) {
+        userMsg(value);
+        botReply(`Hmm, that doesn't look like a valid email. Could you double-check it? 😊`);
+        return;
+      }
+      userMsg(value);
+      setLead(prev => ({ ...prev, email: value }));
+      setStep(STEPS.EMAIL);
+      botReply(`Got it! And your **phone number**? (So our team can reach you via call or WhatsApp)`);
+      return;
+    }
+
+    // ── Step: Phone ──────────────────────────────────────────────────────────
+    if (step === STEPS.EMAIL) {
+      if (!isPhone(value)) {
+        userMsg(value);
+        botReply(`Hmm, that doesn't look like a valid phone number. Please try again! 😊`);
+        return;
+      }
+      userMsg(value);
+      const finalLead = { ...lead, phone: value };
+      setLead(finalLead);
+      setStep(STEPS.CONFIRM);
+      botReply(
+        `Almost done! Let me confirm your details:\n\n📚 **Course:** ${finalLead.course} (${finalLead.level})\n👤 **Name:** ${finalLead.name}\n📧 **Email:** ${finalLead.email}\n📱 **Phone:** ${value}\n\nIs everything correct? Reply **Yes** to confirm or **No** to start over.`,
+        1000
+      );
+      return;
+    }
+
+    // ── Step: Confirm ────────────────────────────────────────────────────────
+    if (step === STEPS.CONFIRM) {
+      const answer = value.toLowerCase();
+      if (['no', 'nope', 'wrong', 'tidak', 'salah'].includes(answer)) {
+        userMsg(value);
+        setLead({ course: '', level: '', name: '', email: '', phone: '', question: '' });
+        setMessages(INITIAL_MESSAGES);
+        setStep(STEPS.GREETING);
+        return;
+      }
+      if (['yes', 'yeah', 'yep', 'correct', 'ok', 'ya', 'betul', 'confirm'].includes(answer)) {
+        userMsg(value);
+        setIsSending(true);
+        setIsTyping(true);
+        try {
+          await saveToSheet(lead);
+          setIsTyping(false);
+          setIsSending(false);
+          setStep(STEPS.DONE);
+          setShowWA(true);
+          setMessages(prev => [...prev, {
+            id: Date.now(), from: 'bot',
+            text: `🎉 **You're all set, ${lead.name}!**\n\nWe've received your registration for **${lead.course}**.\n\nWe are forming your group now and will contact you personally once we have enough students to arrange the schedule together! 🗓️\n\nWe're excited to have you join Stanton Academy! 🌟`,
+          }]);
+        } catch {
+          setIsTyping(false);
+          setIsSending(false);
+          botReply(`Sorry, something went wrong 😔 Please contact us directly on WhatsApp at **+60 1118648860**!`);
+        }
+        return;
+      }
+      userMsg(value);
+      botReply(`Please reply **Yes** to confirm or **No** to start over. 😊`);
+      return;
+    }
+
+    // ── Step: Done ───────────────────────────────────────────────────────────
+    if (step === STEPS.DONE) {
+      userMsg(value);
+      botReply(`Thank you! For further questions reach us on WhatsApp: **+60 1118648860** or email **info@stanton-academy.com** 😊`);
+      return;
     }
   }
 
@@ -191,9 +340,9 @@ export default function ChatWidget() {
 
   function handleReset() {
     setMessages(INITIAL_MESSAGES);
-    setHistory([]);
+    setStep(STEPS.GREETING);
+    setLead({ course: '', level: '', name: '', email: '', phone: '', question: '' });
     setInput('');
-    setLeadSaved(false);
     setShowWA(false);
   }
 
@@ -228,8 +377,7 @@ export default function ChatWidget() {
         .sa-header { background: linear-gradient(135deg, #006B3F 0%, #004d2c 100%); padding: 15px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .sa-header-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--sa-gold); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: var(--sa-green); flex-shrink: 0; }
         .sa-header-info { flex: 1; }
-        .sa-header-name { color: white; font-weight: 600; font-size: 0.92rem; line-height: 1.2; display: flex; align-items: center; gap: 8px; }
-        .sa-ai-badge { background: rgba(255,199,44,0.2); border: 1px solid rgba(255,199,44,0.5); color: var(--sa-gold); font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; letter-spacing: 0.05em; }
+        .sa-header-name { color: white; font-weight: 600; font-size: 0.92rem; line-height: 1.2; }
         .sa-header-status { color: rgba(255,255,255,0.75); font-size: 0.72rem; display: flex; align-items: center; gap: 4px; margin-top: 3px; }
         .sa-online-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; display: inline-block; animation: sa-blink 2s ease-in-out infinite; }
         @keyframes sa-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -247,15 +395,16 @@ export default function ChatWidget() {
         .sa-bubble--bot { background: white; color: var(--sa-gray-800); border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
         .sa-bubble--user { background: var(--sa-green); color: white; border-bottom-right-radius: 4px; }
         .sa-bubble strong { font-weight: 600; }
-        .sa-bubble em { font-style: italic; }
         .sa-typing { display: flex; align-items: center; gap: 5px; padding: 12px 16px; }
         .sa-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--sa-gray-400); animation: sa-dot 1.2s ease-in-out infinite; }
         .sa-typing span:nth-child(2) { animation-delay: 0.2s; }
         .sa-typing span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes sa-dot { 0%,60%,100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-6px); opacity: 1; } }
-        .sa-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 14px 8px; background: var(--sa-gray-50); flex-shrink: 0; border-top: 1px solid var(--sa-gray-200); }
-        .sa-suggestion { background: white; border: 1.5px solid var(--sa-green); color: var(--sa-green); padding: 5px 12px; border-radius: 20px; font-size: 0.73rem; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-        .sa-suggestion:hover { background: var(--sa-green); color: white; transform: translateY(-1px); }
+        .sa-chips { display: flex; flex-wrap: wrap; gap: 7px; padding: 6px 14px 8px; background: var(--sa-gray-50); flex-shrink: 0; border-top: 1px solid var(--sa-gray-200); }
+        .sa-chip { background: white; border: 1.5px solid var(--sa-green); color: var(--sa-green); padding: 6px 13px; border-radius: 20px; font-size: 0.76rem; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .sa-chip:hover { background: var(--sa-green); color: white; transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,107,63,0.25); }
+        .sa-chip--gold { border-color: var(--sa-gold-dark); color: #7a5800; background: #fffbec; }
+        .sa-chip--gold:hover { background: var(--sa-gold); color: var(--sa-green); border-color: var(--sa-gold); }
         .sa-whatsapp-bar { padding: 8px 12px; background: var(--sa-gray-50); border-top: 1px solid var(--sa-gray-200); flex-shrink: 0; }
         .sa-whatsapp-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: #25D366; color: white; border-radius: 12px; text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; }
         .sa-whatsapp-btn:hover { background: #1ebe5d; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,211,102,0.35); }
@@ -287,9 +436,7 @@ export default function ChatWidget() {
           <div className="sa-header">
             <div className="sa-header-avatar">SA</div>
             <div className="sa-header-info">
-              <div className="sa-header-name">
-                Stanton Academy <span className="sa-ai-badge">AI</span>
-              </div>
+              <div className="sa-header-name">Stanton Academy</div>
               <div className="sa-header-status">
                 <span className="sa-online-dot" /> Online · English & Bahasa Malaysia
               </div>
@@ -308,24 +455,36 @@ export default function ChatWidget() {
             {messages.map(msg => (
               <div key={msg.id} className={`sa-msg sa-msg--${msg.from}`}>
                 {msg.from === 'bot' && <div className="sa-avatar">SA</div>}
-                <div
-                  className={`sa-bubble sa-bubble--${msg.from}`}
-                  dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.text).replace(/\n/g, '<br/>') }}
-                />
+                <div className={`sa-bubble sa-bubble--${msg.from}`} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.text).replace(/\n/g, '<br/>') }} />
               </div>
             ))}
             {isTyping && <TypingIndicator />}
             <div ref={bottomRef} />
           </div>
 
-          {messages.length === 1 && !isTyping && (
-            <div className="sa-suggestions">
-              {SUGGESTIONS.map(s => (
-                <button key={s} className="sa-suggestion" onClick={() => handleSend(s)}>{s}</button>
-              ))}
+          {/* Course chips */}
+          {step === STEPS.GREETING && (
+            <div className="sa-chips">
+              {COURSES.map(c => <button key={c} className="sa-chip" onClick={() => handleCourseSelect(c)}>{c}</button>)}
             </div>
           )}
 
+          {/* Level chips */}
+          {step === STEPS.LANGUAGE && (
+            <div className="sa-chips">
+              {LEVELS.map(l => <button key={l} className="sa-chip sa-chip--gold" onClick={() => handleLevelSelect(l)}>{l}</button>)}
+            </div>
+          )}
+
+          {/* Confirm chips */}
+          {step === STEPS.CONFIRM && (
+            <div className="sa-chips">
+              <button className="sa-chip" onClick={() => handleSend('Yes')}>✅ Yes, confirm</button>
+              <button className="sa-chip" onClick={() => handleSend('No')}>❌ No, start over</button>
+            </div>
+          )}
+
+          {/* WhatsApp button after registration */}
           {showWA && (
             <div className="sa-whatsapp-bar">
               <WhatsAppButton />
@@ -334,23 +493,28 @@ export default function ChatWidget() {
 
           <div className="sa-input-bar">
             <input
-              ref={inputRef}
-              className="sa-input"
-              type="text"
-              placeholder="Ask anything about Stanton Academy..."
+              ref={inputRef} className="sa-input" type="text"
+              placeholder={
+                step === STEPS.GREETING ? 'Ask anything or select a course above...' :
+                step === STEPS.LANGUAGE ? 'Select your level above or type it...' :
+                step === STEPS.LEVEL    ? 'Type your full name...' :
+                step === STEPS.NAME     ? 'Type your email address...' :
+                step === STEPS.EMAIL    ? 'Type your phone number...' :
+                step === STEPS.CONFIRM  ? 'Type Yes or No...' :
+                'Type a message...'
+              }
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              disabled={isTyping}
+              disabled={isSending}
             />
-            <button className="sa-send-btn" onClick={() => handleSend()} disabled={!input.trim() || isTyping}>
+            <button className="sa-send-btn" onClick={() => handleSend()} disabled={!input.trim() || isSending}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
               </svg>
             </button>
           </div>
-
-          <div className="sa-footer">Powered by <a href="https://stanton-academy.com">Stanton Academy</a> · Gemini AI</div>
+          <div className="sa-footer">Powered by <a href="https://stanton-academy.com">Stanton Academy</a> AI Assistant</div>
         </div>
       )}
     </>

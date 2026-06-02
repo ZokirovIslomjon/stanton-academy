@@ -95,7 +95,7 @@ app.post('/api/chat', async (req, res) => {
 
     console.log('🚀 Calling Gemini API...');
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
     const geminiBody = {
       system_instruction: {
