@@ -1,4 +1,13 @@
 import React, { useState } from 'react';
+import Header from '../components/Header';
+
+// Import local images from assets folder
+import cityTourImg from '../assets/City Tour.jpg';
+import batuCavesImg from '../assets/Batu caves.jpg';
+import sunwayLagoonImg from '../assets/Sunway lagoon.jpg';
+import gentingHighlandsImg from '../assets/Genting highlands.jpg';
+import portDicksonImg from '../assets/Port Dickson.jpg';
+import melakaTripImg from '../assets/Melaka trip.jpg';
 
 const PACKAGES = [
   {
@@ -69,12 +78,12 @@ const PACKAGES = [
 ];
 
 const TRIPS = [
-  { name: 'City Tour', emoji: '🏙️', desc: 'Experience the vibrant culture and iconic landmarks', bg: '#e0f2fe' },
-  { name: 'Batu Caves', emoji: '⛰️', desc: 'Explore the majestic caves and spiritual heritage', bg: '#fef3c7' },
-  { name: 'Sunway Lagoon', emoji: '🎢', desc: 'Fun-filled adventures for the whole family', bg: '#dcfce7' },
-  { name: 'Genting Highlands', emoji: '🌫️', desc: 'Cool weather and world-class entertainment', bg: '#f3e8ff' },
-  { name: 'Port Dickson', emoji: '🏖️', desc: 'Relax on sandy beaches and enjoy coastal charm', bg: '#ffe4e6' },
-  { name: 'Melaka Trip', emoji: '🏰', desc: 'Step back in time and discover rich history', bg: '#ffedd5' },
+  { name: 'City Tour', image: cityTourImg, desc: 'Experience the vibrant culture, iconic landmarks and hidden gems.' },
+  { name: 'Batu Caves', image: batuCavesImg, desc: 'Explore the majestic caves and immerse in spiritual and cultural heritage.' },
+  { name: 'Sunway Lagoon', image: sunwayLagoonImg, desc: 'Fun-filled adventures and excitement for the whole family.' },
+  { name: 'Genting Highlands', image: gentingHighlandsImg, desc: 'Breathtaking views, cool weather and world class entertainment.' },
+  { name: 'Melaka Trip', image: melakaTripImg, desc: 'Step back in time and discover rich history and heritage.' },
+  { name: 'Port Dickson', image: portDicksonImg, desc: 'Relax on the sandy beaches and enjoy the coastal charm.' },
 ];
 
 function CheckIcon({ yes }) {
@@ -84,6 +93,7 @@ function CheckIcon({ yes }) {
 }
 
 export default function HolidayCamp() {
+  const [activeTab, setActiveTab] = useState('july');
   const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', package: '' });
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -130,8 +140,9 @@ export default function HolidayCamp() {
 
   return (
     <div className="hc-page">
+      <Header />
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap');
 
         :root {
           --green:       #006B3F;
@@ -148,19 +159,17 @@ export default function HolidayCamp() {
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .hc-page { font-family: 'Poppins', sans-serif; color: var(--gray-800); overflow-x: hidden; background: var(--gray-50); }
+        .hc-page { font-family: 'Poppins', sans-serif; color: var(--gray-800); overflow-x: hidden; background: var(--white); }
 
-        /* ── HERO SECTION (NEW DESIGN) ── */
+        /* ── HERO SECTION (White/Modern Design) ── */
         .hc-hero-modern {
           position: relative;
-          min-height: 100vh;
           background-color: #ffffff;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 160px 20px 80px;
+          padding: 200px 0 0;
           text-align: center;
-          overflow: hidden;
           z-index: 1;
         }
 
@@ -196,11 +205,17 @@ export default function HolidayCamp() {
           50% { margin-top: -25px; }
         }
 
+        .hc-hero-content {
+          padding: 0 20px;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
         .hc-hero-title-modern {
-          font-size: clamp(2rem, 4.5vw, 3.5rem);
-          font-weight: 800; color: var(--gray-800);
-          line-height: 1.2; letter-spacing: -0.01em;
-          max-width: 800px; margin: 0 auto 20px;
+          font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+          font-weight: 800;
+          line-height: 1.3; letter-spacing: -0.01em;
+          margin-bottom: 20px;
         }
 
         .hc-hero-desc-modern {
@@ -210,7 +225,7 @@ export default function HolidayCamp() {
         }
 
         .hc-hero-btn-group {
-          display: flex; gap: 15px; justify-content: center; margin-bottom: 70px; flex-wrap: wrap;
+          display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;
         }
         
         .hc-btn-primary-modern {
@@ -233,45 +248,147 @@ export default function HolidayCamp() {
           border-color: var(--gray-800); background: var(--gray-50);
         }
 
-        /* Trip Pills Row */
-        .hc-hero-pills-row {
-          display: flex; justify-content: center; gap: 20px;
-          flex-wrap: wrap; width: 100%; max-width: 1200px; padding: 0 20px;
+        /* ── HERO TRIPS OVERLAP ── */
+        .hc-hero-trips-wrapper {
+          width: 100%;
+          max-width: 1300px;
+          margin: 60px auto -120px; /* Pulls it down to overlap the next section */
+          position: relative;
+          z-index: 10;
+          padding: 0 20px;
         }
-        
-        .hc-location-pill {
-          width: 160px; height: 230px; border-radius: 100px;
-          background: white; box-shadow: 0 15px 35px rgba(0,0,0,0.06);
-          display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-          padding: 20px 15px 35px; position: relative; overflow: hidden;
-          transition: transform 0.3s ease;
+
+        .hc-trips-grid {
+          display: grid; 
+          grid-template-columns: repeat(6, 1fr);
+          gap: 15px;
         }
-        .hc-location-pill:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        
-        .hc-location-bg {
-          position: absolute; top: 0; left: 0; width: 100%; height: 65%;
-          border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+        .hc-trip-card {
+          position: relative;
+          height: 420px;
+          border-radius: 80px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 40px 20px 30px;
+          text-align: center;
+          color: white;
+          box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+          border: 2px solid rgba(255, 255, 255, 0.4);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hc-trip-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+          border-color: rgba(255, 255, 255, 0.8);
+        }
+        .hc-trip-bg {
+          position: absolute;
+          top: 0; left: 0; width: 100%; height: 100%;
+          object-fit: cover;
           z-index: 0;
+          transition: transform 0.5s ease;
         }
-
-        .hc-location-emoji {
-          font-size: 4.5rem; position: relative; z-index: 1; margin-bottom: 25px;
-          filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+        .hc-trip-card:hover .hc-trip-bg {
+          transform: scale(1.08);
         }
-
-        .hc-location-name {
-          font-weight: 700; font-size: 0.95rem; color: var(--gray-800);
-          z-index: 1; position: relative; text-align: center; line-height: 1.2;
+        .hc-trip-overlay {
+          position: absolute;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0.85) 100%);
+          z-index: 1;
+        }
+        .hc-trip-content {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 100%;
+        }
+        .hc-trip-name {
+          font-family: 'Dancing Script', cursive;
+          font-size: 2.2rem;
+          font-weight: 700;
+          line-height: 1.1;
+          text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+          margin: 0;
+        }
+        .hc-trip-desc-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .hc-trip-desc {
+          font-size: 0.85rem;
+          line-height: 1.5;
+          font-weight: 400;
+          text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+          margin-bottom: 15px;
+        }
+        .hc-trip-divider {
+          width: 35px;
+          height: 2px;
+          background-color: var(--gold);
         }
 
         /* ── SECTIONS ── */
-        .hc-section { padding: 90px 20px; }
-        .hc-container { max-width: 1200px; margin: 0 auto; }
-        .hc-section-header { text-align: center; margin-bottom: 60px; }
-        .hc-section-label { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+        .hc-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .hc-section-header { text-align: center; margin-bottom: 50px; }
+        .hc-section-label { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 12px; }
         .hc-section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; color: var(--gray-800); }
 
+        /* ── ITINERARY SECTION ── */
+        .hc-itinerary-section {
+          background: var(--gray-50);
+          padding-top: 200px; /* Space for the overlapping trip cards */
+          padding-bottom: 90px;
+        }
+        .hc-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+        .hc-tab {
+          padding: 10px 28px; border-radius: 50px;
+          font-weight: 600; font-size: 0.88rem; cursor: pointer;
+          border: 2px solid var(--gray-200); background: white;
+          color: var(--gray-600); transition: all 0.2s;
+        }
+        .hc-tab--active { background: var(--green); color: white; border-color: var(--green); }
+        .hc-calendar {
+          background: white; border-radius: 20px;
+          overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .hc-cal-header {
+          background: var(--green); color: white;
+          display: grid; grid-template-columns: repeat(7, 1fr);
+          text-align: center;
+        }
+        .hc-cal-day-name { padding: 12px 4px; font-size: 0.78rem; font-weight: 600; }
+        .hc-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+        .hc-cal-cell {
+          min-height: 72px; padding: 8px 6px;
+          border: 1px solid var(--gray-100);
+          font-size: 0.78rem; position: relative;
+        }
+        .hc-cal-cell--empty { background: var(--gray-50); }
+        .hc-cal-num { font-weight: 600; color: var(--gray-600); font-size: 0.8rem; }
+        .hc-cal-event {
+          margin-top: 4px; padding: 3px 6px;
+          border-radius: 6px; font-size: 0.65rem; font-weight: 600;
+          line-height: 1.3; text-align: center;
+        }
+        .hc-event--arrival   { background: #dbeafe; color: #1e40af; }
+        .hc-event--start     { background: #d1fae5; color: #065f46; }
+        .hc-event--trip      { background: #fef3c7; color: #92400e; }
+        .hc-event--night     { background: #ede9fe; color: #5b21b6; }
+        .hc-event--sport     { background: #fee2e2; color: #991b1b; }
+        .hc-event--farewell  { background: #ecfccb; color: #3f6212; }
+
         /* ── PACKAGES GRID ── */
+        .hc-packages-section {
+          background: #ffffff;
+          padding-top: 90px;
+          padding-bottom: 90px;
+        }
         .hc-packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; align-items: start; }
         .hc-pkg-card {
           background: white; border-radius: 24px; padding: 30px 20px; text-align: center;
@@ -298,7 +415,7 @@ export default function HolidayCamp() {
         .hc-pkg-card--popular .hc-pkg-cta:hover { background: #ffd44a; }
 
         /* ── CONTACT FORM SECTION ── */
-        .hc-contact-section { background: white; padding: 100px 20px; }
+        .hc-contact-section { background: var(--gray-50); padding: 100px 20px; }
         .hc-contact-wrapper {
           max-width: 1000px; margin: 0 auto; background: var(--white); border-radius: 30px;
           box-shadow: 0 20px 60px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
@@ -325,51 +442,189 @@ export default function HolidayCamp() {
         .hc-success-icon { font-size: 4rem; margin-bottom: 20px; }
         .hc-success-message h4 { font-size: 1.8rem; font-weight: 800; color: var(--green); margin-bottom: 10px; }
 
+        @media (max-width: 1100px) {
+          .hc-trips-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+          .hc-trip-card { height: 380px; }
+          .hc-itinerary-section { padding-top: 150px; }
+        }
         @media (max-width: 900px) {
           .hc-contact-wrapper { grid-template-columns: 1fr; }
           .hc-contact-info, .hc-contact-form-container { padding: 40px 25px; }
-          .hc-location-pill { width: 140px; height: 200px; padding: 15px 10px 25px; }
-          .hc-location-emoji { font-size: 3.5rem; }
+        }
+        @media (max-width: 600px) {
+          .hc-hero-trips-wrapper { margin-bottom: -60px; }
+          .hc-trips-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+          .hc-trip-card { height: 320px; border-radius: 40px; padding: 25px 10px 20px; }
+          .hc-trip-name { font-size: 1.6rem; }
+          .hc-trip-desc { font-size: 0.7rem; }
+          .hc-itinerary-section { padding-top: 100px; }
+          .hc-cal-cell { min-height: 55px; padding: 5px 3px; }
+          .hc-cal-event { font-size: 0.55rem; }
         }
       `}</style>
 
-      {/* ── HERO (Modern Re-design) ── */}
+      {/* ── HERO ── */}
       <section className="hc-hero-modern">
-        {/* Floating elements simulating the blurred 3D icons from the reference */}
         <div className="hc-float-icon hc-float-1">🌍</div>
         <div className="hc-float-icon hc-float-2">✈️</div>
         <div className="hc-float-icon hc-float-3">🎒</div>
         <div className="hc-float-icon hc-float-4">📸</div>
         
-        <h1 className="hc-hero-title-modern">
-          Adventure, culture and lifelong memories in the heart of <span style={{ color: '#fabc19' }}>Malaysia</span>.
-        </h1>
-        
-        <p className="hc-hero-desc-modern">
-          Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery.
-        </p>
+        <div className="hc-hero-content">
+          <h1 className="hc-hero-title-modern">
+            <span style={{ color: 'var(--green)' }}>Adventure, Culture and Lifelong memories in the heart of </span>
+            <span style={{ color: '#fabc19' }}>Malaysia.</span>
+          </h1>
+          
+          <p className="hc-hero-desc-modern">
+            Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery.
+          </p>
 
-        <div className="hc-hero-btn-group">
-          <button onClick={scrollToForm} className="hc-btn-primary-modern">
-            Choose Package <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-          </button>
-          <a href="#packages" className="hc-btn-secondary-modern">View Pricing</a>
+          <div className="hc-hero-btn-group">
+            <button onClick={scrollToForm} className="hc-btn-primary-modern">
+              Choose Package <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+            <a href="#packages" className="hc-btn-secondary-modern">View Pricing</a>
+          </div>
         </div>
 
-        {/* The "Pill" row replacing student portraits with Trip Locations */}
-        <div className="hc-hero-pills-row">
-          {TRIPS.map((trip, index) => (
-            <div key={index} className="hc-location-pill">
-              <div className="hc-location-bg" style={{ backgroundColor: trip.bg }}></div>
-              <div className="hc-location-emoji">{trip.emoji}</div>
-              <div className="hc-location-name">{trip.name}</div>
+        {/* ── TRIPS & ACTIVITIES (Overlapping section) ── */}
+        <div className="hc-hero-trips-wrapper">
+          <div className="hc-trips-grid">
+            {TRIPS.map((t, i) => (
+              <div key={i} className="hc-trip-card">
+                <img src={t.image} alt={t.name} className="hc-trip-bg" />
+                <div className="hc-trip-overlay"></div>
+                
+                <div className="hc-trip-content">
+                  <h3 className="hc-trip-name">{t.name}</h3>
+                  <div className="hc-trip-desc-container">
+                    <p className="hc-trip-desc">{t.desc}</p>
+                    <div className="hc-trip-divider"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ITINERARY (Reverted to manual hardcoded version) ── */}
+      <section className="hc-itinerary-section" id="itinerary">
+        <div className="hc-container">
+          <div className="hc-section-header">
+            <div className="hc-section-label">Camp Schedule</div>
+            <h2 className="hc-section-title">
+              <span style={{ color: 'var(--green)' }}>Holiday Camp</span> <span style={{ color: '#fabc19' }}>Itinerary</span>
+            </h2>
+            {/* The sub-description text has been completely removed here */}
+          </div>
+          
+          <div className="hc-tabs">
+            <button className={`hc-tab${activeTab === 'july' ? ' hc-tab--active' : ''}`} onClick={() => setActiveTab('july')}>📅 July 2026</button>
+            <button className={`hc-tab${activeTab === 'august' ? ' hc-tab--active' : ''}`} onClick={() => setActiveTab('august')}>📅 August 2026</button>
+          </div>
+
+          {activeTab === 'july' && (
+            <div className="hc-calendar">
+              <div className="hc-cal-header">
+                {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <div key={d} className="hc-cal-day-name">{d}</div>)}
+              </div>
+              <div className="hc-cal-grid">
+                {/* Row 1 */}
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+                <div className="hc-cal-cell"><div className="hc-cal-num">1</div><div className="hc-cal-event hc-event--arrival">Arrival Day</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">2</div><div className="hc-cal-event hc-event--start">Start Day</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">3</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">4</div><div className="hc-cal-event hc-event--trip">Sunway Lagoon</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">5</div><div className="hc-cal-event hc-event--trip">City Tour & Batu Caves</div></div>
+                {/* Row 2 */}
+                <div className="hc-cal-cell"><div className="hc-cal-num">6</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">7</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">8</div><div className="hc-cal-event hc-event--night">Movie Night</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">9</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">10</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">11</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">12</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
+                {/* Row 3 */}
+                <div className="hc-cal-cell"><div className="hc-cal-num">13</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">14</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">15</div><div className="hc-cal-event hc-event--sport">Sport Day</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">16</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">17</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">18</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">19</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
+                {/* Row 4 */}
+                <div className="hc-cal-cell"><div className="hc-cal-num">20</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">21</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">22</div><div className="hc-cal-event hc-event--night">Culture Night</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">23</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">24</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">25</div><div className="hc-cal-event hc-event--trip">Genting Highlands</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">26</div></div>
+                {/* Row 5 */}
+                <div className="hc-cal-cell"><div className="hc-cal-num">27</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">28</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">29</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">30</div><div className="hc-cal-event hc-event--farewell">Safe Flight Home</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">31</div></div>
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+              </div>
             </div>
-          ))}
+          )}
+
+          {activeTab === 'august' && (
+            <div className="hc-calendar">
+              <div className="hc-cal-header">
+                {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <div key={d} className="hc-cal-day-name">{d}</div>)}
+              </div>
+              <div className="hc-cal-grid">
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+                <div className="hc-cal-cell"><div className="hc-cal-num">30 Jul</div><div className="hc-cal-event hc-event--arrival">Arrival Day</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">31 Jul</div><div className="hc-cal-event hc-event--start">Start Day</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">1</div><div className="hc-cal-event hc-event--trip">Sunway Lagoon</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">2</div><div className="hc-cal-event hc-event--trip">City Tour & Batu Caves</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">3</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">4</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">5</div><div className="hc-cal-event hc-event--night">Movie Night</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">6</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">7</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">8</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">9</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">10</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">11</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">12</div><div className="hc-cal-event hc-event--sport">Sport Day</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">13</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">14</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">15</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">16</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">17</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">18</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">19</div><div className="hc-cal-event hc-event--night">Culture Night</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">20</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">21</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">22</div><div className="hc-cal-event hc-event--trip">Genting Highlands</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">23</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">24</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">25</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">26</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">27</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">28</div><div className="hc-cal-event hc-event--farewell">Safe Flight Home</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">29</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">30</div></div>
+                <div className="hc-cal-cell hc-cal-cell--empty"/>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* ── PACKAGES ── */}
-      <section className="hc-section" id="packages">
+      <section className="hc-packages-section" id="packages">
         <div className="hc-container">
           <div className="hc-section-header">
             <div className="hc-section-label">Pricing Plans</div>
