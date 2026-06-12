@@ -69,14 +69,12 @@ const PACKAGES = [
 ];
 
 const TRIPS = [
-  { name: 'City Tour', emoji: '🏙️', desc: 'Experience the vibrant culture and iconic landmarks' },
-  { name: 'Batu Caves', emoji: '⛰️', desc: 'Explore the majestic caves and spiritual heritage' },
-  { name: 'Sunway Lagoon', emoji: '🎢', desc: 'Fun-filled adventures for the whole family' },
-  { name: 'Genting Highlands', emoji: '🌫️', desc: 'Cool weather and world-class entertainment' },
-  { name: 'Port Dickson', emoji: '🏖️', desc: 'Relax on sandy beaches and enjoy coastal charm' },
-  { name: 'Melaka Trip', emoji: '🏰', desc: 'Step back in time and discover rich history' },
-  { name: 'Sport Night', emoji: '⚽', desc: 'Action-packed games and team building' },
-  { name: 'Culture Night', emoji: '🎭', desc: 'Celebrate diverse traditions and arts' },
+  { name: 'City Tour', emoji: '🏙️', desc: 'Experience the vibrant culture and iconic landmarks', bg: '#e0f2fe' },
+  { name: 'Batu Caves', emoji: '⛰️', desc: 'Explore the majestic caves and spiritual heritage', bg: '#fef3c7' },
+  { name: 'Sunway Lagoon', emoji: '🎢', desc: 'Fun-filled adventures for the whole family', bg: '#dcfce7' },
+  { name: 'Genting Highlands', emoji: '🌫️', desc: 'Cool weather and world-class entertainment', bg: '#f3e8ff' },
+  { name: 'Port Dickson', emoji: '🏖️', desc: 'Relax on sandy beaches and enjoy coastal charm', bg: '#ffe4e6' },
+  { name: 'Melaka Trip', emoji: '🏰', desc: 'Step back in time and discover rich history', bg: '#ffedd5' },
 ];
 
 function CheckIcon({ yes }) {
@@ -86,9 +84,6 @@ function CheckIcon({ yes }) {
 }
 
 export default function HolidayCamp() {
-  const [activeTab, setActiveTab] = useState('july');
-  
-  // Form State
   const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', package: '' });
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -136,7 +131,7 @@ export default function HolidayCamp() {
   return (
     <div className="hc-page">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
         :root {
           --green:       #006B3F;
@@ -155,40 +150,127 @@ export default function HolidayCamp() {
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .hc-page { font-family: 'Poppins', sans-serif; color: var(--gray-800); overflow-x: hidden; background: var(--gray-50); }
 
-        /* ── HERO ── */
-        .hc-hero {
-          min-height: 90vh;
-          background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 50%, #1a5c35 100%);
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          text-align: center; padding: 120px 20px 80px; position: relative; overflow: hidden;
+        /* ── HERO SECTION (NEW DESIGN) ── */
+        .hc-hero-modern {
+          position: relative;
+          min-height: 100vh;
+          background-color: #ffffff;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 160px 20px 80px;
+          text-align: center;
+          overflow: hidden;
+          z-index: 1;
         }
-        .hc-hero::before {
-          content: ''; position: absolute; inset: 0;
-          background: radial-gradient(ellipse at 70% 30%, rgba(255,199,44,0.15) 0%, transparent 60%),
-                      radial-gradient(ellipse at 20% 80%, rgba(255,199,44,0.08) 0%, transparent 50%);
-          pointer-events: none;
+
+        /* Soft Background Gradients */
+        .hc-hero-modern::before {
+          content: '';
+          position: absolute; top: -10%; left: -10%; width: 50%; height: 60%;
+          background: radial-gradient(circle, rgba(0, 107, 63, 0.08) 0%, transparent 70%);
+          z-index: -1; pointer-events: none;
         }
-        .hc-hero-badge {
-          display: inline-block; background: rgba(255,199,44,0.15);
-          border: 1.5px solid rgba(255,199,44,0.5); color: var(--gold);
-          font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em;
-          padding: 8px 20px; border-radius: 50px; text-transform: uppercase; margin-bottom: 24px;
+        .hc-hero-modern::after {
+          content: '';
+          position: absolute; top: -5%; right: -15%; width: 60%; height: 70%;
+          background: radial-gradient(circle, rgba(255, 199, 44, 0.12) 0%, transparent 70%);
+          z-index: -1; pointer-events: none;
         }
-        .hc-hero-title {
-          font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 900; color: var(--white);
-          line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px;
+
+        /* Floating Blurred Elements */
+        .hc-float-icon {
+          position: absolute;
+          z-index: -1;
+          opacity: 0.6;
+          animation: floatAnimation 8s ease-in-out infinite;
+          user-select: none;
         }
-        .hc-hero-title span { color: var(--gold); }
-        .hc-hero-tagline {
-          font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: rgba(255,255,255,0.9);
-          font-weight: 400; max-width: 700px; line-height: 1.6; margin-bottom: 40px;
+        .hc-float-1 { font-size: 4rem; top: 25%; left: 15%; filter: blur(3px); transform: rotate(-15deg); }
+        .hc-float-2 { font-size: 5rem; top: 15%; right: 18%; filter: blur(5px); transform: rotate(20deg); animation-delay: 2s; }
+        .hc-float-3 { font-size: 3.5rem; bottom: 35%; left: 8%; filter: blur(4px); transform: rotate(10deg); animation-delay: 4s; }
+        .hc-float-4 { font-size: 4.5rem; bottom: 40%; right: 12%; filter: blur(3px); transform: rotate(-10deg); animation-delay: 1s; }
+
+        @keyframes floatAnimation {
+          0%, 100% { margin-top: 0; }
+          50% { margin-top: -25px; }
         }
-        .hc-btn-primary {
-          background: var(--gold); color: var(--green-dark); padding: 16px 36px;
-          border-radius: 50px; font-weight: 700; font-size: 1.05rem; text-decoration: none;
-          transition: all 0.3s; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(255,199,44,0.4);
+
+        .hc-hero-badge-modern {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: #f3f4f6; color: var(--gray-800);
+          font-size: 0.9rem; font-weight: 600; padding: 8px 24px;
+          border-radius: 50px; margin-bottom: 30px;
         }
-        .hc-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(255,199,44,0.5); background: #ffd44a; }
+        .hc-hero-badge-modern span { color: var(--green); font-size: 1.2rem; }
+
+        .hc-hero-title-modern {
+          font-size: clamp(2.5rem, 6vw, 4.5rem);
+          font-weight: 800; color: var(--gray-800);
+          line-height: 1.1; letter-spacing: -0.02em;
+          max-width: 900px; margin: 0 auto 25px;
+        }
+
+        .hc-hero-desc-modern {
+          font-size: clamp(1rem, 2vw, 1.25rem);
+          color: var(--gray-600); max-width: 650px;
+          margin: 0 auto 40px; line-height: 1.6;
+        }
+
+        .hc-hero-btn-group {
+          display: flex; gap: 15px; justify-content: center; margin-bottom: 70px; flex-wrap: wrap;
+        }
+        
+        .hc-btn-primary-modern {
+          background: var(--green); color: white;
+          padding: 16px 40px; border-radius: 50px; font-weight: 700; font-size: 1.05rem;
+          text-decoration: none; border: none; cursor: pointer;
+          transition: all 0.3s; display: flex; align-items: center; gap: 10px;
+        }
+        .hc-btn-primary-modern:hover {
+          background: var(--green-dark); transform: translateY(-3px);
+          box-shadow: 0 10px 25px rgba(0, 107, 63, 0.3);
+        }
+
+        .hc-btn-secondary-modern {
+          background: transparent; color: var(--gray-800);
+          padding: 16px 40px; border-radius: 50px; font-weight: 700; font-size: 1.05rem;
+          text-decoration: none; border: 2px solid var(--gray-200); cursor: pointer; transition: all 0.3s;
+        }
+        .hc-btn-secondary-modern:hover {
+          border-color: var(--gray-800); background: var(--gray-50);
+        }
+
+        /* Trip Pills Row (Replacing Student Faces) */
+        .hc-hero-pills-row {
+          display: flex; justify-content: center; gap: 20px;
+          flex-wrap: wrap; width: 100%; max-width: 1200px; padding: 0 20px;
+        }
+        
+        .hc-location-pill {
+          width: 160px; height: 230px; border-radius: 100px;
+          background: white; box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+          display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+          padding: 20px 15px 35px; position: relative; overflow: hidden;
+          transition: transform 0.3s ease;
+        }
+        .hc-location-pill:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        .hc-location-bg {
+          position: absolute; top: 0; left: 0; width: 100%; height: 65%;
+          border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+          z-index: 0;
+        }
+
+        .hc-location-emoji {
+          font-size: 4.5rem; position: relative; z-index: 1; margin-bottom: 25px;
+          filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+        }
+
+        .hc-location-name {
+          font-weight: 700; font-size: 0.95rem; color: var(--gray-800);
+          z-index: 1; position: relative; text-align: center; line-height: 1.2;
+        }
 
         /* ── SECTIONS ── */
         .hc-section { padding: 90px 20px; }
@@ -196,17 +278,6 @@ export default function HolidayCamp() {
         .hc-section-header { text-align: center; margin-bottom: 60px; }
         .hc-section-label { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
         .hc-section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; color: var(--gray-800); }
-
-        /* ── TRIPS GRID ── */
-        .hc-trips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .hc-trip-card {
-          background: white; border-radius: 20px; padding: 30px 20px; text-align: center;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid var(--gray-200); transition: all 0.3s;
-        }
-        .hc-trip-card:hover { transform: translateY(-5px); border-color: var(--green); box-shadow: 0 10px 30px rgba(0,107,63,0.1); }
-        .hc-trip-emoji { font-size: 3rem; margin-bottom: 15px; }
-        .hc-trip-name { font-weight: 800; font-size: 1.1rem; color: var(--gray-800); margin-bottom: 8px; }
-        .hc-trip-desc { font-size: 0.9rem; color: var(--gray-600); line-height: 1.6; }
 
         /* ── PACKAGES GRID ── */
         .hc-packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; align-items: start; }
@@ -265,40 +336,52 @@ export default function HolidayCamp() {
         @media (max-width: 900px) {
           .hc-contact-wrapper { grid-template-columns: 1fr; }
           .hc-contact-info, .hc-contact-form-container { padding: 40px 25px; }
+          .hc-location-pill { width: 140px; height: 200px; padding: 15px 10px 25px; }
+          .hc-location-emoji { font-size: 3.5rem; }
         }
       `}</style>
 
-      {/* ── HERO ── */}
-      <section className="hc-hero">
-        <div className="hc-hero-badge">Stanton Academy Summer 2026</div>
-        <h1 className="hc-hero-title">Holiday <span>Camp</span></h1>
-        <p className="hc-hero-tagline">
-          Adventure, culture and lifelong memories in the heart of Malaysia.
-        </p>
-        <button onClick={scrollToForm} className="hc-btn-primary">Register Now</button>
-      </section>
+      {/* ── HERO (Modern Re-design) ── */}
+      <section className="hc-hero-modern">
+        {/* Floating elements simulating the blurred 3D icons from the reference */}
+        <div className="hc-float-icon hc-float-1">🌍</div>
+        <div className="hc-float-icon hc-float-2">✈️</div>
+        <div className="hc-float-icon hc-float-3">🎒</div>
+        <div className="hc-float-icon hc-float-4">📸</div>
 
-      {/* ── TRIPS ── */}
-      <section className="hc-section">
-        <div className="hc-container">
-          <div className="hc-section-header">
-            <div className="hc-section-label">Excursions</div>
-            <h2 className="hc-section-title">Trips & Activities</h2>
-          </div>
-          <div className="hc-trips-grid">
-            {TRIPS.map((t, i) => (
-              <div key={i} className="hc-trip-card">
-                <div className="hc-trip-emoji">{t.emoji}</div>
-                <div className="hc-trip-name">{t.name}</div>
-                <div className="hc-trip-desc">{t.desc}</div>
-              </div>
-            ))}
-          </div>
+        <div className="hc-hero-badge-modern">
+          <span>🎓</span> For Ages 8 to 15+ 
+        </div>
+        
+        <h1 className="hc-hero-title-modern">
+          Adventure, culture and lifelong memories in the heart of Malaysia.
+        </h1>
+        
+        <p className="hc-hero-desc-modern">
+          Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery.
+        </p>
+
+        <div className="hc-hero-btn-group">
+          <button onClick={scrollToForm} className="hc-btn-primary-modern">
+            Choose Package <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+          <a href="#packages" className="hc-btn-secondary-modern">View Pricing</a>
+        </div>
+
+        {/* The "Pill" row replacing student portraits with Trip Locations */}
+        <div className="hc-hero-pills-row">
+          {TRIPS.map((trip, index) => (
+            <div key={index} className="hc-location-pill">
+              <div className="hc-location-bg" style={{ backgroundColor: trip.bg }}></div>
+              <div className="hc-location-emoji">{trip.emoji}</div>
+              <div className="hc-location-name">{trip.name}</div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* ── PACKAGES ── */}
-      <section className="hc-section" style={{ background: '#ffffff' }}>
+      <section className="hc-section" id="packages">
         <div className="hc-container">
           <div className="hc-section-header">
             <div className="hc-section-label">Pricing Plans</div>
@@ -334,7 +417,7 @@ export default function HolidayCamp() {
           <div className="hc-contact-wrapper">
             <div className="hc-contact-info">
               <h3>Join the Adventure</h3>
-              <p>Secure your spot in the Stanton Academy Holiday Camp. Fill out the form, and our admissions team will contact you with the next steps.</p>
+              <p>Secure your spot in the Stanton Academy program. Fill out the form, and our admissions team will contact you with the next steps.</p>
               <ul style={{ listStyle: 'none', marginTop: '20px', lineHeight: '2.5' }}>
                 <li>✅ Up to 15% Early Bird Discounts</li>
                 <li>✅ Direct access to KL City Center</li>
