@@ -43,6 +43,9 @@ const Header = () => {
                     Contact
                 </a>
             </li>
+            <li>
+  <Link to="/holiday-camp">Holiday Camp</Link>
+</li>
           </ul>
 
           {/* Apply Button - now navigates to /signup page */}
