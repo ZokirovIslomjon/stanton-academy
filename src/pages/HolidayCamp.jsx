@@ -196,24 +196,16 @@ export default function HolidayCamp() {
           50% { margin-top: -25px; }
         }
 
-        .hc-hero-badge-modern {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: #f3f4f6; color: var(--gray-800);
-          font-size: 0.9rem; font-weight: 600; padding: 8px 24px;
-          border-radius: 50px; margin-bottom: 30px;
-        }
-        .hc-hero-badge-modern span { color: var(--green); font-size: 1.2rem; }
-
         .hc-hero-title-modern {
-          font-size: clamp(2.5rem, 6vw, 4.5rem);
+          font-size: clamp(2rem, 4.5vw, 3.5rem);
           font-weight: 800; color: var(--gray-800);
-          line-height: 1.1; letter-spacing: -0.02em;
-          max-width: 900px; margin: 0 auto 25px;
+          line-height: 1.2; letter-spacing: -0.01em;
+          max-width: 800px; margin: 0 auto 20px;
         }
 
         .hc-hero-desc-modern {
-          font-size: clamp(1rem, 2vw, 1.25rem);
-          color: var(--gray-600); max-width: 650px;
+          font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+          color: var(--gray-600); max-width: 600px;
           margin: 0 auto 40px; line-height: 1.6;
         }
 
@@ -223,7 +215,7 @@ export default function HolidayCamp() {
         
         .hc-btn-primary-modern {
           background: var(--green); color: white;
-          padding: 16px 40px; border-radius: 50px; font-weight: 700; font-size: 1.05rem;
+          padding: 14px 36px; border-radius: 50px; font-weight: 700; font-size: 1rem;
           text-decoration: none; border: none; cursor: pointer;
           transition: all 0.3s; display: flex; align-items: center; gap: 10px;
         }
@@ -234,14 +226,14 @@ export default function HolidayCamp() {
 
         .hc-btn-secondary-modern {
           background: transparent; color: var(--gray-800);
-          padding: 16px 40px; border-radius: 50px; font-weight: 700; font-size: 1.05rem;
+          padding: 14px 36px; border-radius: 50px; font-weight: 700; font-size: 1rem;
           text-decoration: none; border: 2px solid var(--gray-200); cursor: pointer; transition: all 0.3s;
         }
         .hc-btn-secondary-modern:hover {
           border-color: var(--gray-800); background: var(--gray-50);
         }
 
-        /* Trip Pills Row (Replacing Student Faces) */
+        /* Trip Pills Row */
         .hc-hero-pills-row {
           display: flex; justify-content: center; gap: 20px;
           flex-wrap: wrap; width: 100%; max-width: 1200px; padding: 0 20px;
@@ -348,13 +340,9 @@ export default function HolidayCamp() {
         <div className="hc-float-icon hc-float-2">✈️</div>
         <div className="hc-float-icon hc-float-3">🎒</div>
         <div className="hc-float-icon hc-float-4">📸</div>
-
-        <div className="hc-hero-badge-modern">
-          <span>🎓</span> For Ages 8 to 15+ 
-        </div>
         
         <h1 className="hc-hero-title-modern">
-          Adventure, culture and lifelong memories in the heart of Malaysia.
+          Adventure, culture and lifelong memories in the heart of <span style={{ color: '#fabc19' }}>Malaysia</span>.
         </h1>
         
         <p className="hc-hero-desc-modern">
