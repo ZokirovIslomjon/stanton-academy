@@ -416,9 +416,7 @@ const SignUpPage = () => {
         `}
       </style>
 
-      <Link to="/">
-        <img src={logo} alt="Stanton Academy" className="signup-logo" />
-      </Link>
+      
 
       <div className="signup-container">
         
