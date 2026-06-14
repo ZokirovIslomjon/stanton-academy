@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
+import { Link } from 'react-router-dom';
 
 // Import local images from assets folder
 import cityTourImg from '../assets/City Tour.jpg';
@@ -8,73 +9,125 @@ import sunwayLagoonImg from '../assets/Sunway lagoon.jpg';
 import gentingHighlandsImg from '../assets/Genting highlands.jpg';
 import portDicksonImg from '../assets/Port Dickson.jpg';
 import melakaTripImg from '../assets/Melaka trip.jpg';
+import beachBackgroundImg from '../assets/Beach background.jpg';
+import summerCampImg from '../assets/landing.jpg'; // <-- New import for the form image
 
 const PACKAGES = [
   {
     name: 'Economy',
-    color: '#4A90D9',
+    theme: 'blue',
     price: 'RM 4,900',
     promo: 'RM 4,195',
     deposit: 'RM 950',
     highlight: false,
-    features: {
-      course: true, lunch: false, airport: true, tshirt: true,
-      sim: true, farewell: true, room: 'Upon Request',
-      tours: false,
-    }
+    features: [
+      { text: 'Intensive English Course', included: true },
+      { text: 'Lunch Included', included: false },
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: false },
+      { text: 'Room Type: Upon Request', included: 'info' }
+    ]
   },
   {
     name: 'Bronze',
-    color: '#CD7F32',
+    theme: 'orange',
     price: 'RM 7,900',
     promo: 'RM 6,745',
     deposit: 'RM 950',
     highlight: false,
-    features: {
-      course: true, lunch: true, airport: true, tshirt: true,
-      sim: true, farewell: true, room: 'Small Room',
-      tours: true,
-    }
+    features: [
+      { text: 'Intensive English Course', included: true },
+      { text: 'Lunch Included', included: true },
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: true },
+      { text: 'Room Type: Small Room', included: 'info' }
+    ]
   },
   {
     name: 'Silver',
-    color: '#A8A9AD',
+    theme: 'gray',
     price: 'RM 9,400',
     promo: 'RM 8,020',
     deposit: 'RM 950',
     highlight: false,
-    features: {
-      course: true, lunch: true, airport: true, tshirt: true,
-      sim: true, farewell: true, room: 'Small Room',
-      tours: true,
-    }
+    features: [
+      { text: 'Intensive English Course', included: true },
+      { text: 'Lunch Included', included: true },
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: true },
+      { text: 'Room Type: Small Room', included: 'info' }
+    ]
   },
   {
     name: 'Gold',
-    color: '#FFC72C',
+    theme: 'gold',
     price: 'RM 9,900',
     promo: 'RM 8,445',
     deposit: 'RM 950',
     highlight: true,
-    features: {
-      course: true, lunch: true, airport: true, tshirt: true,
-      sim: true, farewell: true, room: 'Middle Room',
-      tours: true,
-    }
+    badgeLabel: 'Most Popular',
+    features: [
+      { text: 'Intensive English Course', included: true },
+      { text: 'Lunch Included', included: true },
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: true },
+      { text: 'Room Type: Middle Room', included: 'info' }
+    ]
   },
   {
     name: 'Platinum',
-    color: '#1f2937',
+    theme: 'dark',
     price: 'RM 10,600',
     promo: 'RM 9,040',
     deposit: 'RM 950',
     highlight: false,
-    features: {
-      course: true, lunch: true, airport: true, tshirt: true,
-      sim: true, farewell: true, room: 'Master Room',
-      tours: true,
-    }
+    features: [
+      { text: 'Intensive English Course', included: true },
+      { text: 'Lunch Included', included: true },
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: true },
+      { text: 'Room Type: Master Room', included: 'info' }
+    ]
   },
+];
+
+const GUARDIAN_PACKAGES = [
+  {
+    name: 'Economy Guardian',
+    theme: 'blue',
+    price: 'RM 2,700',
+    promo: 'RM 2,295',
+    deposit: 'RM 950',
+    highlight: false,
+    features: [
+      { text: 'Lunch Included', included: false },
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: false },
+      { text: 'Room Type: Upon Request', included: 'info' }
+    ]
+  },
+  {
+    name: 'Gold Guardian',
+    theme: 'gold',
+    price: 'RM 3,700',
+    promo: 'RM 3,145',
+    deposit: 'RM 950',
+    highlight: true,
+    badgeLabel: 'Best Value',
+    features: [
+      { text: 'Lunch Included', included: true },
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: true },
+      { text: 'Room Type: Middle Room', included: 'info' }
+    ]
+  }
 ];
 
 const TRIPS = [
@@ -86,15 +139,39 @@ const TRIPS = [
   { name: 'Port Dickson', image: portDicksonImg, desc: 'Relax on the sandy beaches and enjoy the coastal charm.' },
 ];
 
-function CheckIcon({ yes }) {
-  if (yes === true) return <span style={{ color: '#006B3F', fontSize: '1.1rem' }}>✅</span>;
-  if (yes === false) return <span style={{ color: '#ef4444', fontSize: '1.1rem' }}>❌</span>;
-  return <span style={{ color: '#6b7280', fontSize: '0.85rem', fontWeight: '600' }}>{yes}</span>;
+const TERMS = [
+  { title: 'GUARDIANS FOR STUDENTS UNDER 12', desc: 'Students under 12 must be accompanied a guardian for a trips and activities.' },
+  { title: 'DEPOSIT PAYMENT', desc: 'Deposit payments is compulsory and non-refundable after registration.' },
+  { title: 'FLIGHT TICKET ACCOMMODATION', desc: 'Flight details must be provided at least 2 weeks in advanced for airport pickup and accommodation arragements.' },
+  { title: 'CONSENT FOR STUDENTS UNDER 18', desc: 'Parental consent is required for all students under 18.' },
+  { title: 'AIRPORT TRANSFER', desc: 'Airport transfer service are available during standart operating hours only. Flight arriving late at night or early in the morning may not be eligible for airport transfer.' }
+];
+
+function FeatureIcon({ status }) {
+  if (status === true || status === 'info') {
+    return (
+      <svg className="icon-check" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    );
+  }
+  return (
+    <svg className="icon-cross" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  );
 }
+
+const ThemeIcon = ({ theme }) => {
+  switch(theme) {
+    case 'blue': return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>;
+    case 'orange': return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>;
+    case 'gray': return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>;
+    case 'gold': return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
+    case 'dark': return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>;
+    default: return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>;
+  }
+};
 
 export default function HolidayCamp() {
   const [activeTab, setActiveTab] = useState('july');
-  const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', package: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', location: '' });
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -104,11 +181,14 @@ export default function HolidayCamp() {
 
     const sheetData = {
       data: [{
-          Name: formData.fullName,
-          Phone: formData.phone,
+          Name: formData.name,
+          Nationality: 'N/A', 
+          Age: 'N/A', 
+          Phone: `'${formData.phone}`,
           Email: formData.email,
-          Course: `Holiday Camp - ${formData.package || 'Undecided'}`,
+          Course: `Summer Camp 2026`,
           HearAbout: 'Holiday Camp Landing Page Form',
+          Message: `Location: ${formData.location}`,
           Date: new Date().toLocaleString()
       }]
     };
@@ -252,7 +332,7 @@ export default function HolidayCamp() {
         .hc-hero-trips-wrapper {
           width: 100%;
           max-width: 1300px;
-          margin: 60px auto -120px; /* Pulls it down to overlap the next section */
+          margin: 60px auto -120px;
           position: relative;
           z-index: 10;
           padding: 0 20px;
@@ -339,10 +419,48 @@ export default function HolidayCamp() {
         .hc-section-label { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 12px; }
         .hc-section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; color: var(--gray-800); }
 
+        /* ── ABOUT STANTON CINEMATIC SECTION ── */
+        .hc-cinematic-section {
+          background: linear-gradient(to bottom, var(--green-dark) 0%, rgba(0, 107, 63, 0.9) 20%, rgba(0, 107, 63, 0) 60%), 
+                      url('${beachBackgroundImg}') center/cover no-repeat;
+          padding: 200px 20px 120px; 
+          color: white;
+          position: relative;
+        }
+        .hc-cinematic-content {
+          max-width: 900px;
+          text-align: left;
+        }
+        .hc-about-top-title {
+          font-size: clamp(1.8rem, 3vw, 2.5rem);
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          margin-bottom: 0;
+          color: white; 
+        }
+        .hc-about-signature {
+          font-family: 'Dancing Script', cursive;
+          color: var(--gold);
+          font-size: clamp(3rem, 7vw, 5rem);
+          line-height: 1.2;
+          margin-top: 5px;
+          margin-bottom: 30px;
+          text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+        .hc-about-long-desc {
+          color: rgba(255, 255, 255, 0.95);
+          font-size: 1.05rem;
+          line-height: 1.8;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+        .hc-about-long-desc p {
+          margin-bottom: 20px;
+        }
+
         /* ── ITINERARY SECTION ── */
         .hc-itinerary-section {
           background: var(--gray-50);
-          padding-top: 200px; /* Space for the overlapping trip cards */
+          padding-top: 100px; 
           padding-bottom: 90px;
         }
         .hc-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
@@ -383,87 +501,289 @@ export default function HolidayCamp() {
         .hc-event--sport     { background: #fee2e2; color: #991b1b; }
         .hc-event--farewell  { background: #ecfccb; color: #3f6212; }
 
-        /* ── PACKAGES GRID ── */
+        /* ── PACKAGES GRID (COURSES.JSX STYLE) ── */
         .hc-packages-section {
           background: #ffffff;
           padding-top: 90px;
           padding-bottom: 90px;
         }
-        .hc-packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; align-items: start; }
-        .hc-pkg-card {
-          background: white; border-radius: 24px; padding: 30px 20px; text-align: center;
-          border: 2px solid var(--gray-200); position: relative; transition: all 0.3s;
+        .hc-course-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 20px;
+          align-items: stretch;
+          margin-bottom: 40px;
+          padding-top: 25px; 
         }
-        .hc-pkg-card--popular { border-color: var(--gold); box-shadow: 0 12px 40px rgba(255,199,44,0.2); transform: translateY(-10px); }
+        .hc-course-card {
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+          display: flex;
+          flex-direction: column;
+          border: 1px solid var(--gray-100);
+          transition: transform 0.3s, box-shadow 0.3s;
+          position: relative; 
+        }
+        .hc-course-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+        .hc-course-card.highlight {
+          border: 2px solid var(--gold);
+          box-shadow: 0 8px 30px rgba(255,199,44,0.2);
+        }
+        .hc-course-header {
+          padding: 30px 20px 10px;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative; 
+          border-radius: 16px 16px 0 0;
+        }
         .hc-popular-badge {
-          position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-          background: var(--gold); color: var(--green-dark); font-size: 0.75rem; font-weight: 800;
-          padding: 6px 16px; border-radius: 50px; white-space: nowrap; text-transform: uppercase;
+          position: absolute; 
+          top: 0; 
+          left: 50%; 
+          transform: translate(-50%, -50%); 
+          background: var(--gold); 
+          color: var(--green-dark); 
+          font-size: 0.75rem; 
+          font-weight: 800;
+          padding: 6px 16px; 
+          border-radius: 50px; 
+          white-space: nowrap; 
+          text-transform: uppercase;
+          z-index: 10;
         }
-        .hc-pkg-name { font-weight: 800; font-size: 1.3rem; margin-bottom: 15px; text-transform: uppercase; }
-        .hc-pkg-price-old { font-size: 0.9rem; color: var(--gray-400); text-decoration: line-through; }
-        .hc-pkg-price-new { font-size: 1.8rem; font-weight: 900; color: var(--green); margin: 5px 0; }
-        .hc-pkg-deposit { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 20px; background: var(--gray-50); padding: 5px; border-radius: 8px; }
-        .hc-pkg-divider { border: none; border-top: 1px solid var(--gray-200); margin: 20px 0; }
-        .hc-pkg-feature { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--gray-600); padding: 8px 0; border-bottom: 1px dashed var(--gray-100); }
-        .hc-pkg-cta {
-          display: block; margin-top: 25px; background: var(--gray-100); color: var(--gray-800);
-          padding: 14px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: all 0.3s;
+        .hc-course-icon {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 15px;
+          color: white;
         }
-        .hc-pkg-card:hover .hc-pkg-cta { background: var(--green); color: white; }
-        .hc-pkg-card--popular .hc-pkg-cta { background: var(--gold); color: var(--green-dark); }
-        .hc-pkg-card--popular .hc-pkg-cta:hover { background: #ffd44a; }
+        .hc-course-title {
+          font-size: 1.25rem;
+          font-weight: 800;
+          color: var(--gray-800);
+          text-transform: capitalize;
+        }
+        .hc-course-price-block {
+          text-align: center;
+          padding: 0 20px 20px;
+          border-bottom: 1px solid var(--gray-100);
+        }
+        .hc-course-old-price {
+          font-size: 0.85rem;
+          color: var(--gray-400);
+          text-decoration: line-through;
+          margin-bottom: 2px;
+        }
+        .hc-course-new-price {
+          font-size: 1.6rem;
+          font-weight: 800;
+          color: var(--gray-800);
+          margin-bottom: 8px;
+        }
+        .hc-course-deposit {
+          font-size: 0.8rem;
+          color: var(--gray-600);
+        }
+        .hc-course-features {
+          padding: 20px;
+          flex: 1;
+          list-style: none;
+          margin: 0;
+        }
+        .hc-course-features li {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          font-size: 0.85rem;
+          color: var(--gray-600);
+          margin-bottom: 12px;
+          line-height: 1.4;
+        }
+        .hc-course-features li:last-child {
+          margin-bottom: 0;
+        }
+        .hc-course-features .icon-check {
+          color: var(--green);
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+        .hc-course-features .icon-cross {
+          color: #ef4444;
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+        .hc-course-footer {
+          padding: 20px;
+          margin-top: auto;
+          border-radius: 0 0 16px 16px;
+        }
+        .hc-course-btn {
+          display: block;
+          width: 100%;
+          padding: 12px;
+          border-radius: 8px;
+          text-align: center;
+          font-weight: 700;
+          font-size: 0.95rem;
+          color: white;
+          text-decoration: none;
+          transition: background 0.3s;
+          border: none;
+          cursor: pointer;
+        }
+        
+        /* Theme Colors */
+        .theme-blue .hc-course-icon, .theme-blue .hc-course-btn { background-color: #0ea5e9; }
+        .theme-blue .hc-course-btn:hover { background-color: #0284c7; }
+        .theme-blue .hc-course-new-price { color: #0ea5e9; }
+        
+        .theme-orange .hc-course-icon, .theme-orange .hc-course-btn { background-color: #f97316; }
+        .theme-orange .hc-course-btn:hover { background-color: #ea580c; }
+        .theme-orange .hc-course-new-price { color: #f97316; }
+        
+        .theme-gray .hc-course-icon, .theme-gray .hc-course-btn { background-color: #6b7280; }
+        .theme-gray .hc-course-btn:hover { background-color: #4b5563; }
+        .theme-gray .hc-course-new-price { color: #6b7280; }
+        
+        .theme-gold .hc-course-icon, .theme-gold .hc-course-btn { background-color: #eab308; }
+        .theme-gold .hc-course-btn:hover { background-color: #ca8a04; }
+        .theme-gold .hc-course-new-price { color: #eab308; }
+        
+        .theme-dark .hc-course-icon, .theme-dark .hc-course-btn { background-color: #1f2937; }
+        .theme-dark .hc-course-btn:hover { background-color: #111827; }
+        .theme-dark .hc-course-new-price { color: #1f2937; }
 
-        /* ── CONTACT FORM SECTION ── */
+        .hc-discount-note {
+          text-align: center; margin-top: 24px;
+          background: #fef9e7; border: 1px solid #fde68a;
+          border-radius: 12px; padding: 14px;
+          font-size: 0.85rem; color: #92400e;
+        }
+
+        .hc-guardian-section {
+          margin-top: 60px;
+          padding-top: 40px;
+          border-top: 2px dashed var(--gray-200);
+        }
+        .hc-guardian-title {
+          text-align: center;
+          font-size: 1.8rem;
+          font-weight: 800;
+          color: var(--gray-800);
+          margin-bottom: 30px;
+        }
+
+        /* ── TERMS SECTION ── */
+        .hc-terms-section { background: var(--green); padding: 80px 20px; color: white; }
+        .hc-terms-container { max-width: 1200px; margin: 0 auto; }
+        .hc-terms-header { text-align: center; margin-bottom: 50px; }
+        .hc-terms-label { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+        .hc-terms-title { font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 800; line-height: 1.2; color: white; }
+        .hc-terms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .hc-term-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px; transition: transform 0.3s, background 0.3s; }
+        .hc-term-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
+        .hc-term-num { font-size: 2.5rem; font-weight: 900; color: var(--gold); opacity: 0.5; margin-bottom: 15px; line-height: 1; font-family: 'Playfair Display', serif; }
+        .hc-term-title { font-weight: 700; font-size: 1rem; color: white; margin-bottom: 10px; line-height: 1.4; text-transform: uppercase; }
+        .hc-term-desc { font-size: 0.85rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
+
+        /* ── NEW SUMMER CAMP FORM SECTION ── */
         .hc-contact-section { background: var(--gray-50); padding: 100px 20px; }
-        .hc-contact-wrapper {
-          max-width: 1000px; margin: 0 auto; background: var(--white); border-radius: 30px;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+        .hc-camp-card {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: stretch;
+          gap: 40px;
+          text-align: left;
+          background-color: #fff9e6;
+          padding: 40px;
+          border-radius: 24px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+          max-width: 1000px;
+          margin: 0 auto;
         }
-        .hc-contact-info { background: var(--green); color: white; padding: 50px 40px; display: flex; flex-direction: column; justify-content: center; }
-        .hc-contact-info h3 { font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; color: var(--gold); }
-        .hc-contact-info p { font-size: 1.05rem; opacity: 0.9; line-height: 1.6; margin-bottom: 30px; }
-        .hc-contact-form-container { padding: 50px 40px; }
-        .hc-form-group { margin-bottom: 20px; }
-        .hc-form-group label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--gray-800); margin-bottom: 8px; }
-        .hc-form-control {
-          width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: 12px;
-          font-size: 1rem; color: var(--gray-800); background: var(--gray-50); outline: none; transition: all 0.3s; font-family: inherit;
+        .hc-camp-headline { font-size: 2.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 10px; color: var(--green); }
+        .hc-camp-headline span { color: var(--gold); }
+        .hc-camp-subtitle { font-size: 1rem; margin-bottom: 30px; color: var(--green); font-style: italic; }
+        .hc-camp-cta { font-size: 1.2rem; margin-bottom: 20px; font-weight: 700; color: var(--green); }
+        .hc-camp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .hc-camp-input {
+          padding: 14px 20px; border: 2px solid #e5e7eb; border-radius: 10px; width: 100%;
+          background-color: #ffffff; font-size: 0.95rem; outline: none; transition: border 0.3s;
+          font-family: inherit;
         }
-        .hc-form-control:focus { border-color: var(--green); background: white; box-shadow: 0 0 0 4px rgba(0, 107, 63, 0.1); }
-        .hc-submit-btn {
-          width: 100%; padding: 16px; background: var(--gold); color: var(--green-dark); border: none;
-          border-radius: 12px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.3s; margin-top: 10px;
+        .hc-camp-input:focus { border-color: var(--green); }
+        .hc-camp-submit {
+          grid-column: 1 / -1; background-color: var(--green); color: var(--gold);
+          padding: 16px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer;
+          font-size: 1.1rem; margin-top: 10px; transition: transform 0.2s, opacity 0.2s;
         }
-        .hc-submit-btn:hover:not(:disabled) { background: #ffd44a; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 199, 44, 0.3); }
-        .hc-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-
-        .hc-success-message { text-align: center; padding: 40px 20px; }
+        .hc-camp-submit:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
+        .hc-camp-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+        .hc-camp-img-container { flex: 1 1 400px; display: flex; border-radius: 16px; overflow: hidden; min-height: 350px; }
+        .hc-camp-img-container img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+        
+        .hc-success-message { text-align: center; padding: 40px 20px; width: 100%; }
         .hc-success-icon { font-size: 4rem; margin-bottom: 20px; }
-        .hc-success-message h4 { font-size: 1.8rem; font-weight: 800; color: var(--green); margin-bottom: 10px; }
 
         @media (max-width: 1100px) {
           .hc-trips-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
           .hc-trip-card { height: 380px; }
-          .hc-itinerary-section { padding-top: 150px; }
+          .hc-cinematic-section { padding-top: 180px; }
         }
-        @media (max-width: 900px) {
-          .hc-contact-wrapper { grid-template-columns: 1fr; }
-          .hc-contact-info, .hc-contact-form-container { padding: 40px 25px; }
+        @media (max-width: 768px) {
+          .hc-camp-card { padding: 25px; gap: 20px; flex-direction: column; }
+          .hc-camp-headline { font-size: 2.1rem; }
+          .hc-camp-form-grid { grid-template-columns: 1fr; }
+          .hc-camp-img-container { flex: 1 1 100%; min-height: 220px; max-height: 280px; }
         }
         @media (max-width: 600px) {
+          .hc-hero-title-modern { font-size: 2rem; }
           .hc-hero-trips-wrapper { margin-bottom: -60px; }
           .hc-trips-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
           .hc-trip-card { height: 320px; border-radius: 40px; padding: 25px 10px 20px; }
           .hc-trip-name { font-size: 1.6rem; }
           .hc-trip-desc { font-size: 0.7rem; }
-          .hc-itinerary-section { padding-top: 100px; }
+          .hc-cinematic-section { padding-top: 120px; padding-bottom: 60px; }
+          .hc-itinerary-section { padding-top: 80px; }
           .hc-cal-cell { min-height: 55px; padding: 5px 3px; }
           .hc-cal-event { font-size: 0.55rem; }
         }
+
+        /* ── FOOTER STYLES ── */
+        .hc-footer {
+          background: var(--green-dark); color: white; padding: 80px 20px 20px;
+        }
+        .hc-footer-grid {
+          display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; margin-bottom: 50px;
+          max-width: 1200px; margin-left: auto; margin-right: auto;
+        }
+        .hc-footer-title { font-size: 1.8rem; font-weight: 800; color: var(--gold); margin-bottom: 15px; }
+        .hc-footer-heading { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: white; text-transform: uppercase; letter-spacing: 0.05em; }
+        .hc-footer-col a { display: block; color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 10px; transition: color 0.3s; cursor: pointer; }
+        .hc-footer-col a:hover { color: var(--gold); }
+        .hc-footer-col p { color: rgba(255,255,255,0.8); margin-bottom: 10px; line-height: 1.6; }
+        .hc-footer-bottom {
+          text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);
+          color: rgba(255,255,255,0.5); font-size: 0.85rem; max-width: 1200px; margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .hc-footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+        }
+
       `}</style>
 
-      {/* ── HERO ── */}
+      {/* ── HERO SECTION (White/Modern Design) ── */}
       <section className="hc-hero-modern">
         <div className="hc-float-icon hc-float-1">🌍</div>
         <div className="hc-float-icon hc-float-2">✈️</div>
@@ -472,8 +792,8 @@ export default function HolidayCamp() {
         
         <div className="hc-hero-content">
           <h1 className="hc-hero-title-modern">
-            <span style={{ color: 'var(--green)' }}>Adventure, Culture and Lifelong memories in the heart of </span>
-            <span style={{ color: '#fabc19' }}>Malaysia.</span>
+            <span style={{ color: 'var(--green)', display: 'inline' }}>Adventure, Culture and Lifelong </span>
+            <span style={{ color: 'var(--gold)', display: 'inline' }}>memories in the heart of Malaysia.</span>
           </h1>
           
           <p className="hc-hero-desc-modern">
@@ -509,7 +829,36 @@ export default function HolidayCamp() {
         </div>
       </section>
 
-      {/* ── ITINERARY (Reverted to manual hardcoded version) ── */}
+      {/* ── ABOUT STANTON CINEMATIC SECTION ── */}
+      <section className="hc-cinematic-section">
+        <div className="hc-container" style={{ position: 'relative', zIndex: 2 }}>
+          
+          <div className="hc-cinematic-content">
+            <div className="hc-about-header">
+              <h2 className="hc-about-top-title">ABOUT STANTON ACADEMY</h2>
+              <h1 className="hc-about-signature">Holiday Camp</h1>
+            </div>
+
+            <div className="hc-about-long-desc">
+              <p>
+                Ready for the ultimate holiday adventure with fun? Welcome to the Stanton Academy Holiday Camp in Kuala Lumpur Malaysia! Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery in the ultimate city-center playground. This isn't your average indoor experience—it's an interactive journey where participants supercharge their skills through dynamic games, debates, trips and real-world practice.
+              </p>
+              <p>
+                Our location at Pudu, Kuala Lumpur is the perfect launchpad for an incredible holiday. Situated right in the heart of Kuala Lumpur, it boasts exceptional transport connectivity with direct access to major LRT, MRT, and bus lines right at our doorstep. This unmatched accessibility means zero-hassle drop-offs for parents, seamless commutes and lightning-fast transit for our thrilling weekly excursions across Kuala Lumpur & Malaysia.
+              </p>
+              <p>
+                Best of all, our campus is just a short, exciting walk away from KL's most famous hotspots! Participants are within walking distance of Bukit Bintang, the thrilling shopping district of Berjaya Times Square, the historical streets of Chinatown, and Alor Street—the ultimate world-renowned food heaven & street food paradise of KL.
+              </p>
+              <p>
+                Surrounded by infinite energy, culture, and flavor, our campers will build unstoppable teamwork, forge lifelong friendships, and explore the very best of the city. Don't just spend the holidays—own them with Stanton Academy
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── ITINERARY ── */}
       <section className="hc-itinerary-section" id="itinerary">
         <div className="hc-container">
           <div className="hc-section-header">
@@ -517,7 +866,6 @@ export default function HolidayCamp() {
             <h2 className="hc-section-title">
               <span style={{ color: 'var(--green)' }}>Holiday Camp</span> <span style={{ color: '#fabc19' }}>Itinerary</span>
             </h2>
-            {/* The sub-description text has been completely removed here */}
           </div>
           
           <div className="hc-tabs">
@@ -623,94 +971,192 @@ export default function HolidayCamp() {
         </div>
       </section>
 
-      {/* ── PACKAGES ── */}
+      {/* ── PACKAGES GRID (COURSES.JSX STYLE) ── */}
       <section className="hc-packages-section" id="packages">
         <div className="hc-container">
           <div className="hc-section-header">
             <div className="hc-section-label">Pricing Plans</div>
             <h2 className="hc-section-title">Choose Your Package</h2>
           </div>
-          <div className="hc-packages-grid">
+          
+          <div className="hc-course-grid">
+            {/* Render Student Packages */}
             {PACKAGES.map((pkg, i) => (
-              <div key={i} className={`hc-pkg-card${pkg.highlight ? ' hc-pkg-card--popular' : ''}`}>
-                {pkg.highlight && <div className="hc-popular-badge">⭐ Most Popular</div>}
-                <div className="hc-pkg-name" style={{ color: pkg.highlight ? 'var(--green)' : 'inherit' }}>{pkg.name}</div>
-                <div className="hc-pkg-price-old">{pkg.price}</div>
-                <div className="hc-pkg-price-new">{pkg.promo}</div>
-                <div className="hc-pkg-deposit">Deposit: <strong>{pkg.deposit}</strong></div>
-                <hr className="hc-pkg-divider"/>
-                <div>
-                  <div className="hc-pkg-feature"><span>Intensive English</span> <CheckIcon yes={pkg.features.course}/></div>
-                  <div className="hc-pkg-feature"><span>Lunch</span> <CheckIcon yes={pkg.features.lunch}/></div>
-                  <div className="hc-pkg-feature"><span>Airport Transfer</span> <CheckIcon yes={pkg.features.airport}/></div>
-                  <div className="hc-pkg-feature"><span>T-Shirt & SIM</span> <CheckIcon yes={pkg.features.sim}/></div>
-                  <div className="hc-pkg-feature"><span>All Tours</span> <CheckIcon yes={pkg.features.tours}/></div>
-                  <div className="hc-pkg-feature"><span>Room Type</span> <CheckIcon yes={pkg.features.room}/></div>
+              <div key={`student-${i}`} className={`hc-course-card theme-${pkg.theme} ${pkg.highlight ? 'highlight' : ''}`}>
+                <div className="hc-course-header">
+                  {pkg.highlight && <div className="hc-popular-badge">⭐ {pkg.badgeLabel || 'Most Popular'}</div>}
+                  <div className="hc-course-icon">
+                    <ThemeIcon theme={pkg.theme} />
+                  </div>
+                  <h3 className="hc-course-title">{pkg.name}</h3>
                 </div>
-                <button onClick={scrollToForm} className="hc-pkg-cta">Select Package</button>
+                
+                <div className="hc-course-price-block">
+                  <div className="hc-course-old-price">{pkg.price}</div>
+                  <div className="hc-course-new-price">{pkg.promo}</div>
+                  <div className="hc-course-deposit">Deposit: <strong>{pkg.deposit}</strong></div>
+                </div>
+                
+                <ul className="hc-course-features">
+                  {pkg.features.map((feature, idx) => (
+                    <li key={idx}>
+                      <FeatureIcon status={feature.included} />
+                      {feature.text}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="hc-course-footer">
+                  <button onClick={scrollToForm} className="hc-course-btn">Select Package</button>
+                </div>
+              </div>
+            ))}
+            
+            {/* Render Guardian Packages in the same grid seamlessly */}
+            {GUARDIAN_PACKAGES.map((pkg, i) => (
+              <div key={`guardian-${i}`} className={`hc-course-card theme-${pkg.theme} ${pkg.highlight ? 'highlight' : ''}`}>
+                <div className="hc-course-header">
+                  {pkg.highlight && <div className="hc-popular-badge">⭐ {pkg.badgeLabel || 'Best Value'}</div>}
+                  <div className="hc-course-icon">
+                    <ThemeIcon theme={pkg.theme} />
+                  </div>
+                  <h3 className="hc-course-title">{pkg.name}</h3>
+                </div>
+                
+                <div className="hc-course-price-block">
+                  <div className="hc-course-old-price">{pkg.price}</div>
+                  <div className="hc-course-new-price">{pkg.promo}</div>
+                  <div className="hc-course-deposit">Deposit: <strong>{pkg.deposit}</strong></div>
+                </div>
+                
+                <ul className="hc-course-features">
+                  {pkg.features.map((feature, idx) => (
+                    <li key={idx}>
+                      <FeatureIcon status={feature.included} />
+                      {feature.text}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="hc-course-footer">
+                  <button onClick={scrollToForm} className="hc-course-btn">Select Package</button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hc-discount-note">
+            🎉 <strong>Up to 15% Early Bird Discount</strong> — First come, first served! Fees include RM 200 Registration & 6% SST.
+          </div>
+          
+        </div>
+      </section>
+
+      {/* ── TERMS & CONDITIONS ── */}
+      <section className="hc-terms-section">
+        <div className="hc-terms-container">
+          <div className="hc-terms-header">
+            <div className="hc-terms-label">Important Information</div>
+            <h2 className="hc-terms-title">Terms & Conditions</h2>
+          </div>
+          <div className="hc-terms-grid">
+            {TERMS.map((term, index) => (
+              <div key={index} className="hc-term-card">
+                <div className="hc-term-num">0{index + 1}</div>
+                <h3 className="hc-term-title">{term.title}</h3>
+                <p className="hc-term-desc">{term.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── INTEGRATED CONTACT FORM ── */}
+      {/* ── INTEGRATED CONTACT FORM (BEIGE SUMMER CAMP DESIGN) ── */}
       <section className="hc-contact-section" id="contact-form-section">
         <div className="hc-container">
-          <div className="hc-contact-wrapper">
-            <div className="hc-contact-info">
-              <h3>Join the Adventure</h3>
-              <p>Secure your spot in the Stanton Academy program. Fill out the form, and our admissions team will contact you with the next steps.</p>
-              <ul style={{ listStyle: 'none', marginTop: '20px', lineHeight: '2.5' }}>
-                <li>✅ Up to 15% Early Bird Discounts</li>
-                <li>✅ Direct access to KL City Center</li>
-                <li>✅ Expert Native Teachers</li>
-              </ul>
-            </div>
+          <div className="hc-camp-card">
             
-            <div className="hc-contact-form-container">
+            {/* Left Side: Form */}
+            <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               {isSubmitted ? (
                 <div className="hc-success-message">
                   <div className="hc-success-icon">🎉</div>
-                  <h4>Application Received!</h4>
+                  <h4 style={{ color: 'var(--green)' }}>Application Received!</h4>
                   <p style={{ color: 'var(--gray-600)', marginTop: '10px' }}>
-                    Thank you, {formData.fullName}. Our team will reach out to you via WhatsApp or Email shortly to finalize your registration.
+                    Thank you, {formData.name}. Our team will reach out to you via WhatsApp or Email shortly.
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit}>
-                  <div className="hc-form-group">
-                    <label>Full Name</label>
-                    <input type="text" required className="hc-form-control" placeholder="Enter your name"
-                           value={formData.fullName} onChange={(e) => setFormData({...formData, fullName: e.target.value})} disabled={isSending} />
-                  </div>
-                  <div className="hc-form-group">
-                    <label>Phone Number (WhatsApp)</label>
-                    <input type="tel" required className="hc-form-control" placeholder="+60 12 345 6789"
-                           value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} disabled={isSending} />
-                  </div>
-                  <div className="hc-form-group">
-                    <label>Email Address</label>
-                    <input type="email" required className="hc-form-control" placeholder="you@example.com"
+                <>
+                  <h2 className="hc-camp-headline">
+                    Join The <span>Summer</span><br/><span>Camp</span>
+                  </h2>
+                  <p className="hc-camp-subtitle">
+                    Multicultural And English language center in Kuala Lumpur
+                  </p>
+                  <h3 className="hc-camp-cta">Apply for this Summer Today!</h3>
+
+                  <form onSubmit={handleSubmit} className="hc-camp-form-grid">
+                    <input type="text" placeholder="Your Name*" required className="hc-camp-input"
+                           value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} disabled={isSending} />
+                    
+                    <input type="email" placeholder="Your Email*" required className="hc-camp-input"
                            value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} disabled={isSending} />
-                  </div>
-                  <div className="hc-form-group">
-                    <label>Interested Package</label>
-                    <select required className="hc-form-control" value={formData.package} onChange={(e) => setFormData({...formData, package: e.target.value})} disabled={isSending}>
-                      <option value="" disabled hidden>Select a package</option>
-                      {PACKAGES.map(pkg => <option key={pkg.name} value={pkg.name}>{pkg.name} Package</option>)}
-                      <option value="Undecided">I'm not sure yet</option>
+                    
+                    <input type="tel" placeholder="Phone Number*" required className="hc-camp-input"
+                           value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} disabled={isSending} />
+                    
+                    <select required className="hc-camp-input" style={{ color: formData.location ? '#1a1a1a' : '#9ca3af' }}
+                            value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} disabled={isSending}>
+                      <option value="" disabled hidden>Where do you live?*</option>
+                      <option value="Kuala Lumpur">Kuala Lumpur</option>
+                      <option value="Selangor">Selangor</option>
+                      <option value="Other Malaysia">Other (Malaysia)</option>
+                      <option value="International">International</option>
                     </select>
-                  </div>
-                  <button type="submit" className="hc-submit-btn" disabled={isSending}>
-                    {isSending ? 'Sending...' : 'Register Now'}
-                  </button>
-                </form>
+
+                    <button type="submit" className="hc-camp-submit" disabled={isSending}>
+                      {isSending ? 'SENDING...' : 'SUBMIT APPLICATION'}
+                    </button>
+                  </form>
+                </>
               )}
             </div>
+
+            {/* Right Side: Image */}
+            <div className="hc-camp-img-container">
+              <img src={summerCampImg} alt="Summer Camp 2026" />
+            </div>
+
           </div>
         </div>
       </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="hc-footer">
+        <div className="hc-footer-grid">
+          <div className="hc-footer-col">
+            <h3 className="hc-footer-title">Stanton Academy</h3>
+            <p>Adventure, Culture and Lifelong memories in the heart of Malaysia.</p>
+          </div>
+          <div className="hc-footer-col">
+            <h4 className="hc-footer-heading">Quick Links</h4>
+            <Link to="/">Home</Link>
+            <a href="#itinerary" onClick={(e) => { e.preventDefault(); document.getElementById('itinerary').scrollIntoView({ behavior: 'smooth' }); }}>Itinerary</a>
+            <a href="#packages" onClick={(e) => { e.preventDefault(); document.getElementById('packages').scrollIntoView({ behavior: 'smooth' }); }}>Packages</a>
+            <a href="#contact-form-section" onClick={scrollToForm}>Contact</a>
+          </div>
+          <div className="hc-footer-col">
+            <h4 className="hc-footer-heading">Contact Us</h4>
+            <p>📍 Pudu, Kuala Lumpur, Malaysia</p>
+            <p>📞 +60 111 864 8860</p>
+            <p>✉️ info@stanton-academy.com</p>
+          </div>
+        </div>
+        <div className="hc-footer-bottom">
+          <p>&copy; {new Date().getFullYear()} Stanton Academy. All rights reserved.</p>
+        </div>
+      </footer>
 
     </div>
   );
