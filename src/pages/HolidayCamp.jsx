@@ -14,9 +14,12 @@ const PACKAGES = [
   {
     name: 'Economy', theme: 'blue', price: 'RM 4,900', promo: 'RM 4,195', deposit: 'RM 950', highlight: false,
     features: [
-      { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: false },
-      { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
-      { text: 'All Tours Included', included: false }, { text: 'Room Type: Upon Request', included: 'info' }
+      { text: 'Intensive English Course', included: true }, 
+      { text: 'Lunch Included', included: false },
+      { text: 'Airport Transfer', included: false }, /* CHANGED: Airport transfer not included */
+      { text: 'T-Shirt & SIM Card', included: true },
+      { text: 'All Tours Included', included: false }, 
+      { text: 'Room Type: Upon Request', included: 'info' }
     ]
   },
   {
@@ -57,9 +60,11 @@ const GUARDIAN_PACKAGES = [
   {
     name: 'Economy Guardian', theme: 'blue', price: 'RM 2,700', promo: 'RM 2,295', deposit: 'RM 950', highlight: false,
     features: [
-      { text: 'Lunch Included', included: false }, { text: 'Airport Transfer', included: true },
-      { text: 'T-Shirt & SIM Card', included: true }, { text: 'All Tours Included', included: false },
-      { text: 'Room Type: Upon Request', included: 'info' }
+      { text: 'Lunch Included', included: false }, 
+      { text: 'Airport Transfer', included: true },
+      { text: 'T-Shirt & SIM Card', included: true }, 
+      { text: 'All Tours Included', included: false },
+      { text: 'Accommodation Included', included: false } /* CHANGED: Accommodation not included */
     ]
   },
   {
@@ -113,7 +118,7 @@ export default function HolidayCampPage() {
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   
-  // NEW: State for tracking which FAQ/Term is currently open
+  // State for tracking which FAQ/Term is currently open
   const [activeTerm, setActiveTerm] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -629,7 +634,7 @@ export default function HolidayCampPage() {
       <section className="hc-terms-section">
         <div className="hc-terms-container">
           <div className="hc-terms-header">
-            <h2 className="hc-terms-title">Terms & Conditions</h2>
+            <h2 className="hc-terms-title">FAQ</h2>
           </div>
           <div className="hc-accordion-list">
             {TERMS.map((term, index) => {
@@ -684,7 +689,7 @@ export default function HolidayCampPage() {
                     Join The <span>Summer</span><br/><span>Camp</span>
                   </h2>
                   <p className="hc-camp-subtitle">
-                    Explore Malaysia with English & Fun
+                    Multicultural And English language center in Kuala Lumpur
                   </p>
                   <h3 className="hc-camp-cta">Apply for this Summer Today!</h3>
 
