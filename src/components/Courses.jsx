@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Courses = ({ onOpenModal }) => {
-  // Added price, frequency, and duration to the data
   const courseData = [
     {
       id: 1, theme: 'blue', title: 'General English',
       price: '2200 RM/mo', frequency: '5x a week', duration: '4.5 hours',
+      link: '/general-english', btnText: 'Learn More',
       features: [ 
         'Master everyday English vocabulary and grammar structures.', 
         'Intensive focus on Reading, Writing, Listening, and Speaking.', 
@@ -17,6 +17,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 2, theme: 'orange', title: 'IELTS Preparation',
       price: '2200 RM/mo', frequency: '5x a week', duration: '4 hours',
+      link: '/ielts-preparation', btnText: 'Learn More',
       features: [ 
         'Intensive focus on Reading, Writing, Listening, and Speaking.', 
         'Learn proven test-taking strategies and time management.', 
@@ -27,6 +28,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 3, theme: 'red', title: 'Mandarin',
       price: '1250 RM/mo', frequency: '4x a week', duration: '2 hours',
+      link: '/language/mandarin', btnText: 'Learn More', // 👈 Connected to dynamic route
       features: [ 
         'Master the Pinyin system and the 4 tones of Mandarin.', 
         'Learn essential vocabulary for daily conversations.', 
@@ -37,6 +39,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 4, theme: 'green', title: 'Japanese',
       price: '1875 RM/mo', frequency: '5x a week', duration: '4 hours',
+      link: '/language/japanese', btnText: 'Learn More', // 👈 Connected to dynamic route
       features: [ 
         'Learn to read and write Hiragana and Katakana fluently.', 
         'Introduction to essential everyday Kanji characters.', 
@@ -47,6 +50,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 5, theme: 'blue', title: 'Korean',
       price: '1120 RM/mo', frequency: '5x a week', duration: '2 hours',
+      link: '/language/korean', btnText: 'Learn More', // 👈 Connected to dynamic route
       features: [ 
         'Master the Hangul alphabet quickly and easily.', 
         'Learn natural pronunciation, intonation, and honorifics.', 
@@ -57,6 +61,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 6, theme: 'orange', title: 'Bahasa Malaysia',
       price: '520 RM/mo', frequency: '1x a week', duration: '2 hours',
+      link: '/language/bahasa-malaysia', btnText: 'Learn More', // 👈 Connected to dynamic route
       features: [ 
         'Learn proper pronunciation and fundamental grammar.', 
         'Build a strong, practical vocabulary for everyday use.', 
@@ -67,6 +72,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 7, theme: 'red', title: 'German',
       price: '590 RM/mo', frequency: '2x a week', duration: '2 hours',
+      link: '/language/german', btnText: 'Learn More', // 👈 Connected to dynamic route
       features: [ 
         'Master standard German (Hochdeutsch) pronunciation.', 
         'Learn core grammar rules, including cases and sentence structure.', 
@@ -98,10 +104,7 @@ const Courses = ({ onOpenModal }) => {
                 <h3>{course.title}</h3>
               </div>
               
-              {/* MOVED OUTSIDE OF HEADER AND STYLED */}
               <div className="course-info-block" style={{ textAlign: 'center', padding: '0 20px 20px 20px', borderBottom: '1px solid #f3f4f6', marginBottom: '20px' }}>
-                
-                {/* Reduced font size to 1.25rem */}
                 <div className="course-price" style={{ fontSize: '1.25rem', fontWeight: '800', color: '#1f2937', marginBottom: '12px' }}>
                   {course.price}
                 </div>
@@ -130,8 +133,9 @@ const Courses = ({ onOpenModal }) => {
               </ul>
 
               <div className="card-footer">
-                <Link to="/signup" className="btn-full-width">
-                    Sign up 
+                {/* Dynamically uses the link and btnText properties we added above */}
+                <Link to={course.link || "/signup"} className="btn-full-width">
+                    {course.btnText || "Sign up"}
                 </Link>
               </div>
             </div>

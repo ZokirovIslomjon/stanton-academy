@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React from 'react';
 import logo from '../assets/logo-new.png'; 
 import whatsappIcon from '../assets/whatsapp.png';
@@ -17,12 +18,13 @@ const Footer = () => {
 
           <div className="footer-col links-col">
             <h4>Stanton Academy</h4>
-            <ul>
-              <li><a href="#courses">Courses</a></li>
-              <li><a href="#location">Branches</a></li>
-              <li><a href="#about">About Us</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
+            <ul className="footer-menu-list">
+  <li><Link to="/courses" className="footer-link">Courses</Link></li>
+  <li><Link to="/location" className="footer-link">Branches</Link></li>
+  <li><Link to="/about" className="footer-link">About Us</Link></li>
+  <li><Link to="/contact" className="footer-link">Contact</Link></li>
+  <li><Link to="/holiday-camp" className="footer-link">Holiday Camp</Link></li>
+</ul>
           </div>
 
           <div className="footer-col contact-col">

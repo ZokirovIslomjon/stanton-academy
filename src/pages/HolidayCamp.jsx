@@ -12,18 +12,18 @@ import summerCampImg from '../assets/landing.jpg';
 
 const PACKAGES = [
   {
-    name: 'Economy', theme: 'blue', price: 'RM 4,900', promo: 'RM 4,195', deposit: 'RM 950', highlight: false,
+    name: 'Economy', theme: 'blue', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, 
       { text: 'Lunch Included', included: false },
-      { text: 'Airport Transfer', included: false }, /* CHANGED: Airport transfer not included */
+      { text: 'Airport Transfer', included: false }, 
       { text: 'T-Shirt & SIM Card', included: true },
       { text: 'All Tours Included', included: false }, 
       { text: 'Room Type: Upon Request', included: 'info' }
     ]
   },
   {
-    name: 'Bronze', theme: 'orange', price: 'RM 7,900', promo: 'RM 6,745', deposit: 'RM 950', highlight: false,
+    name: 'Bronze', theme: 'orange', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -31,7 +31,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Silver', theme: 'gray', price: 'RM 9,400', promo: 'RM 8,020', deposit: 'RM 950', highlight: false,
+    name: 'Silver', theme: 'gray', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -39,7 +39,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Gold', theme: 'gold', price: 'RM 9,900', promo: 'RM 8,445', deposit: 'RM 950', highlight: true, badgeLabel: 'Most Popular',
+    name: 'Gold', theme: 'gold', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: true, badgeLabel: 'Most Popular',
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -47,7 +47,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Platinum', theme: 'dark', price: 'RM 10,600', promo: 'RM 9,040', deposit: 'RM 950', highlight: false,
+    name: 'Platinum', theme: 'dark', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -58,17 +58,17 @@ const PACKAGES = [
 
 const GUARDIAN_PACKAGES = [
   {
-    name: 'Economy Guardian', theme: 'blue', price: 'RM 2,700', promo: 'RM 2,295', deposit: 'RM 950', highlight: false,
+    name: 'Economy Guardian', theme: 'blue', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Lunch Included', included: false }, 
       { text: 'Airport Transfer', included: true },
       { text: 'T-Shirt & SIM Card', included: true }, 
       { text: 'All Tours Included', included: false },
-      { text: 'Accommodation Included', included: false } /* CHANGED: Accommodation not included */
+      { text: 'Accommodation Included', included: false } 
     ]
   },
   {
-    name: 'Gold Guardian', theme: 'gold', price: 'RM 3,700', promo: 'RM 3,145', deposit: 'RM 950', highlight: true, badgeLabel: 'Best Value',
+    name: 'Gold Guardian', theme: 'gold', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: true, badgeLabel: 'Best Value',
     features: [
       { text: 'Lunch Included', included: true }, { text: 'Airport Transfer', included: true },
       { text: 'T-Shirt & SIM Card', included: true }, { text: 'All Tours Included', included: true },
@@ -508,7 +508,7 @@ export default function HolidayCampPage() {
                 <div className="hc-cal-cell"><div className="hc-cal-num">27</div></div>
                 <div className="hc-cal-cell"><div className="hc-cal-num">28</div></div>
                 <div className="hc-cal-cell"><div className="hc-cal-num">29</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">30</div><div className="hc-cal-event hc-event--farewell">Safe Flight Home</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">30</div><div className="hc-cal-event hc-event--farewell">Flight back home</div></div>
                 <div className="hc-cal-cell"><div className="hc-cal-num">31</div></div>
                 <div className="hc-cal-cell hc-cal-cell--empty"/>
                 <div className="hc-cal-cell hc-cal-cell--empty"/>
@@ -554,7 +554,7 @@ export default function HolidayCampPage() {
                 <div className="hc-cal-cell"><div className="hc-cal-num">25</div></div>
                 <div className="hc-cal-cell"><div className="hc-cal-num">26</div></div>
                 <div className="hc-cal-cell"><div className="hc-cal-num">27</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">28</div><div className="hc-cal-event hc-event--farewell">Safe Flight Home</div></div>
+                <div className="hc-cal-cell"><div className="hc-cal-num">28</div><div className="hc-cal-event hc-event--farewell">Flight back home</div></div>
                 <div className="hc-cal-cell"><div className="hc-cal-num">29</div></div>
                 <div className="hc-cal-cell"><div className="hc-cal-num">30</div></div>
                 <div className="hc-cal-cell hc-cal-cell--empty"/>
@@ -584,7 +584,7 @@ export default function HolidayCampPage() {
                   <h3 className="hc-course-title">{pkg.name}</h3>
                 </div>
                 <div className="hc-course-price-block">
-                  <div className="hc-course-old-price">{pkg.price}</div>
+                  {pkg.price && <div className="hc-course-old-price">{pkg.price}</div>}
                   <div className="hc-course-new-price">{pkg.promo}</div>
                   <div className="hc-course-deposit">Deposit: <strong>{pkg.deposit}</strong></div>
                 </div>
@@ -608,7 +608,7 @@ export default function HolidayCampPage() {
                   <h3 className="hc-course-title">{pkg.name}</h3>
                 </div>
                 <div className="hc-course-price-block">
-                  <div className="hc-course-old-price">{pkg.price}</div>
+                  {pkg.price && <div className="hc-course-old-price">{pkg.price}</div>}
                   <div className="hc-course-new-price">{pkg.promo}</div>
                   <div className="hc-course-deposit">Deposit: <strong>{pkg.deposit}</strong></div>
                 </div>
