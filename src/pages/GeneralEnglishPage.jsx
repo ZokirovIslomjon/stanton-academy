@@ -1,116 +1,35 @@
 import React, { useEffect } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // 1. Import your Courses component for the bottom section
 import Courses from '../components/Courses';
 
-// 2. We removed the local image imports. 
-// The images are now directly linked via web URLs in the data object below!
+// This page is served directly at /general-english (see App.jsx).
+// Unlike LanguagePage, it has no :langId route param, so the content
+// below is hardcoded rather than looked up from a shared data object.
 
-const languageData = {
-  'mandarin': {
-    title: 'Mandarin',
-    themeColor: '#ef4444', 
-    overview: 'Our Mandarin course is designed to take you from absolute beginner to confident speaker. Whether for business or personal growth, immerse yourself in one of the world\'s most spoken languages.',
-    frequency: '4x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Master the Pinyin system and the 4 tones of Mandarin.',
-      'Learn essential vocabulary for daily conversations.',
-      'Introduction to reading and writing Chinese characters.',
-      'Explore Chinese culture, etiquette, and traditions.'
-    ],
-    bestFor: 'Students and professionals looking to tap into the Asian market, or anyone passionate about exploring Chinese culture.',
-    outcome: 'Strong foundation in Pinyin, basic character recognition, and the ability to confidently hold everyday conversations.',
-    fees: { tuition: 'RM 1250 / mo', registration: 'RM 200', total: 'RM 1450' },
-    // Using a professional study group image from Unsplash
-    image: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop' 
-  },
-  'japanese': {
-    title: 'Japanese',
-    themeColor: '#22c55e', 
-    overview: 'Immerse yourself in the Japanese language and culture. This course builds a solid foundation for JLPT preparation and practical, everyday communication.',
-    frequency: '5x a week',
-    duration: '4 hours / session',
-    focus: [
-      'Learn to read and write Hiragana and Katakana fluently.',
-      'Introduction to essential everyday Kanji characters.',
-      'Practice conversational Japanese for travel and business.',
-      'Build a strong foundation for the JLPT N5 examination.'
-    ],
-    bestFor: 'Anime enthusiasts, future expats, or students aiming to study/work in Japan and pass the JLPT N5.',
-    outcome: 'Fluency in basic reading and writing systems, and the ability to navigate standard travel and business conversations.',
-    fees: { tuition: 'RM 1875 / mo', registration: 'RM 200', total: 'RM 2075' },
-    // Using a collaborative students image from Unsplash
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop'
-  },
-  'korean': {
-    title: 'Korean',
-    themeColor: '#3b82f6', 
-    overview: 'From pop culture to corporate business, learn to read, write, and speak Korean naturally with proper honorifics and natural intonation.',
-    frequency: '5x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Master the Hangul alphabet quickly and easily.',
-      'Learn natural pronunciation, intonation, and honorifics.',
-      'Understand core grammar structures for everyday phrases.',
-      'Engage in practical dialogues for travel and daily life.'
-    ],
-    bestFor: 'K-culture fans, professionals dealing with Korean companies, and prospective students in South Korea.',
-    outcome: 'Complete mastery of reading Hangul, and the confidence to hold natural, polite conversations with native speakers.',
-    fees: { tuition: 'RM 1120 / mo', registration: 'RM 200', total: 'RM 1320' },
-    // Using a focused student image from Unsplash
-    image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop'
-  },
-  'bahasa-malaysia': {
-    title: 'Bahasa Malaysia',
-    themeColor: '#f97316', 
-    overview: 'The perfect course for expats and international students to effortlessly navigate daily life in Malaysia, understand local slang, and speak fluently.',
-    frequency: '1x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Learn proper pronunciation and fundamental grammar.',
-      'Build a strong, practical vocabulary for everyday use.',
-      'Practice useful phrases for shopping, dining, and navigating.',
-      'Understand local cultural contexts and conversational slang.'
-    ],
-    bestFor: 'Expatriates, international students, and foreign workers looking to integrate smoothly into Malaysian society.',
-    outcome: 'Ability to confidently converse with locals, order food, shop, and navigate everyday Malaysian life like a pro.',
-    fees: { tuition: 'RM 520 / mo', registration: 'RM 200', total: 'RM 720' },
-    // Using a classroom environment image from Unsplash
-    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop'
-  },
-  'german': {
-    title: 'German',
-    themeColor: '#ef4444', 
-    overview: 'Master standard Hochdeutsch with a strong focus on core grammar, precise pronunciation, and foundational skills required for Goethe-Institut exams.',
-    frequency: '2x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Master standard German (Hochdeutsch) pronunciation.',
-      'Learn core grammar rules, including cases and sentence structure.',
-      'Build conversational skills for living or studying in Germany.',
-      'Preparation foundation for Goethe-Institut examinations.'
-    ],
-    bestFor: 'Engineers, students applying to German universities, and anyone looking to relocate to DACH region countries.',
-    outcome: 'Solid grasp of German cases and syntax, plus the foundational knowledge needed to begin formal exam preparations.',
-    fees: { tuition: 'RM 590 / mo', registration: 'RM 200', total: 'RM 790' },
-    // Using a close-up studying/writing image from Unsplash
-    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop'
-  }
+const course = {
+  title: 'General English',
+  themeColor: '#3b82f6',
+  overview: 'Our General English course builds well-rounded fluency across Reading, Writing, Listening, and Speaking, helping you communicate confidently in everyday, academic, and professional settings.',
+  frequency: '5x a week',
+  duration: '4.5 hours / session',
+  focus: [
+    'Master everyday English vocabulary and grammar structures.',
+    'Intensive focus on Reading, Writing, Listening, and Speaking.',
+    'Engage in real-life conversational practice.',
+    'Build confidence for travel, work, and socializing.'
+  ],
+  bestFor: 'Students, working professionals, and anyone looking to build strong, well-rounded English skills for daily life and career growth.',
+  outcome: 'Confident, fluent communication across all four core English skills, ready for real-world academic, social, and workplace situations.',
+  fees: { tuition: 'RM 2400 / mo', registration: 'RM 200', total: 'RM 2600' },
+  image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2070&auto=format&fit=crop'
 };
 
-const LanguagePage = () => {
-  const { langId } = useParams();
-  const course = languageData[langId];
-
+const GeneralEnglishPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [langId]);
-
-  if (!course) {
-    return <Navigate to="/courses" />;
-  }
+  }, []);
 
   return (
     <main className="lang-page-wrapper">
@@ -329,4 +248,4 @@ const LanguagePage = () => {
   );
 };
 
-export default LanguagePage;
+export default GeneralEnglishPage;

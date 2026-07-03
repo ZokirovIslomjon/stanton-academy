@@ -244,6 +244,7 @@ const IELTSPreparationPage = () => {
         .ge-cta-container {
           text-align: center;
           margin-top: 80px;
+          margin-bottom: 80px;
           padding: 0 20px;
         }
         .ge-cta-container p {
@@ -271,6 +272,13 @@ const IELTSPreparationPage = () => {
           color: #006B3F;
           background-color: #ffffff;
           box-shadow: 0 10px 20px rgba(0, 107, 63, 0.1);
+        }
+
+        .other-courses-divider {
+          width: 100%;
+          height: 1px;
+          background: #e5e7eb;
+          margin-bottom: 40px;
         }
 
         @media (max-width: 900px) {
@@ -366,7 +374,7 @@ const IELTSPreparationPage = () => {
         </Link>
       </div>
 
-      <div style={{ width: '100%', height: '1px', background: '#e5e7eb', marginBottom: '40px' }}></div>
+      <div className="other-courses-divider"></div>
       <Courses />
 
     </main>

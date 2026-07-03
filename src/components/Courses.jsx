@@ -5,7 +5,7 @@ const Courses = ({ onOpenModal }) => {
   const courseData = [
     {
       id: 1, theme: 'blue', title: 'General English',
-      price: '2200 RM/mo', frequency: '5x a week', duration: '4.5 hours',
+      price: '2400 RM/mo', frequency: '5x a week', duration: '4.5 hours',
       link: '/general-english', btnText: 'Learn More',
       features: [ 
         'Master everyday English vocabulary and grammar structures.', 
@@ -28,7 +28,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 3, theme: 'red', title: 'Mandarin',
       price: '1250 RM/mo', frequency: '4x a week', duration: '2 hours',
-      link: '/language/mandarin', btnText: 'Learn More', // 👈 Connected to dynamic route
+      link: '/language/mandarin', btnText: 'Learn More',
       features: [ 
         'Master the Pinyin system and the 4 tones of Mandarin.', 
         'Learn essential vocabulary for daily conversations.', 
@@ -39,7 +39,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 4, theme: 'green', title: 'Japanese',
       price: '1875 RM/mo', frequency: '5x a week', duration: '4 hours',
-      link: '/language/japanese', btnText: 'Learn More', // 👈 Connected to dynamic route
+      link: '/language/japanese', btnText: 'Learn More',
       features: [ 
         'Learn to read and write Hiragana and Katakana fluently.', 
         'Introduction to essential everyday Kanji characters.', 
@@ -50,7 +50,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 5, theme: 'blue', title: 'Korean',
       price: '1120 RM/mo', frequency: '5x a week', duration: '2 hours',
-      link: '/language/korean', btnText: 'Learn More', // 👈 Connected to dynamic route
+      link: '/language/korean', btnText: 'Learn More',
       features: [ 
         'Master the Hangul alphabet quickly and easily.', 
         'Learn natural pronunciation, intonation, and honorifics.', 
@@ -61,7 +61,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 6, theme: 'orange', title: 'Bahasa Malaysia',
       price: '520 RM/mo', frequency: '1x a week', duration: '2 hours',
-      link: '/language/bahasa-malaysia', btnText: 'Learn More', // 👈 Connected to dynamic route
+      link: '/language/bahasa-malaysia', btnText: 'Learn More',
       features: [ 
         'Learn proper pronunciation and fundamental grammar.', 
         'Build a strong, practical vocabulary for everyday use.', 
@@ -72,7 +72,7 @@ const Courses = ({ onOpenModal }) => {
     {
       id: 7, theme: 'red', title: 'German',
       price: '590 RM/mo', frequency: '2x a week', duration: '2 hours',
-      link: '/language/german', btnText: 'Learn More', // 👈 Connected to dynamic route
+      link: '/language/german', btnText: 'Learn More',
       features: [ 
         'Master standard German (Hochdeutsch) pronunciation.', 
         'Learn core grammar rules, including cases and sentence structure.', 
@@ -133,7 +133,6 @@ const Courses = ({ onOpenModal }) => {
               </ul>
 
               <div className="card-footer">
-                {/* Dynamically uses the link and btnText properties we added above */}
                 <Link to={course.link || "/signup"} className="btn-full-width">
                     {course.btnText || "Sign up"}
                 </Link>
