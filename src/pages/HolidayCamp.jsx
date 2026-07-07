@@ -12,7 +12,7 @@ import summerCampImg from '../assets/landing.jpg';
 
 const PACKAGES = [
   {
-    name: 'Economy', theme: 'blue', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
+    name: 'Economy', theme: 'blue', price: '', promo: 'Start from RM 1090', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, 
       { text: 'Lunch Included', included: false },
@@ -23,7 +23,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Bronze', theme: 'orange', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
+    name: 'Bronze', theme: 'orange', price: '', promo: 'Start from RM 1690', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -31,7 +31,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Silver', theme: 'gray', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
+    name: 'Silver', theme: 'gray', price: '', promo: 'Start from RM 2090', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -39,7 +39,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Gold', theme: 'gold', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: true, badgeLabel: 'Most Popular',
+    name: 'Gold', theme: 'gold', price: '', promo: 'Start from RM 2190', deposit: 'RM 950', highlight: true, badgeLabel: 'Most Popular',
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -47,7 +47,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Platinum', theme: 'dark', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
+    name: 'Platinum', theme: 'dark', price: '', promo: 'Start from RM 2290', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -58,7 +58,7 @@ const PACKAGES = [
 
 const GUARDIAN_PACKAGES = [
   {
-    name: 'Economy Guardian', theme: 'blue', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: false,
+    name: 'Economy Guardian', theme: 'blue', price: '', promo: 'Start from RM 590', deposit: 'RM 950', highlight: false,
     features: [
       { text: 'Lunch Included', included: false }, 
       { text: 'Airport Transfer', included: true },
@@ -68,7 +68,7 @@ const GUARDIAN_PACKAGES = [
     ]
   },
   {
-    name: 'Gold Guardian', theme: 'gold', price: '', promo: 'Start from RM2295', deposit: 'RM 950', highlight: true, badgeLabel: 'Best Value',
+    name: 'Gold Guardian', theme: 'gold', price: '', promo: 'Start from RM 790', deposit: 'RM 950', highlight: true, badgeLabel: 'Best Value',
     features: [
       { text: 'Lunch Included', included: true }, { text: 'Airport Transfer', included: true },
       { text: 'T-Shirt & SIM Card', included: true }, { text: 'All Tours Included', included: true },

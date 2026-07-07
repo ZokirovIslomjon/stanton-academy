@@ -18,7 +18,6 @@ const courseDetails = {
       tuition: 'RM 2400',
       registration: 'RM 200',
       materials: 'RM 50',
-      total: 'RM 2600',
       promo: 'RM 410'
     }
   },
@@ -38,7 +37,6 @@ const courseDetails = {
       tuition: 'RM 4000',
       registration: 'RM 200',
       materials: null,
-      total: 'RM 4200',
       promo: 'RM 325'
     }
   },
@@ -59,7 +57,6 @@ const courseDetails = {
       tuition: 'RM 7000',
       registration: 'RM 200',
       materials: null,
-      total: 'RM 7200',
       promo: 'RM 366'
     }
   }
@@ -279,11 +276,6 @@ const GeneralEnglishPage = () => {
         .ge-fee-row:last-child {
           border-bottom: none;
         }
-        .ge-fee-total {
-          background: #f9fafb;
-          font-weight: 700;
-          color: #111;
-        }
         .ge-fee-promo {
           background: #e6f4ea;
           font-weight: 800;
@@ -420,11 +412,6 @@ const GeneralEnglishPage = () => {
                 <span>{activeData.fees.materials}</span>
               </div>
             )}
-            
-            <div className="ge-fee-row ge-fee-total">
-              <span>Total Fee</span>
-              <span>{activeData.fees.total}</span>
-            </div>
             
             <div className="ge-fee-row ge-fee-promo">
               <span>Promo Price</span>
