@@ -51,15 +51,18 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSending, setIsSending] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false); // NEW: Controls the success screen
+  const [isSubmitted, setIsSubmitted] = useState(false); 
 
   const sliderImages = [poster1, poster2];
+
+  // Find Malaysia's index dynamically as the default value
+  const defaultCountryIndex = countryCodes.findIndex(c => c.name === 'Malaysia');
 
   const [formData, setFormData] = useState({
     fullName: '',
     nationality: '',
     age: '',
-    countryCode: '+60',
+    countryIndex: defaultCountryIndex !== -1 ? defaultCountryIndex : 100, // Now uses the index!
     phone: '',
     email: '',
     course: '',
@@ -80,6 +83,9 @@ const SignUpPage = () => {
     setIsSending(true);
 
     const finalHearAbout = formData.hearAbout === 'Other' ? `Other: ${formData.hearAboutOther}` : formData.hearAbout;
+    
+    // Look up the actual code string based on the index right before sending
+    const selectedCountry = countryCodes[formData.countryIndex] || { code: '+60' };
 
     const sheetData = {
       data: [
@@ -87,7 +93,7 @@ const SignUpPage = () => {
           Name: formData.fullName,
           Nationality: formData.nationality,
           Age: formData.age,
-          Phone: `(${formData.countryCode}) ${formData.phone}`,
+          Phone: `(${selectedCountry.code}) ${formData.phone}`,
           Email: formData.email,
           Course: formData.course,
           HearAbout: finalHearAbout,
@@ -131,8 +137,9 @@ const SignUpPage = () => {
   };
 
   const handleResetForm = () => {
+    const defaultIndex = countryCodes.findIndex(c => c.name === 'Malaysia');
     setFormData({
-      fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', hearAbout: '', hearAboutOther: '', message: ''
+      fullName: '', nationality: '', age: '', countryIndex: defaultIndex !== -1 ? defaultIndex : 100, phone: '', email: '', course: '', hearAbout: '', hearAboutOther: '', message: ''
     });
     setIsSubmitted(false);
   };
@@ -416,8 +423,6 @@ const SignUpPage = () => {
         `}
       </style>
 
-      
-
       <div className="signup-container">
         
         <div className="signup-left">
@@ -509,12 +514,12 @@ const SignUpPage = () => {
                       <div className="phone-group">
                         <select 
                           className="form-control" 
-                          value={formData.countryCode} 
-                          onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
+                          value={formData.countryIndex} 
+                          onChange={(e) => setFormData({...formData, countryIndex: parseInt(e.target.value)})}
                           disabled={isSending}
                         >
                           {countryCodes.map((country, index) => (
-                            <option key={index} value={country.code}>
+                            <option key={index} value={index}>
                               {country.name} ({country.code})
                             </option>
                           ))}
