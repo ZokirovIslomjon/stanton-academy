@@ -5,7 +5,7 @@ const Courses = ({ onOpenModal }) => {
   const courseData = [
     {
       id: 1, theme: 'blue', title: 'General English',
-      price: '2400 RM/mo', frequency: '5x a week', duration: '4.5 hours',
+      frequency: '5x a week', duration: '4.5 hours',
       link: '/general-english', btnText: 'Learn More',
       features: [ 
         'Master everyday English vocabulary and grammar structures.', 
@@ -16,7 +16,7 @@ const Courses = ({ onOpenModal }) => {
     },
     {
       id: 2, theme: 'orange', title: 'IELTS Preparation',
-      price: '2200 RM/mo', frequency: '5x a week', duration: '4 hours',
+      frequency: '5x a week', duration: '4 hours',
       link: '/ielts-preparation', btnText: 'Learn More',
       features: [ 
         'Intensive focus on Reading, Writing, Listening, and Speaking.', 
@@ -27,7 +27,7 @@ const Courses = ({ onOpenModal }) => {
     },
     {
       id: 3, theme: 'red', title: 'Mandarin',
-      price: '1250 RM/mo', frequency: '4x a week', duration: '2 hours',
+      frequency: '4x a week', duration: '2 hours',
       link: '/language/mandarin', btnText: 'Learn More',
       features: [ 
         'Master the Pinyin system and the 4 tones of Mandarin.', 
@@ -38,7 +38,7 @@ const Courses = ({ onOpenModal }) => {
     },
     {
       id: 4, theme: 'green', title: 'Japanese',
-      price: '1875 RM/mo', frequency: '5x a week', duration: '4 hours',
+      frequency: '5x a week', duration: '4 hours',
       link: '/language/japanese', btnText: 'Learn More',
       features: [ 
         'Learn to read and write Hiragana and Katakana fluently.', 
@@ -49,7 +49,7 @@ const Courses = ({ onOpenModal }) => {
     },
     {
       id: 5, theme: 'blue', title: 'Korean',
-      price: '1120 RM/mo', frequency: '5x a week', duration: '2 hours',
+      frequency: '5x a week', duration: '2 hours',
       link: '/language/korean', btnText: 'Learn More',
       features: [ 
         'Master the Hangul alphabet quickly and easily.', 
@@ -60,7 +60,7 @@ const Courses = ({ onOpenModal }) => {
     },
     {
       id: 6, theme: 'orange', title: 'Bahasa Malaysia',
-      price: '520 RM/mo', frequency: '1x a week', duration: '2 hours',
+      frequency: '1x a week', duration: '2 hours',
       link: '/language/bahasa-malaysia', btnText: 'Learn More',
       features: [ 
         'Learn proper pronunciation and fundamental grammar.', 
@@ -71,7 +71,7 @@ const Courses = ({ onOpenModal }) => {
     },
     {
       id: 7, theme: 'red', title: 'German',
-      price: '590 RM/mo', frequency: '2x a week', duration: '2 hours',
+      frequency: '2x a week', duration: '2 hours',
       link: '/language/german', btnText: 'Learn More',
       features: [ 
         'Master standard German (Hochdeutsch) pronunciation.', 
@@ -105,10 +105,6 @@ const Courses = ({ onOpenModal }) => {
               </div>
               
               <div className="course-info-block" style={{ textAlign: 'center', padding: '0 20px 20px 20px', borderBottom: '1px solid #f3f4f6', marginBottom: '20px' }}>
-                <div className="course-price" style={{ fontSize: '1.25rem', fontWeight: '800', color: '#1f2937', marginBottom: '12px' }}>
-                  {course.price}
-                </div>
-
                 <div className="course-meta" style={{ display: 'flex', gap: '15px', justifyContent: 'center', fontSize: '0.85rem', color: '#6b7280' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
