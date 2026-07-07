@@ -21,12 +21,7 @@ const IELTSPreparationPage = () => {
       'Target Band 7.0+ with expert instructor guidance.'
     ],
     bestFor: 'Students planning to study abroad, professionals seeking global career opportunities, or anyone needing to prove their highest level of English proficiency.',
-    outcome: 'Comprehensive understanding of the test format, improved pacing, heightened accuracy across all four sections, and readiness to score Band 7.0 or higher.',
-    fees: {
-      tuition: 'RM 2200 / mo',
-      registration: 'RM 200',
-      total: 'RM 2400'
-    }
+    outcome: 'Comprehensive understanding of the test format, improved pacing, heightened accuracy across all four sections, and readiness to score Band 7.0 or higher.'
   };
 
   return (
@@ -208,39 +203,6 @@ const IELTSPreparationPage = () => {
           line-height: 1.6;
         }
 
-        .ge-fee-box {
-          margin-top: 25px;
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-        }
-        .ge-fee-header {
-          background: #006B3F;
-          color: white;
-          padding: 16px 20px;
-          font-weight: 700;
-          font-size: 1.05rem;
-          letter-spacing: 0.5px;
-        }
-        .ge-fee-row {
-          display: flex;
-          justify-content: space-between;
-          padding: 14px 20px;
-          border-bottom: 1px solid #f3f4f6;
-          color: #444;
-          font-size: 0.95rem;
-        }
-        .ge-fee-row:last-child {
-          border-bottom: none;
-        }
-        .ge-fee-total {
-          background: #f9fafb;
-          font-weight: 700;
-          color: #111;
-        }
-
         .ge-cta-container {
           text-align: center;
           margin-top: 80px;
@@ -343,25 +305,6 @@ const IELTSPreparationPage = () => {
           <div className="ge-text-block">
             <strong>Outcome</strong>
             <p>{courseData.outcome}</p>
-          </div>
-
-          <div className="ge-fee-box">
-            <div className="ge-fee-header">Program Fees</div>
-            
-            <div className="ge-fee-row">
-              <span>Tuition Fee</span>
-              <span>{courseData.fees.tuition}</span>
-            </div>
-            
-            <div className="ge-fee-row">
-              <span>Registration Fee (One-time)</span>
-              <span>{courseData.fees.registration}</span>
-            </div>
-            
-            <div className="ge-fee-row ge-fee-total">
-              <span>Total Fee</span>
-              <span>{courseData.fees.total}</span>
-            </div>
           </div>
 
         </div>

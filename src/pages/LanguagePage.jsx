@@ -26,7 +26,6 @@ const languageData = {
     ],
     bestFor: 'Students and professionals looking to tap into the Asian market, or anyone passionate about exploring Chinese culture.',
     outcome: 'Strong foundation in Pinyin, basic character recognition, and the ability to confidently hold everyday conversations.',
-    fees: { tuition: 'RM 1250 / mo', registration: 'RM 200', total: 'RM 1450' },
     image: mandarinImg 
   },
   'japanese': {
@@ -43,7 +42,6 @@ const languageData = {
     ],
     bestFor: 'Anime enthusiasts, future expats, or students aiming to study/work in Japan and pass the JLPT N5.',
     outcome: 'Fluency in basic reading and writing systems, and the ability to navigate standard travel and business conversations.',
-    fees: { tuition: 'RM 1875 / mo', registration: 'RM 200', total: 'RM 2075' },
     image: japaneseImg
   },
   'korean': {
@@ -60,7 +58,6 @@ const languageData = {
     ],
     bestFor: 'K-culture fans, professionals dealing with Korean companies, and prospective students in South Korea.',
     outcome: 'Complete mastery of reading Hangul, and the confidence to hold natural, polite conversations with native speakers.',
-    fees: { tuition: 'RM 1120 / mo', registration: 'RM 200', total: 'RM 1320' },
     image: koreanImg
   },
   'bahasa-malaysia': {
@@ -77,7 +74,6 @@ const languageData = {
     ],
     bestFor: 'Expatriates, international students, and foreign workers looking to integrate smoothly into Malaysian society.',
     outcome: 'Ability to confidently converse with locals, order food, shop, and navigate everyday Malaysian life like a pro.',
-    fees: { tuition: 'RM 520 / mo', registration: 'RM 200', total: 'RM 720' },
     image: bmImg
   },
   'german': {
@@ -94,7 +90,6 @@ const languageData = {
     ],
     bestFor: 'Engineers, students applying to German universities, and anyone looking to relocate to DACH region countries.',
     outcome: 'Solid grasp of German cases and syntax, plus the foundational knowledge needed to begin formal exam preparations.',
-    fees: { tuition: 'RM 590 / mo', registration: 'RM 200', total: 'RM 790' },
     image: germanImg
   }
 };
@@ -223,12 +218,6 @@ const LanguagePage = () => {
         .ge-text-block strong { color: #111; font-size: 1.05rem; display: block; margin-bottom: 5px; }
         .ge-text-block p { color: #555; margin: 0; font-size: 0.95rem; line-height: 1.6; }
 
-        .ge-fee-box { margin-top: 25px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .ge-fee-header { background: #006B3F; color: white; padding: 16px 20px; font-weight: 700; font-size: 1.05rem; letter-spacing: 0.5px; }
-        .ge-fee-row { display: flex; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid #f3f4f6; color: #444; font-size: 0.95rem; }
-        .ge-fee-row:last-child { border-bottom: none; }
-        .ge-fee-total { background: #f9fafb; font-weight: 700; color: #111; }
-
         .ge-cta-container { text-align: center; margin-top: 80px; margin-bottom: 80px; padding: 0 20px; }
         .ge-cta-container p { font-size: 1.1rem; font-weight: 600; color: #111; margin-bottom: 25px; }
         .ge-cta-btn {
@@ -296,22 +285,6 @@ const LanguagePage = () => {
           <div className="ge-text-block">
             <strong>Outcome</strong>
             <p>{course.outcome}</p>
-          </div>
-
-          <div className="ge-fee-box">
-            <div className="ge-fee-header">Program Fees</div>
-            <div className="ge-fee-row">
-              <span>Tuition Fee</span>
-              <span>{course.fees.tuition}</span>
-            </div>
-            <div className="ge-fee-row">
-              <span>Registration Fee (One-time)</span>
-              <span>{course.fees.registration}</span>
-            </div>
-            <div className="ge-fee-row ge-fee-total">
-              <span>Total Fee</span>
-              <span>{course.fees.total}</span>
-            </div>
           </div>
 
         </div>

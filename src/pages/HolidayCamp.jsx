@@ -12,7 +12,7 @@ import summerCampImg from '../assets/landing.jpg';
 
 const PACKAGES = [
   {
-    name: 'Economy', theme: 'blue', price: '', promo: 'Starts from RM 1090', deposit: 'RM 950', highlight: false,
+    name: 'Economy', theme: 'blue', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, 
       { text: 'Lunch Included', included: false },
@@ -23,7 +23,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Bronze', theme: 'orange', price: '', promo: 'Starts from RM 1690', deposit: 'RM 950', highlight: false,
+    name: 'Bronze', theme: 'orange', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -31,7 +31,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Silver', theme: 'gray', price: '', promo: 'Starts from RM 2090', deposit: 'RM 950', highlight: false,
+    name: 'Silver', theme: 'gray', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -39,7 +39,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Gold', theme: 'gold', price: '', promo: 'Starts from RM 2190', deposit: 'RM 950', highlight: true, badgeLabel: 'Most Popular',
+    name: 'Gold', theme: 'gold', highlight: true, badgeLabel: 'Most Popular',
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -47,7 +47,7 @@ const PACKAGES = [
     ]
   },
   {
-    name: 'Platinum', theme: 'dark', price: '', promo: 'Starts from RM 2290', deposit: 'RM 950', highlight: false,
+    name: 'Platinum', theme: 'dark', highlight: false,
     features: [
       { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
       { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
@@ -58,7 +58,7 @@ const PACKAGES = [
 
 const GUARDIAN_PACKAGES = [
   {
-    name: 'Economy Guardian', theme: 'blue', price: '', promo: 'Starts from RM 590', deposit: 'RM 950', highlight: false,
+    name: 'Economy Guardian', theme: 'blue', highlight: false,
     features: [
       { text: 'Lunch Included', included: false }, 
       { text: 'Airport Transfer', included: true },
@@ -68,7 +68,7 @@ const GUARDIAN_PACKAGES = [
     ]
   },
   {
-    name: 'Gold Guardian', theme: 'gold', price: '', promo: 'Starts from RM 790', deposit: 'RM 950', highlight: true, badgeLabel: 'Best Value',
+    name: 'Gold Guardian', theme: 'gold', highlight: true, badgeLabel: 'Best Value',
     features: [
       { text: 'Lunch Included', included: true }, { text: 'Airport Transfer', included: true },
       { text: 'T-Shirt & SIM Card', included: true }, { text: 'All Tours Included', included: true },
@@ -273,14 +273,11 @@ export default function HolidayCampPage() {
         .hc-course-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; border: 1px solid var(--gray-100); transition: transform 0.3s, box-shadow 0.3s; position: relative; }
         .hc-course-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
         .hc-course-card.highlight { border: 2px solid var(--gold); box-shadow: 0 8px 30px rgba(255,199,44,0.2); }
-        .hc-course-header { padding: 30px 20px 10px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; border-radius: 16px 16px 0 0; }
+        .hc-course-header { padding: 30px 20px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; border-radius: 16px 16px 0 0; border-bottom: 1px solid var(--gray-100); }
         .hc-popular-badge { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); background: var(--gold); color: var(--green-dark); font-size: 0.75rem; font-weight: 800; padding: 6px 16px; border-radius: 50px; white-space: nowrap; text-transform: uppercase; z-index: 10; }
         .hc-course-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: white; }
         .hc-course-title { font-size: 1.25rem; font-weight: 800; color: var(--gray-800); text-transform: capitalize; }
-        .hc-course-price-block { text-align: center; padding: 0 20px 20px; border-bottom: 1px solid var(--gray-100); }
-        .hc-course-old-price { font-size: 0.85rem; color: var(--gray-400); text-decoration: line-through; margin-bottom: 2px; }
-        .hc-course-new-price { font-size: 1.6rem; font-weight: 800; color: var(--gray-800); margin-bottom: 8px; }
-        .hc-course-deposit { font-size: 0.8rem; color: var(--gray-600); }
+        
         .hc-course-features { padding: 20px; flex: 1; list-style: none; margin: 0; }
         .hc-course-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px; line-height: 1.4; }
         .hc-course-features li:last-child { margin-bottom: 0; }
@@ -291,21 +288,14 @@ export default function HolidayCampPage() {
         
         .theme-blue .hc-course-icon, .theme-blue .hc-course-btn { background-color: #0ea5e9; }
         .theme-blue .hc-course-btn:hover { background-color: #0284c7; }
-        .theme-blue .hc-course-new-price { color: #0ea5e9; }
         .theme-orange .hc-course-icon, .theme-orange .hc-course-btn { background-color: #f97316; }
         .theme-orange .hc-course-btn:hover { background-color: #ea580c; }
-        .theme-orange .hc-course-new-price { color: #f97316; }
         .theme-gray .hc-course-icon, .theme-gray .hc-course-btn { background-color: #6b7280; }
         .theme-gray .hc-course-btn:hover { background-color: #4b5563; }
-        .theme-gray .hc-course-new-price { color: #6b7280; }
         .theme-gold .hc-course-icon, .theme-gold .hc-course-btn { background-color: #eab308; }
         .theme-gold .hc-course-btn:hover { background-color: #ca8a04; }
-        .theme-gold .hc-course-new-price { color: #eab308; }
         .theme-dark .hc-course-icon, .theme-dark .hc-course-btn { background-color: #1f2937; }
         .theme-dark .hc-course-btn:hover { background-color: #111827; }
-        .theme-dark .hc-course-new-price { color: #1f2937; }
-
-        .hc-discount-note { text-align: center; margin-top: 24px; background: #fef9e7; border: 1px solid #fde68a; border-radius: 12px; padding: 14px; font-size: 0.85rem; color: #92400e; }
 
         /* ── TERMS SECTION (Accordion FAQ Style) ── */
         .hc-terms-section { background: #f6f5f3; padding: 80px 20px; }
@@ -414,7 +404,7 @@ export default function HolidayCampPage() {
             <button onClick={(e) => scrollToForm(e)} className="hc-btn-primary-modern">
               Choose Package <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </button>
-            <a href="#packages" className="hc-btn-secondary-modern">View Pricing</a>
+            <a href="#packages" className="hc-btn-secondary-modern">View Packages</a>
           </div>
         </div>
 
@@ -568,7 +558,7 @@ export default function HolidayCampPage() {
       <section className="hc-packages-section" id="packages">
         <div className="hc-container">
           <div className="hc-section-header">
-            <div className="hc-section-label">Pricing Plans</div>
+            <div className="hc-section-label">Packages</div>
             <h2 className="hc-section-title">
               <span style={{ color: 'var(--green)' }}>Choose Your</span> <span style={{ color: 'var(--gold)' }}>Package</span>
             </h2>
@@ -582,11 +572,6 @@ export default function HolidayCampPage() {
                   {pkg.highlight && <div className="hc-popular-badge">⭐ {pkg.badgeLabel || 'Most Popular'}</div>}
                   <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
                   <h3 className="hc-course-title">{pkg.name}</h3>
-                </div>
-                <div className="hc-course-price-block">
-                  {pkg.price && <div className="hc-course-old-price">{pkg.price}</div>}
-                  <div className="hc-course-new-price">{pkg.promo}</div>
-                  <div className="hc-course-deposit">Deposit: <strong>{pkg.deposit}</strong></div>
                 </div>
                 <ul className="hc-course-features">
                   {pkg.features.map((feature, idx) => (
@@ -607,11 +592,6 @@ export default function HolidayCampPage() {
                   <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
                   <h3 className="hc-course-title">{pkg.name}</h3>
                 </div>
-                <div className="hc-course-price-block">
-                  {pkg.price && <div className="hc-course-old-price">{pkg.price}</div>}
-                  <div className="hc-course-new-price">{pkg.promo}</div>
-                  <div className="hc-course-deposit">Deposit: <strong>{pkg.deposit}</strong></div>
-                </div>
                 <ul className="hc-course-features">
                   {pkg.features.map((feature, idx) => (
                     <li key={idx}><FeatureIcon status={feature.included} />{feature.text}</li>
@@ -624,9 +604,6 @@ export default function HolidayCampPage() {
             ))}
           </div>
 
-          <div className="hc-discount-note">
-            🎉 <strong>Up to 15% Early Bird Discount</strong> — First come, first served! Fees include RM 200 Registration & 6% SST.
-          </div>
         </div>
       </section>
 

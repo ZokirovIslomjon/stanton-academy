@@ -13,13 +13,7 @@ const courseDetails = {
       'Listening & pronunciation practice'
     ],
     bestFor: 'Beginners needing a quick start, or intermediate students wanting a short refresher before a bigger commitment.',
-    outcome: 'Noticeable confidence boost in daily conversations; clear sense of current level and next steps.',
-    fees: {
-      tuition: 'RM 2400',
-      registration: 'RM 200',
-      materials: 'RM 50',
-      promo: 'RM 410'
-    }
+    outcome: 'Noticeable confidence boost in daily conversations; clear sense of current level and next steps.'
   },
   '2months': {
     title: 'General English — 2 Months (Skill Building)',
@@ -32,13 +26,7 @@ const courseDetails = {
       'Regular progress checkpoints (mid-course + final assessment)'
     ],
     bestFor: 'Students preparing for work, further study, or those who completed the 1-month course and want to build real fluency.',
-    outcome: 'Measurable level increase (e.g., A2→B1 or B1→B2 depending on starting point), stronger writing and speaking accuracy.',
-    fees: {
-      tuition: 'RM 4000',
-      registration: 'RM 200',
-      materials: null,
-      promo: 'RM 325'
-    }
+    outcome: 'Measurable level increase (e.g., A2→B1 or B1→B2 depending on starting point), stronger writing and speaking accuracy.'
   },
   '3months': {
     title: 'General English — 3 Months (Comprehensive Program)',
@@ -52,13 +40,7 @@ const courseDetails = {
       'Continuous assessment with a final proficiency evaluation & certificate'
     ],
     bestFor: 'Students aiming for a full CEFR level jump, university preparation, or long-term skill investment.',
-    outcome: 'Strong, well-rounded fluency; certificate of completion; readiness for exam-prep courses if needed.',
-    fees: {
-      tuition: 'RM 7000',
-      registration: 'RM 200',
-      materials: null,
-      promo: 'RM 366'
-    }
+    outcome: 'Strong, well-rounded fluency; certificate of completion; readiness for exam-prep courses if needed.'
   }
 };
 
@@ -249,40 +231,6 @@ const GeneralEnglishPage = () => {
           line-height: 1.6;
         }
 
-        .ge-fee-box {
-          margin-top: 25px;
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-        }
-        .ge-fee-header {
-          background: #006B3F;
-          color: white;
-          padding: 16px 20px;
-          font-weight: 700;
-          font-size: 1.05rem;
-          letter-spacing: 0.5px;
-        }
-        .ge-fee-row {
-          display: flex;
-          justify-content: space-between;
-          padding: 14px 20px;
-          border-bottom: 1px solid #f3f4f6;
-          color: #444;
-          font-size: 0.95rem;
-        }
-        .ge-fee-row:last-child {
-          border-bottom: none;
-        }
-        .ge-fee-promo {
-          background: #e6f4ea;
-          font-weight: 800;
-          color: #006B3F;
-          font-size: 1.1rem;
-        }
-
         .ge-cta-container {
           text-align: center;
           margin-top: 80px;
@@ -391,32 +339,6 @@ const GeneralEnglishPage = () => {
           <div className="ge-text-block">
             <strong>Outcome</strong>
             <p>{activeData.outcome}</p>
-          </div>
-
-          <div className="ge-fee-box">
-            <div className="ge-fee-header">Program Fees</div>
-            
-            <div className="ge-fee-row">
-              <span>Tuition Fee</span>
-              <span>{activeData.fees.tuition}</span>
-            </div>
-            
-            <div className="ge-fee-row">
-              <span>Registration Fee</span>
-              <span>{activeData.fees.registration}</span>
-            </div>
-            
-            {activeData.fees.materials && (
-              <div className="ge-fee-row">
-                <span>Materials Fee</span>
-                <span>{activeData.fees.materials}</span>
-              </div>
-            )}
-            
-            <div className="ge-fee-row ge-fee-promo">
-              <span>Promo Price</span>
-              <span>{activeData.fees.promo}</span>
-            </div>
           </div>
 
         </div>
