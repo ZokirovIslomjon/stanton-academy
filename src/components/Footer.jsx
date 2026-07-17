@@ -19,12 +19,12 @@ const Footer = () => {
           <div className="footer-col links-col">
             <h4>Stanton Academy</h4>
             <ul className="footer-menu-list">
-  <li><Link to="/courses" className="footer-link">Courses</Link></li>
-  <li><Link to="/location" className="footer-link">Branches</Link></li>
-  <li><Link to="/about" className="footer-link">About Us</Link></li>
-  <li><Link to="/contact" className="footer-link">Contact</Link></li>
-  <li><Link to="/holiday-camp" className="footer-link">Holiday Camp</Link></li>
-</ul>
+              <li><Link to="/courses" className="footer-link">Courses</Link></li>
+              <li><Link to="/location" className="footer-link">Branches</Link></li>
+              <li><Link to="/about" className="footer-link">About Us</Link></li>
+              <li><Link to="/contact" className="footer-link">Contact</Link></li>
+              <li><Link to="/holiday-camp" className="footer-link">Holiday Camp</Link></li>
+            </ul>
           </div>
 
           <div className="footer-col contact-col">
@@ -70,7 +70,7 @@ const Footer = () => {
 
         <div className="footer-divider"></div>
         <div className="footer-bottom">
-          <p>Copyright © 2026 Stanton Academy. All Rights Reserved</p>
+          <p>Copyright © 2026 Stanton Academy Sdn.Bhd (1660637-K). All Rights Reserved</p>
         </div>
       </div>
     </footer>
