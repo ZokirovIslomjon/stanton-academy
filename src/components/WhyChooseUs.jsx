@@ -9,7 +9,6 @@ const WhyChooseUs = () => {
       <div className="container">
         <div className="section-header">
           <h2>Why are people <span>choosing us?</span></h2>
-          <p>Stanton Academy has been teaching English to young people since 2014.</p>
         </div>
 
         {/* Added wcu-grid for horizontal scroll */}
