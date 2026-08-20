@@ -1,9 +1,42 @@
 import { Link } from 'react-router-dom';
-import React from 'react';
-import logo from '../assets/logo-new.png'; 
+import React, { useEffect, useState } from 'react';
+import logo from '../assets/logo-new.png';
 import whatsappIcon from '../assets/whatsapp.png';
+import { supabase } from '../lib/supabaseClient';
+import { useSiteImages } from '../lib/SiteImagesContext';
+
+const DEFAULT_SETTINGS = {
+  phone: '+60 1118648860',
+  email: 'info@stanton-academy.com',
+  whatsapp_url: 'https://wa.me/601118648860',
+  instagram_url: 'https://www.instagram.com/stantonacademy_kl?igsh=MTJ0eWdiMnV4azBiZA%3D%3D&utm_source=qr',
+  facebook_url: 'https://www.facebook.com/share/1Cmmp4ahQV/?mibextid=wwXIfr',
+  telegram_url: 'https://t.me/stantonacademykl',
+};
 
 const Footer = () => {
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const images = useSiteImages();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSettings() {
+      const { data, error } = await supabase.from('site_settings').select('*').eq('id', 1).maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load site settings:', error.message);
+      } else if (data) {
+        setSettings({ ...DEFAULT_SETTINGS, ...data });
+      }
+    }
+
+    loadSettings();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <footer className="footer-section" id="contact">
       <div className="container">
@@ -12,7 +45,7 @@ const Footer = () => {
           
           <div className="footer-col logo-col">
             <div className="footer-logo">
-               <img src={logo} alt="Stanton Academy" />
+               <img src={images.footer_logo || logo} alt="Stanton Academy" />
             </div>
           </div>
 
@@ -31,9 +64,9 @@ const Footer = () => {
             <h4>Our contacts</h4>
             <p className="phone-number">
               <svg style={{width:'16px', marginRight:'8px'}} fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-              +60 1118648860
+              {settings.phone}
             </p>
-            <p className="email-address">info@stanton-academy.com</p>
+            <p className="email-address">{settings.email}</p>
           </div>
 
           <div className="footer-col social-col">
@@ -41,12 +74,12 @@ const Footer = () => {
             <div className="social-icons">
               
               {/* WhatsApp (Links to your phone number) */}
-              <a href="https://wa.me/601118648860" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-                 <img src={whatsappIcon} alt="WhatsApp" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
+              <a href={settings.whatsapp_url} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                 <img src={images.footer_whatsapp_icon || whatsappIcon} alt="WhatsApp" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
               </a>
-              
+
               {/* Instagram (NEW CLEAN ICON) */}
-              <a href="https://www.instagram.com/stantonacademy_kl?igsh=MTJ0eWdiMnV4azBiZA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg style={{width:'24px', height:'24px'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -55,12 +88,12 @@ const Footer = () => {
               </a>
               
               {/* Facebook (NEW) */}
-              <a href="https://www.facebook.com/share/1Cmmp4ahQV/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                  <svg style={{width:'24px'}} fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
               </a>
 
               {/* Telegram */}
-              <a href="https://t.me/stantonacademykl" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+              <a href={settings.telegram_url} target="_blank" rel="noopener noreferrer" aria-label="Telegram">
                  <svg style={{width:'24px'}} fill="currentColor" viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"/></svg>
               </a>
 

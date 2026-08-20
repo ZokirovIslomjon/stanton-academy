@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/logo-new.png'; 
+import logo from '../assets/logo-new.png';
+import { supabase } from '../lib/supabaseClient';
+import { useSiteImages } from '../lib/SiteImagesContext';
 
 import poster1 from '../assets/poster1.jpeg';
 import poster2 from '../assets/poster2.png';
@@ -49,11 +51,12 @@ const countryCodes = [
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const images = useSiteImages();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSending, setIsSending] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false); 
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const sliderImages = [poster1, poster2];
+  const sliderImages = [images.signup_slider_1 || poster1, images.signup_slider_2 || poster2];
 
   // Find Malaysia's index dynamically as the default value
   const defaultCountryIndex = countryCodes.findIndex(c => c.name === 'Malaysia');
@@ -86,6 +89,21 @@ const SignUpPage = () => {
     
     // Look up the actual code string based on the index right before sending
     const selectedCountry = countryCodes[formData.countryIndex] || { code: '+60' };
+
+    // Save to admin dashboard (best-effort — doesn't block the sheetdb flow below)
+    supabase
+      .from('students')
+      .insert({
+        name: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: `(${selectedCountry.code}) ${formData.phone}`,
+        course_name: formData.course,
+        status: 'pending',
+        source: 'website',
+      })
+      .then(({ error }) => {
+        if (error) console.error('Supabase insert error:', error.message);
+      });
 
     const sheetData = {
       data: [

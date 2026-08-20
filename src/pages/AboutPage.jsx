@@ -1,7 +1,50 @@
-import React from 'react';
-import WhyChooseUs from '../components/WhyChooseUs'; 
+import React, { useEffect, useState } from 'react';
+import WhyChooseUs from '../components/WhyChooseUs';
+import { supabase } from '../lib/supabaseClient';
+import { renderListItems } from '../lib/contentHelpers';
+
+const DEFAULT_CONTENT = {
+  about_intro: "Welcome to Kuala Lumpur's premier boutique language center. Located in the vibrant heart of Bukit Bintang inside the historic Wisma Hainan, we trade crowded classrooms for a premium learning experience. Unlike other centers, our boutique setup allows us to focus entirely on your individual progress, helping international students, professionals, and holidaymakers achieve fluency right from the center of Malaysia's capital.",
+  about_advantage_items: [
+    'Intimate Class Sizes: Smaller groups mean more speaking time and direct attention from your teacher.',
+    'Personalized Feedback: Customized learning plans tailored to your specific speed, goals, and weaknesses.',
+    'Premium Community: A close-knit, supportive environment where you are a name, never a number.',
+    'Bukit Bintang Hub: Located in Wisma Hainan, steps away from major transit, shopping, and landmarks.',
+  ].join('\n'),
+  about_programs_items: [
+    'Holiday English: Fun, immersive seasonal programs combining language learning with Kuala Lumpur exploration.',
+    'Intensive English: Accelerated daytime tracks built for rapid, immersive fluency.',
+    'IELTS Preparation: Targeted strategies and mock exams to secure your target band score.',
+    'Malay Language: Practical conversational courses for navigating daily life in Malaysia.',
+    'Focus on Speaking: Dedicated workshops built exclusively to eliminate fear and build real-world confidence.',
+    'Business English: Professional vocabulary, presentation skills, and corporate writing for career growth.',
+  ].join('\n'),
+};
 
 const AboutPage = () => {
+  const [content, setContent] = useState(DEFAULT_CONTENT);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadContent() {
+      const { data, error } = await supabase.from('page_content').select('key, value').eq('page', 'about');
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load page content:', error.message);
+        return;
+      }
+      const map = {};
+      (data || []).forEach((row) => { map[row.key] = row.value; });
+      setContent((prev) => ({ ...prev, ...map }));
+    }
+
+    loadContent();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <main className="about-page-wrapper">
       <style>{`
@@ -71,28 +114,20 @@ const AboutPage = () => {
         <div className="content-container">
           <div className="content-block">
             <h2>About Stanton Academy</h2>
-            <p>Welcome to Kuala Lumpur's premier boutique language center. Located in the vibrant heart of Bukit Bintang inside the historic Wisma Hainan, we trade crowded classrooms for a premium learning experience. Unlike other centers, our boutique setup allows us to focus entirely on your individual progress, helping international students, professionals, and holidaymakers achieve fluency right from the center of Malaysia's capital.</p>
+            <p>{content.about_intro}</p>
           </div>
 
           <div className="content-block">
             <h2>The Boutique Advantage</h2>
             <ul className="content-list">
-              <li><strong>Intimate Class Sizes:</strong> Smaller groups mean more speaking time and direct attention from your teacher.</li>
-              <li><strong>Personalized Feedback:</strong> Customized learning plans tailored to your specific speed, goals, and weaknesses.</li>
-              <li><strong>Premium Community:</strong> A close-knit, supportive environment where you are a name, never a number.</li>
-              <li><strong>Bukit Bintang Hub:</strong> Located in Wisma Hainan, steps away from major transit, shopping, and landmarks.</li>
+              {renderListItems(content.about_advantage_items)}
             </ul>
           </div>
 
           <div className="content-block">
             <h2>Our Programs</h2>
             <ul className="content-list">
-              <li><strong>Holiday English:</strong> Fun, immersive seasonal programs combining language learning with Kuala Lumpur exploration.</li>
-              <li><strong>Intensive English:</strong> Accelerated daytime tracks built for rapid, immersive fluency.</li>
-              <li><strong>IELTS Preparation:</strong> Targeted strategies and mock exams to secure your target band score.</li>
-              <li><strong>Malay Language:</strong> Practical conversational courses for navigating daily life in Malaysia.</li>
-              <li><strong>Focus on Speaking:</strong> Dedicated workshops built exclusively to eliminate fear and build real-world confidence.</li>
-              <li><strong>Business English:</strong> Professional vocabulary, presentation skills, and corporate writing for career growth.</li>
+              {renderListItems(content.about_programs_items)}
             </ul>
           </div>
         </div>

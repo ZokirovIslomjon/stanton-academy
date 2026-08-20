@@ -1,86 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 
 const Courses = ({ onOpenModal }) => {
-  const courseData = [
-    {
-      id: 1, theme: 'blue', title: 'General English',
-      frequency: '5x a week', duration: '4.5 hours',
-      link: '/general-english', btnText: 'Learn More',
-      features: [ 
-        'Master everyday English vocabulary and grammar structures.', 
-        'Intensive focus on Reading, Writing, Listening, and Speaking.', 
-        'Engage in real-life conversational practice.', 
-        'Build confidence for travel, work, and socializing.' 
-      ]
-    },
-    {
-      id: 2, theme: 'orange', title: 'IELTS Preparation',
-      frequency: '5x a week', duration: '4 hours',
-      link: '/ielts-preparation', btnText: 'Learn More',
-      features: [ 
-        'Intensive focus on Reading, Writing, Listening, and Speaking.', 
-        'Learn proven test-taking strategies and time management.', 
-        'Regular mock tests with personalized, detailed feedback.', 
-        'Target Band 7.0+ with expert instructor guidance.' 
-      ]
-    },
-    {
-      id: 3, theme: 'red', title: 'Mandarin',
-      frequency: '4x a week', duration: '2 hours',
-      link: '/language/mandarin', btnText: 'Learn More',
-      features: [ 
-        'Master the Pinyin system and the 4 tones of Mandarin.', 
-        'Learn essential vocabulary for daily conversations.', 
-        'Introduction to reading and writing Chinese characters.', 
-        'Explore Chinese culture, etiquette, and traditions.' 
-      ]
-    },
-    {
-      id: 4, theme: 'green', title: 'Japanese',
-      frequency: '5x a week', duration: '4 hours',
-      link: '/language/japanese', btnText: 'Learn More',
-      features: [ 
-        'Learn to read and write Hiragana and Katakana fluently.', 
-        'Introduction to essential everyday Kanji characters.', 
-        'Practice conversational Japanese for travel and business.', 
-        'Build a strong foundation for the JLPT N5 examination.' 
-      ]
-    },
-    {
-      id: 5, theme: 'blue', title: 'Korean',
-      frequency: '5x a week', duration: '2 hours',
-      link: '/language/korean', btnText: 'Learn More',
-      features: [ 
-        'Master the Hangul alphabet quickly and easily.', 
-        'Learn natural pronunciation, intonation, and honorifics.', 
-        'Understand core grammar structures for everyday phrases.', 
-        'Engage in practical dialogues for travel and daily life.' 
-      ]
-    },
-    {
-      id: 6, theme: 'orange', title: 'Bahasa Malaysia',
-      frequency: '1x a week', duration: '2 hours',
-      link: '/language/bahasa-malaysia', btnText: 'Learn More',
-      features: [ 
-        'Learn proper pronunciation and fundamental grammar.', 
-        'Build a strong, practical vocabulary for everyday use.', 
-        'Practice useful phrases for shopping, dining, and navigating.', 
-        'Understand local cultural contexts and conversational slang.' 
-      ]
-    },
-    {
-      id: 7, theme: 'red', title: 'German',
-      frequency: '2x a week', duration: '2 hours',
-      link: '/language/german', btnText: 'Learn More',
-      features: [ 
-        'Master standard German (Hochdeutsch) pronunciation.', 
-        'Learn core grammar rules, including cases and sentence structure.', 
-        'Build conversational skills for living or studying in Germany.', 
-        'Preparation foundation for Goethe-Institut examinations.' 
-      ]
+  const [courseData, setCourseData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCourses() {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load courses:', error.message);
+      } else {
+        setCourseData(data || []);
+      }
+      setLoading(false);
     }
-  ];
+
+    loadCourses();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <section className="courses-section" id="courses">
@@ -90,6 +39,9 @@ const Courses = ({ onOpenModal }) => {
           <p>Discover the courses available and choose the one that suits you best</p>
         </div>
 
+        {loading ? (
+          <p style={{ textAlign: 'center' }}>Loading courses...</p>
+        ) : (
         <div className="pricing-grid">
           {courseData.map((course) => (
             <div key={course.id} className={`pricing-card ${course.theme}-theme`}>
@@ -118,7 +70,7 @@ const Courses = ({ onOpenModal }) => {
               </div>
               
               <ul className="feature-list" style={{ marginTop: '0' }}>
-                {course.features.map((feature, index) => (
+                {(course.features || []).map((feature, index) => (
                   <li key={index}>
                     <span className="check-icon">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -130,12 +82,13 @@ const Courses = ({ onOpenModal }) => {
 
               <div className="card-footer">
                 <Link to={course.link || "/signup"} className="btn-full-width">
-                    {course.btnText || "Sign up"}
+                    {course.btn_text || "Sign up"}
                 </Link>
               </div>
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

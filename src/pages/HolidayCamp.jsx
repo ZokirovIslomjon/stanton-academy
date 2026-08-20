@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSiteImages } from '../lib/SiteImagesContext';
+import { supabase } from '../lib/supabaseClient';
+import { parseListItems } from '../lib/contentHelpers';
+import { buildCalendarGrid, MONTH_NAMES } from '../lib/calendarGrid';
 
 // Import local images from assets folder
 import cityTourImg from '../assets/City Tour.jpg';
@@ -10,72 +14,30 @@ import melakaTripImg from '../assets/Melaka trip.jpg';
 import beachBackgroundImg from '../assets/Beach background.jpg';
 import summerCampImg from '../assets/landing.jpg'; 
 
-const PACKAGES = [
-  {
-    name: 'Economy', theme: 'blue', highlight: false,
-    features: [
-      { text: 'Intensive English Course', included: true }, 
-      { text: 'Lunch Included', included: false },
-      { text: 'Airport Transfer', included: false }, 
-      { text: 'T-Shirt & SIM Card', included: true },
-      { text: 'All Tours Included', included: false }, 
-      { text: 'Room Type: Upon Request', included: 'info' }
-    ]
-  },
-  {
-    name: 'Bronze', theme: 'orange', highlight: false,
-    features: [
-      { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
-      { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
-      { text: 'All Tours Included', included: true }, { text: 'Room Type: Small Room', included: 'info' }
-    ]
-  },
-  {
-    name: 'Silver', theme: 'gray', highlight: false,
-    features: [
-      { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
-      { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
-      { text: 'All Tours Included', included: true }, { text: 'Room Type: Small Room', included: 'info' }
-    ]
-  },
-  {
-    name: 'Gold', theme: 'gold', highlight: true, badgeLabel: 'Most Popular',
-    features: [
-      { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
-      { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
-      { text: 'All Tours Included', included: true }, { text: 'Room Type: Middle Room', included: 'info' }
-    ]
-  },
-  {
-    name: 'Platinum', theme: 'dark', highlight: false,
-    features: [
-      { text: 'Intensive English Course', included: true }, { text: 'Lunch Included', included: true },
-      { text: 'Airport Transfer', included: true }, { text: 'T-Shirt & SIM Card', included: true },
-      { text: 'All Tours Included', included: true }, { text: 'Room Type: Master Room', included: 'info' }
-    ]
-  }
-];
+const DEFAULT_CONTENT = {
+  camp_hero_title_green: 'Adventure, Culture and Lifelong ',
+  camp_hero_title_gold: 'memories in the heart of Malaysia.',
+  camp_hero_desc: 'Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery.',
+  camp_about_desc: [
+    "Ready for the ultimate holiday adventure with fun? Welcome to the Stanton Academy Holiday Camp in Kuala Lumpur Malaysia! Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery in the ultimate city-center playground. This isn't your average indoor experience—it's an interactive journey where participants supercharge their skills through dynamic games, debates, trips and real-world practice.",
+    'Our location at Pudu, Kuala Lumpur is the perfect launchpad for an incredible holiday. Situated right in the heart of Kuala Lumpur, it boasts exceptional transport connectivity with direct access to major LRT, MRT, and bus lines right at our doorstep. This unmatched accessibility means zero-hassle drop-offs for parents, seamless commutes and lightning-fast transit for our thrilling weekly excursions across Kuala Lumpur & Malaysia.',
+    "Best of all, our campus is just a short, exciting walk away from KL's most famous hotspots! Participants are within walking distance of Bukit Bintang, the thrilling shopping district of Berjaya Times Square, the historical streets of Chinatown, and Alor Street—the ultimate world-renowned food heaven & street food paradise of KL.",
+    "Surrounded by infinite energy, culture, and flavor, our campers will build unstoppable teamwork, forge lifelong friendships, and explore the very best of the city. Don't just spend the holidays—own them with Stanton Academy",
+  ].join('\n\n'),
+  camp_terms_items: [
+    'GUARDIANS FOR STUDENTS UNDER 12: Students under 12 must be accompanied a guardian for a trips and activities.',
+    'DEPOSIT PAYMENT: Deposit payments is compulsory and non-refundable after registration.',
+    'FLIGHT TICKET ACCOMMODATION: Flight details must be provided at least 2 weeks in advanced for airport pickup and accommodation arragements.',
+    'CONSENT FOR STUDENTS UNDER 18: Parental consent is required for all students under 18.',
+    'AIRPORT TRANSFER: Airport transfer service are available during standart operating hours only. Flight arriving late at night or early in the morning may not be eligible for airport transfer.',
+  ].join('\n'),
+};
 
-const GUARDIAN_PACKAGES = [
-  {
-    name: 'Economy Guardian', theme: 'blue', highlight: false,
-    features: [
-      { text: 'Lunch Included', included: false }, 
-      { text: 'Airport Transfer', included: true },
-      { text: 'T-Shirt & SIM Card', included: true }, 
-      { text: 'All Tours Included', included: false },
-      { text: 'Accommodation Included', included: false } 
-    ]
-  },
-  {
-    name: 'Gold Guardian', theme: 'gold', highlight: true, badgeLabel: 'Best Value',
-    features: [
-      { text: 'Lunch Included', included: true }, { text: 'Airport Transfer', included: true },
-      { text: 'T-Shirt & SIM Card', included: true }, { text: 'All Tours Included', included: true },
-      { text: 'Room Type: Middle Room', included: 'info' }
-    ]
-  }
-];
+function featureIconStatus(status) {
+  if (status === 'included') return true;
+  if (status === 'info') return 'info';
+  return false;
+}
 
 const TRIPS = [
   { name: 'City Tour', image: cityTourImg, desc: 'Experience the vibrant culture, iconic landmarks and hidden gems.' },
@@ -86,13 +48,14 @@ const TRIPS = [
   { name: 'Port Dickson', image: portDicksonImg, desc: 'Relax on the sandy beaches and enjoy the coastal charm.' },
 ];
 
-const TERMS = [
-  { title: 'GUARDIANS FOR STUDENTS UNDER 12', desc: 'Students under 12 must be accompanied a guardian for a trips and activities.' },
-  { title: 'DEPOSIT PAYMENT', desc: 'Deposit payments is compulsory and non-refundable after registration.' },
-  { title: 'FLIGHT TICKET ACCOMMODATION', desc: 'Flight details must be provided at least 2 weeks in advanced for airport pickup and accommodation arragements.' },
-  { title: 'CONSENT FOR STUDENTS UNDER 18', desc: 'Parental consent is required for all students under 18.' },
-  { title: 'AIRPORT TRANSFER', desc: 'Airport transfer service are available during standart operating hours only. Flight arriving late at night or early in the morning may not be eligible for airport transfer.' }
-];
+const TRIP_IMAGE_KEYS = {
+  'City Tour': 'camp_city_tour',
+  'Batu Caves': 'camp_batu_caves',
+  'Sunway Lagoon': 'camp_sunway_lagoon',
+  'Genting Highlands': 'camp_genting_highlands',
+  'Melaka Trip': 'camp_melaka_trip',
+  'Port Dickson': 'camp_port_dickson',
+};
 
 function FeatureIcon({ status }) {
   if (status === true || status === 'info') {
@@ -113,13 +76,84 @@ const ThemeIcon = ({ theme }) => {
 };
 
 export default function HolidayCampPage() {
-  const [activeTab, setActiveTab] = useState('july');
+  const images = useSiteImages();
+  const [content, setContent] = useState(DEFAULT_CONTENT);
+  const [months, setMonths] = useState([]);
+  const [activeMonthId, setActiveMonthId] = useState(null);
+  const [packages, setPackages] = useState([]);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', location: '', package: '' });
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  
+
   // State for tracking which FAQ/Term is currently open
   const [activeTerm, setActiveTerm] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadContent() {
+      const { data, error } = await supabase.from('page_content').select('key, value').eq('page', 'holiday_camp');
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load page content:', error.message);
+        return;
+      }
+      const map = {};
+      (data || []).forEach((row) => { map[row.key] = row.value; });
+      setContent((prev) => ({ ...prev, ...map }));
+    }
+
+    async function loadCalendar() {
+      const { data: monthsData, error: monthsError } = await supabase.from('camp_months').select('*').order('display_order', { ascending: true });
+      if (cancelled) return;
+      if (monthsError) {
+        console.error('Failed to load camp months:', monthsError.message);
+        return;
+      }
+      const { data: eventsData, error: eventsError } = await supabase.from('camp_events').select('*');
+      if (cancelled) return;
+      if (eventsError) {
+        console.error('Failed to load camp events:', eventsError.message);
+        return;
+      }
+      const eventsByMonth = {};
+      (eventsData || []).forEach((e) => {
+        if (!eventsByMonth[e.month_id]) eventsByMonth[e.month_id] = [];
+        eventsByMonth[e.month_id].push(e);
+      });
+      const monthsWithEvents = (monthsData || []).map((m) => ({ ...m, events: eventsByMonth[m.id] || [] }));
+      setMonths(monthsWithEvents);
+      if (monthsWithEvents.length > 0) setActiveMonthId(monthsWithEvents[0].id);
+    }
+
+    async function loadPackages() {
+      const { data: pkgData, error: pkgError } = await supabase.from('camp_packages').select('*').order('category', { ascending: true }).order('display_order', { ascending: true });
+      if (cancelled) return;
+      if (pkgError) {
+        console.error('Failed to load camp packages:', pkgError.message);
+        return;
+      }
+      const { data: featData, error: featError } = await supabase.from('camp_package_features').select('*').order('display_order', { ascending: true });
+      if (cancelled) return;
+      if (featError) {
+        console.error('Failed to load camp package features:', featError.message);
+        return;
+      }
+      const featuresByPkg = {};
+      (featData || []).forEach((f) => {
+        if (!featuresByPkg[f.package_id]) featuresByPkg[f.package_id] = [];
+        featuresByPkg[f.package_id].push(f);
+      });
+      setPackages((pkgData || []).map((p) => ({ ...p, features: featuresByPkg[p.id] || [] })));
+    }
+
+    loadContent();
+    loadCalendar();
+    loadPackages();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -240,7 +274,7 @@ export default function HolidayCampPage() {
         .hc-section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; color: var(--gray-800); }
 
         /* ── ABOUT STANTON CINEMATIC SECTION ── */
-        .hc-cinematic-section { background: linear-gradient(to bottom, var(--green-dark) 0%, rgba(0, 107, 63, 0.9) 20%, rgba(0, 107, 63, 0) 60%), url('${beachBackgroundImg}') center/cover no-repeat; padding: 200px 20px 120px; color: white; position: relative; }
+        .hc-cinematic-section { background: linear-gradient(to bottom, var(--green-dark) 0%, rgba(0, 107, 63, 0.9) 20%, rgba(0, 107, 63, 0) 60%), url('${images.camp_beach_background || beachBackgroundImg}') center/cover no-repeat; padding: 200px 20px 120px; color: white; position: relative; }
         .hc-cinematic-content { max-width: 900px; text-align: left; }
         .hc-about-top-title { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: 0.1em; margin-bottom: 0; color: white; }
         .hc-about-signature { font-family: 'Dancing Script', cursive; color: var(--gold); font-size: clamp(3rem, 7vw, 5rem); line-height: 1.2; margin-top: 5px; margin-bottom: 30px; text-shadow: 2px 2px 6px rgba(0,0,0,0.3); }
@@ -277,7 +311,8 @@ export default function HolidayCampPage() {
         .hc-popular-badge { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); background: var(--gold); color: var(--green-dark); font-size: 0.75rem; font-weight: 800; padding: 6px 16px; border-radius: 50px; white-space: nowrap; text-transform: uppercase; z-index: 10; }
         .hc-course-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: white; }
         .hc-course-title { font-size: 1.25rem; font-weight: 800; color: var(--gray-800); text-transform: capitalize; }
-        
+        .hc-course-price { font-size: 1.1rem; font-weight: 800; color: var(--green); margin-top: 6px; }
+
         .hc-course-features { padding: 20px; flex: 1; list-style: none; margin: 0; }
         .hc-course-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px; line-height: 1.4; }
         .hc-course-features li:last-child { margin-bottom: 0; }
@@ -392,12 +427,12 @@ export default function HolidayCampPage() {
         
         <div className="hc-hero-content">
           <h1 className="hc-hero-title-modern">
-            <span style={{ color: 'var(--green)', display: 'inline' }}>Adventure, Culture and Lifelong </span>
-            <span style={{ color: 'var(--gold)', display: 'inline' }}>memories in the heart of Malaysia.</span>
+            <span style={{ color: 'var(--green)', display: 'inline' }}>{content.camp_hero_title_green}</span>
+            <span style={{ color: 'var(--gold)', display: 'inline' }}>{content.camp_hero_title_gold}</span>
           </h1>
-          
+
           <p className="hc-hero-desc-modern">
-            Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery.
+            {content.camp_hero_desc}
           </p>
 
           <div className="hc-hero-btn-group">
@@ -413,7 +448,7 @@ export default function HolidayCampPage() {
           <div className="hc-trips-grid">
             {TRIPS.map((t, i) => (
               <div key={i} className="hc-trip-card">
-                <img src={t.image} alt={t.name} className="hc-trip-bg" />
+                <img src={images[TRIP_IMAGE_KEYS[t.name]] || t.image} alt={t.name} className="hc-trip-bg" />
                 <div className="hc-trip-overlay"></div>
                 <div className="hc-trip-content">
                   <h3 className="hc-trip-name">{t.name}</h3>
@@ -437,10 +472,7 @@ export default function HolidayCampPage() {
               <h1 className="hc-about-signature">Holiday Camp</h1>
             </div>
             <div className="hc-about-long-desc">
-              <p>Ready for the ultimate holiday adventure with fun? Welcome to the Stanton Academy Holiday Camp in Kuala Lumpur Malaysia! Designed for kids aged 8 to teenagers 15+, our action-packed program offers up to a full month of non-stop excitement, learning, and cultural discovery in the ultimate city-center playground. This isn't your average indoor experience—it's an interactive journey where participants supercharge their skills through dynamic games, debates, trips and real-world practice.</p>
-              <p>Our location at Pudu, Kuala Lumpur is the perfect launchpad for an incredible holiday. Situated right in the heart of Kuala Lumpur, it boasts exceptional transport connectivity with direct access to major LRT, MRT, and bus lines right at our doorstep. This unmatched accessibility means zero-hassle drop-offs for parents, seamless commutes and lightning-fast transit for our thrilling weekly excursions across Kuala Lumpur & Malaysia.</p>
-              <p>Best of all, our campus is just a short, exciting walk away from KL's most famous hotspots! Participants are within walking distance of Bukit Bintang, the thrilling shopping district of Berjaya Times Square, the historical streets of Chinatown, and Alor Street—the ultimate world-renowned food heaven & street food paradise of KL.</p>
-              <p>Surrounded by infinite energy, culture, and flavor, our campers will build unstoppable teamwork, forge lifelong friendships, and explore the very best of the city. Don't just spend the holidays—own them with Stanton Academy</p>
+              {content.camp_about_desc.split('\n\n').map((para, i) => <p key={i}>{para}</p>)}
             </div>
           </div>
         </div>
@@ -456,100 +488,42 @@ export default function HolidayCampPage() {
             </h2>
           </div>
           
-          <div className="hc-tabs">
-            <button className={`hc-tab${activeTab === 'july' ? ' hc-tab--active' : ''}`} onClick={() => setActiveTab('july')}>📅 July 2026</button>
-            <button className={`hc-tab${activeTab === 'august' ? ' hc-tab--active' : ''}`} onClick={() => setActiveTab('august')}>📅 August 2026</button>
-          </div>
+          {months.length === 0 ? (
+            <p style={{ textAlign: 'center', color: 'var(--gray-600)' }}>No camp sessions scheduled yet.</p>
+          ) : (
+            <>
+              <div className="hc-tabs">
+                {months.map((m) => (
+                  <button
+                    key={m.id}
+                    className={`hc-tab${activeMonthId === m.id ? ' hc-tab--active' : ''}`}
+                    onClick={() => setActiveMonthId(m.id)}
+                  >
+                    📅 {MONTH_NAMES[m.month - 1]} {m.year}
+                  </button>
+                ))}
+              </div>
 
-          {activeTab === 'july' && (
-            <div className="hc-calendar">
-              <div className="hc-cal-header">
-                {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <div key={d} className="hc-cal-day-name">{d}</div>)}
-              </div>
-              <div className="hc-cal-grid">
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-                <div className="hc-cal-cell"><div className="hc-cal-num">1</div><div className="hc-cal-event hc-event--arrival">Arrival Day</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">2</div><div className="hc-cal-event hc-event--start">Start Day</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">3</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">4</div><div className="hc-cal-event hc-event--trip">Sunway Lagoon</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">5</div><div className="hc-cal-event hc-event--trip">City Tour & Batu Caves</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">6</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">7</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">8</div><div className="hc-cal-event hc-event--night">Movie Night</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">9</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">10</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">11</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">12</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">13</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">14</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">15</div><div className="hc-cal-event hc-event--sport">Sport Day</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">16</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">17</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">18</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">19</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">20</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">21</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">22</div><div className="hc-cal-event hc-event--night">Culture Night</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">23</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">24</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">25</div><div className="hc-cal-event hc-event--trip">Genting Highlands</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">26</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">27</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">28</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">29</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">30</div><div className="hc-cal-event hc-event--farewell">Flight back home</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">31</div></div>
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'august' && (
-            <div className="hc-calendar">
-              <div className="hc-cal-header">
-                {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <div key={d} className="hc-cal-day-name">{d}</div>)}
-              </div>
-              <div className="hc-cal-grid">
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-                <div className="hc-cal-cell"><div className="hc-cal-num">30 Jul</div><div className="hc-cal-event hc-event--arrival">Arrival Day</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">31 Jul</div><div className="hc-cal-event hc-event--start">Start Day</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">1</div><div className="hc-cal-event hc-event--trip">Sunway Lagoon</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">2</div><div className="hc-cal-event hc-event--trip">City Tour & Batu Caves</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">3</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">4</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">5</div><div className="hc-cal-event hc-event--night">Movie Night</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">6</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">7</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">8</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">9</div><div className="hc-cal-event hc-event--trip">Port Dickson</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">10</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">11</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">12</div><div className="hc-cal-event hc-event--sport">Sport Day</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">13</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">14</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">15</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">16</div><div className="hc-cal-event hc-event--trip">Melaka Trip</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">17</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">18</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">19</div><div className="hc-cal-event hc-event--night">Culture Night</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">20</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">21</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">22</div><div className="hc-cal-event hc-event--trip">Genting Highlands</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">23</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">24</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">25</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">26</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">27</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">28</div><div className="hc-cal-event hc-event--farewell">Flight back home</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">29</div></div>
-                <div className="hc-cal-cell"><div className="hc-cal-num">30</div></div>
-                <div className="hc-cal-cell hc-cal-cell--empty"/>
-              </div>
-            </div>
+              {months.filter((m) => m.id === activeMonthId).map((m) => (
+                <div className="hc-calendar" key={m.id}>
+                  <div className="hc-cal-header">
+                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => <div key={d} className="hc-cal-day-name">{d}</div>)}
+                  </div>
+                  <div className="hc-cal-grid">
+                    {buildCalendarGrid(m.year, m.month, m.events).map((cell, i) => (
+                      cell.type === 'empty' ? (
+                        <div key={i} className="hc-cal-cell hc-cal-cell--empty" />
+                      ) : (
+                        <div key={i} className="hc-cal-cell">
+                          <div className="hc-cal-num">{cell.dayLabel}</div>
+                          {cell.event && <div className={`hc-cal-event hc-event--${cell.event.event_type}`}>{cell.event.label}</div>}
+                        </div>
+                      )
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </>
           )}
         </div>
       </section>
@@ -565,43 +539,28 @@ export default function HolidayCampPage() {
           </div>
           
           <div className="hc-course-grid">
-            {/* Render Student Packages */}
-            {PACKAGES.map((pkg, i) => (
-              <div key={`student-${i}`} className={`hc-course-card theme-${pkg.theme} ${pkg.highlight ? 'highlight' : ''}`}>
-                <div className="hc-course-header">
-                  {pkg.highlight && <div className="hc-popular-badge">⭐ {pkg.badgeLabel || 'Most Popular'}</div>}
-                  <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
-                  <h3 className="hc-course-title">{pkg.name}</h3>
+            {packages.length === 0 ? (
+              <p style={{ textAlign: 'center', color: 'var(--gray-600)' }}>No packages configured yet.</p>
+            ) : (
+              packages.map((pkg) => (
+                <div key={pkg.id} className={`hc-course-card theme-${pkg.theme} ${pkg.highlight ? 'highlight' : ''}`}>
+                  <div className="hc-course-header">
+                    {pkg.highlight && <div className="hc-popular-badge">⭐ {pkg.badge_label || (pkg.category === 'guardian' ? 'Best Value' : 'Most Popular')}</div>}
+                    <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
+                    <h3 className="hc-course-title">{pkg.name}</h3>
+                    {pkg.price && <div className="hc-course-price">{pkg.price}</div>}
+                  </div>
+                  <ul className="hc-course-features">
+                    {pkg.features.map((feature) => (
+                      <li key={feature.id}><FeatureIcon status={featureIconStatus(feature.status)} />{feature.text}</li>
+                    ))}
+                  </ul>
+                  <div className="hc-course-footer">
+                    <button onClick={(e) => scrollToForm(e, pkg.name)} className="hc-course-btn">Select Package</button>
+                  </div>
                 </div>
-                <ul className="hc-course-features">
-                  {pkg.features.map((feature, idx) => (
-                    <li key={idx}><FeatureIcon status={feature.included} />{feature.text}</li>
-                  ))}
-                </ul>
-                <div className="hc-course-footer">
-                  <button onClick={(e) => scrollToForm(e, pkg.name)} className="hc-course-btn">Select Package</button>
-                </div>
-              </div>
-            ))}
-            
-            {/* Render Guardian Packages */}
-            {GUARDIAN_PACKAGES.map((pkg, i) => (
-              <div key={`guardian-${i}`} className={`hc-course-card theme-${pkg.theme} ${pkg.highlight ? 'highlight' : ''}`}>
-                <div className="hc-course-header">
-                  {pkg.highlight && <div className="hc-popular-badge">⭐ {pkg.badgeLabel || 'Best Value'}</div>}
-                  <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
-                  <h3 className="hc-course-title">{pkg.name}</h3>
-                </div>
-                <ul className="hc-course-features">
-                  {pkg.features.map((feature, idx) => (
-                    <li key={idx}><FeatureIcon status={feature.included} />{feature.text}</li>
-                  ))}
-                </ul>
-                <div className="hc-course-footer">
-                  <button onClick={(e) => scrollToForm(e, pkg.name)} className="hc-course-btn">Select Package</button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
         </div>
@@ -614,7 +573,7 @@ export default function HolidayCampPage() {
             <h2 className="hc-terms-title">FAQ</h2>
           </div>
           <div className="hc-accordion-list">
-            {TERMS.map((term, index) => {
+            {parseListItems(content.camp_terms_items).map((term, index) => {
               const isOpen = activeTerm === index;
               return (
                 <div key={index} className={`hc-accordion-item ${isOpen ? 'open' : ''}`}>
@@ -695,10 +654,10 @@ export default function HolidayCampPage() {
                             value={formData.package} onChange={(e) => setFormData({...formData, package: e.target.value})} disabled={isSending}>
                       <option value="" disabled hidden>Select Package*</option>
                       <optgroup label="Student Packages">
-                        {PACKAGES.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+                        {packages.filter(p => p.category === 'student').map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
                       </optgroup>
                       <optgroup label="Guardian Packages">
-                        {GUARDIAN_PACKAGES.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+                        {packages.filter(p => p.category === 'guardian').map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
                       </optgroup>
                       <option value="Not Sure Yet">Not Sure Yet</option>
                     </select>
@@ -728,7 +687,7 @@ export default function HolidayCampPage() {
 
             {/* Right Side: Image */}
             <div className="hc-camp-img-container">
-              <img src={summerCampImg} alt="Summer Camp 2026" />
+              <img src={images.camp_summer_2026_image || summerCampImg} alt="Summer Camp 2026" />
             </div>
 
           </div>

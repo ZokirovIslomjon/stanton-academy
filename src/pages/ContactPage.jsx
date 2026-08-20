@@ -1,10 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Location from '../components/Location';
+import { supabase } from '../lib/supabaseClient';
+
+const DEFAULT_CONTENT = {
+  contact_intro: 'Have a question about our courses or need help with your application? Send us a message and our team will get back to you shortly.',
+};
 
 const ContactPage = () => {
+  const [content, setContent] = useState(DEFAULT_CONTENT);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadContent() {
+      const { data, error } = await supabase.from('page_content').select('key, value').eq('page', 'contact');
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load page content:', error.message);
+        return;
+      }
+      const map = {};
+      (data || []).forEach((row) => { map[row.key] = row.value; });
+      setContent((prev) => ({ ...prev, ...map }));
+    }
+
+    loadContent();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +106,7 @@ const ContactPage = () => {
 
       <section className="contact-hero">
         <h1><span style={{ color: '#006B3F' }}>Contact</span> <span style={{ color: '#FFC72C' }}>Us</span></h1>
-        <p>Have a question about our courses or need help with your application? Send us a message and our team will get back to you shortly.</p>
+        <p>{content.contact_intro}</p>
       </section>
 
       <section className="contact-form-section">

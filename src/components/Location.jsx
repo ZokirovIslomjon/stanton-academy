@@ -1,6 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
+
+const DEFAULT_SETTINGS = {
+  address: 'No 112 & 114, 5th Floor, Wisma Hainan, Jalan Pudu 55100, Kuala Lumpur',
+  phone: '+60 1118648860',
+  email: 'info@stanton-academy.com',
+};
 
 const Location = () => {
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSettings() {
+      const { data, error } = await supabase.from('site_settings').select('*').eq('id', 1).maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load site settings:', error.message);
+      } else if (data) {
+        setSettings({ ...DEFAULT_SETTINGS, ...data });
+      }
+    }
+
+    loadSettings();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section className="location-section">
       <div className="container">
@@ -19,7 +47,7 @@ const Location = () => {
                 </div>
                 <div>
                     <h3>Our Office</h3>
-                    <p>No 112 & 114, 5th Floor, Wisma Hainan, Jalan Pudu 55100, Kuala Lumpur</p>
+                    <p>{settings.address}</p>
                 </div>
             </div>
 
@@ -29,7 +57,7 @@ const Location = () => {
                 </div>
                 <div>
                     <h3>Phone</h3>
-                    <p>+60 1118648860</p>
+                    <p>{settings.phone}</p>
                 </div>
             </div>
 
@@ -39,7 +67,7 @@ const Location = () => {
                 </div>
                 <div>
                     <h3>Email</h3>
-                    <p>info@stanton-academy.com</p>
+                    <p>{settings.email}</p>
                 </div>
             </div>
           </div>

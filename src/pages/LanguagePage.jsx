@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 
 // 1. Import your Courses component for the bottom section
 import Courses from '../components/Courses';
+import { useSiteImages } from '../lib/SiteImagesContext';
 
 // 2. Exact image imports based on your exact file names
 import mandarinImg from '../assets/mandarin-class.jpg';
@@ -94,9 +95,18 @@ const languageData = {
   }
 };
 
+const IMAGE_KEY_BY_LANG = {
+  mandarin: 'language_mandarin',
+  japanese: 'language_japanese',
+  korean: 'language_korean',
+  'bahasa-malaysia': 'language_bahasa_malaysia',
+  german: 'language_german',
+};
+
 const LanguagePage = () => {
   const { langId } = useParams();
   const course = languageData[langId];
+  const images = useSiteImages();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -252,7 +262,7 @@ const LanguagePage = () => {
 
       <div className="ge-content-container">
         <div className="ge-image-wrapper">
-          <img src={course.image} alt={`${course.title} classes`} className="ge-image" />
+          <img src={images[IMAGE_KEY_BY_LANG[langId]] || course.image} alt={`${course.title} classes`} className="ge-image" />
         </div>
 
         <div className="ge-details">

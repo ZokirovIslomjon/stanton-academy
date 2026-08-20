@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
+import { supabase } from '../lib/supabaseClient';
 
 const RegisterModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -54,6 +55,21 @@ const RegisterModal = ({ isOpen, onClose }) => {
       setIsSending(false);
       return;
     }
+
+    // Save to admin dashboard (best-effort — doesn't block the email flow below)
+    supabase
+      .from('students')
+      .insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        course_name: formData.course,
+        status: 'pending',
+        source: 'website',
+      })
+      .then(({ error }) => {
+        if (error) console.error('Supabase insert error:', error.message);
+      });
 
     // Prepare template parameters
     const templateParams = {

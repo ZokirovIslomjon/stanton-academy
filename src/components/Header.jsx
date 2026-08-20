@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/logo.png'; 
-import logoWhite from '../assets/logo-new.png'; 
+import logo from '../assets/logo.png';
+import logoWhite from '../assets/logo-new.png';
+import { useSiteImages } from '../lib/SiteImagesContext';
 
 const Header = () => {
+  const images = useSiteImages();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
@@ -94,7 +96,7 @@ const Header = () => {
           
           <div className="logo" style={{ zIndex: 1001 }}>
             <Link to="/" onClick={closeMenu}>
-              <img src={isDarkBackground ? logoWhite : logo} alt="Stanton Academy" style={{ height: '45px' }} />
+              <img src={isDarkBackground ? (images.header_logo_white || logoWhite) : (images.header_logo_dark || logo)} alt="Stanton Academy" style={{ height: '45px' }} />
             </Link>
           </div>
           

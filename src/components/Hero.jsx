@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import summerCampImg from '../assets/landing.jpg'; 
+import summerCampImg from '../assets/landing.jpg';
+import { useSiteImages } from '../lib/SiteImagesContext';
 
 const Hero = () => {
+  const images = useSiteImages();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -224,7 +226,7 @@ const Hero = () => {
                   
                   {/* FIXED: objectFit set to 'contain' to avoid image crop */}
                   <div className="camp-img-container">
-                    <img src={summerCampImg} alt="Summer Camp Poster" style={{ width: '100%', height: 'auto', maxHeight: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block', borderRadius: '16px' }} />
+                    <img src={images.hero_summer_camp_poster || summerCampImg} alt="Summer Camp Poster" style={{ width: '100%', height: 'auto', maxHeight: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block', borderRadius: '16px' }} />
                   </div>
                 </div>
               ) : (

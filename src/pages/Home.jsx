@@ -4,6 +4,7 @@ import React from 'react';
 import Hero from '../components/Hero';
 import WhyChooseUs from '../components/WhyChooseUs';
 import Courses from '../components/Courses';
+import FAQ from '../components/FAQ';
 import Location from '../components/Location';
 
 const Home = () => {
@@ -13,6 +14,7 @@ const Home = () => {
       <Hero />
       <WhyChooseUs />
       <Courses />
+      <FAQ />
       <Location />
     </main>
   );
