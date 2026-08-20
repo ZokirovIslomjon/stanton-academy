@@ -116,7 +116,8 @@ const SignUpPage = () => {
           Course: formData.course,
           HearAbout: finalHearAbout,
           Message: formData.message || 'None',
-          Date: new Date().toLocaleString()
+          Date: new Date().toLocaleString(),
+          Synced: 'yes' // already saved to Supabase directly above — tells the sheet sync script to skip this row
         }
       ]
     };
