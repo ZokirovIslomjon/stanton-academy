@@ -48,8 +48,13 @@ export default function AdminCourses() {
   const openEdit = (course) =>
     setForm({
       ...course,
+      frequency: course.frequency ?? '',
+      duration: course.duration ?? '',
       price: course.price ?? '',
       capacity: course.capacity ?? '',
+      level_note: course.level_note ?? '',
+      image_url: course.image_url ?? '',
+      link: course.link ?? '',
       features: (course.features || []).join('\n'),
     });
   const closeForm = () => setForm(null);
