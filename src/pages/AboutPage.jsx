@@ -3,6 +3,7 @@ import WhyChooseUs from '../components/WhyChooseUs';
 import Editable from '../components/Editable';
 import { supabase } from '../lib/supabaseClient';
 import { renderListItems } from '../lib/contentHelpers';
+import { useLanguage } from '../lib/LanguageContext';
 
 const DEFAULT_CONTENT = {
   about_intro: "Welcome to Kuala Lumpur's premier boutique language center. Located in the vibrant heart of Bukit Bintang inside the historic Wisma Hainan, we trade crowded classrooms for a premium learning experience. Unlike other centers, our boutique setup allows us to focus entirely on your individual progress, helping international students, professionals, and holidaymakers achieve fluency right from the center of Malaysia's capital.",
@@ -22,21 +23,35 @@ const DEFAULT_CONTENT = {
   ].join('\n'),
 };
 
+// page_content stores one English row per key (`value`); translated copies live in
+// `value_ar`/`value_zh` on that same row. These mirror the FAQ.jsx localizedField
+// pattern so the admin Editable widget reads/saves the column for the active language.
+function localizedContent(content, key, lang) {
+  if (lang === 'en') return content[key] || '';
+  return content[`${key}_${lang}`] || content[key] || '';
+}
+const valueField = (lang) => (lang === 'en' ? 'value' : `value_${lang}`);
+
 const AboutPage = () => {
+  const { t, lang } = useLanguage();
   const [content, setContent] = useState(DEFAULT_CONTENT);
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadContent() {
-      const { data, error } = await supabase.from('page_content').select('key, value').eq('page', 'about');
+      const { data, error } = await supabase.from('page_content').select('key, value, value_ar, value_zh').eq('page', 'about');
       if (cancelled) return;
       if (error) {
         console.error('Failed to load page content:', error.message);
         return;
       }
       const map = {};
-      (data || []).forEach((row) => { map[row.key] = row.value; });
+      (data || []).forEach((row) => {
+        map[row.key] = row.value;
+        map[`${row.key}_ar`] = row.value_ar;
+        map[`${row.key}_zh`] = row.value_zh;
+      });
       setContent((prev) => ({ ...prev, ...map }));
     }
 
@@ -108,48 +123,48 @@ const AboutPage = () => {
       `}</style>
 
       <section className="about-hero">
-        <h1><span style={{ color: '#006B3F' }}>About</span> <span style={{ color: '#FFC72C' }}>Us</span></h1>
+        <h1><span style={{ color: '#006B3F' }}>{t('aboutPage.headingPart1')}</span> <span style={{ color: '#FFC72C' }}>{t('aboutPage.headingPart2')}</span></h1>
       </section>
 
       <section className="content-section">
         <div className="content-container">
           <div className="content-block">
-            <h2>About Stanton Academy</h2>
+            <h2>{t('aboutPage.sectionAbout')}</h2>
             <Editable
               table="page_content"
               match={{ key: 'about_intro' }}
-              field="value"
-              value={content.about_intro}
+              field={valueField(lang)}
+              value={localizedContent(content, 'about_intro', lang)}
               multiline
-              onSaved={(v) => setContent((c) => ({ ...c, about_intro: v }))}
+              onSaved={(v) => setContent((c) => ({ ...c, [lang === 'en' ? 'about_intro' : `about_intro_${lang}`]: v }))}
             >
               {(v) => <p>{v}</p>}
             </Editable>
           </div>
 
           <div className="content-block">
-            <h2>The Boutique Advantage</h2>
+            <h2>{t('aboutPage.sectionAdvantage')}</h2>
             <Editable
               table="page_content"
               match={{ key: 'about_advantage_items' }}
-              field="value"
-              value={content.about_advantage_items}
+              field={valueField(lang)}
+              value={localizedContent(content, 'about_advantage_items', lang)}
               multiline
-              onSaved={(v) => setContent((c) => ({ ...c, about_advantage_items: v }))}
+              onSaved={(v) => setContent((c) => ({ ...c, [lang === 'en' ? 'about_advantage_items' : `about_advantage_items_${lang}`]: v }))}
             >
               {(v) => <ul className="content-list">{renderListItems(v)}</ul>}
             </Editable>
           </div>
 
           <div className="content-block">
-            <h2>Our Programs</h2>
+            <h2>{t('aboutPage.sectionPrograms')}</h2>
             <Editable
               table="page_content"
               match={{ key: 'about_programs_items' }}
-              field="value"
-              value={content.about_programs_items}
+              field={valueField(lang)}
+              value={localizedContent(content, 'about_programs_items', lang)}
               multiline
-              onSaved={(v) => setContent((c) => ({ ...c, about_programs_items: v }))}
+              onSaved={(v) => setContent((c) => ({ ...c, [lang === 'en' ? 'about_programs_items' : `about_programs_items_${lang}`]: v }))}
             >
               {(v) => <ul className="content-list">{renderListItems(v)}</ul>}
             </Editable>

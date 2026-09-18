@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-new.png';
-import { supabase } from '../lib/supabaseClient';
-import { useSiteImages } from '../lib/SiteImagesContext';
 
 import poster1 from '../assets/poster1.jpeg';
 import poster2 from '../assets/poster2.png';
+import { useLanguage } from '../lib/LanguageContext';
 
 const countryCodes = [
   { name: 'Afghanistan', code: '+93' }, { name: 'Albania', code: '+355' }, { name: 'Algeria', code: '+213' }, { name: 'Andorra', code: '+376' }, { name: 'Angola', code: '+244' },
@@ -50,13 +49,13 @@ const countryCodes = [
 ];
 
 const SignUpPage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
-  const images = useSiteImages();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSending, setIsSending] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); 
 
-  const sliderImages = [images.signup_slider_1 || poster1, images.signup_slider_2 || poster2];
+  const sliderImages = [poster1, poster2];
 
   // Find Malaysia's index dynamically as the default value
   const defaultCountryIndex = countryCodes.findIndex(c => c.name === 'Malaysia');
@@ -90,21 +89,6 @@ const SignUpPage = () => {
     // Look up the actual code string based on the index right before sending
     const selectedCountry = countryCodes[formData.countryIndex] || { code: '+60' };
 
-    // Save to admin dashboard (best-effort — doesn't block the sheetdb flow below)
-    supabase
-      .from('students')
-      .insert({
-        name: formData.fullName.trim(),
-        email: formData.email.trim(),
-        phone: `(${selectedCountry.code}) ${formData.phone}`,
-        course_name: formData.course,
-        status: 'pending',
-        source: 'website',
-      })
-      .then(({ error }) => {
-        if (error) console.error('Supabase insert error:', error.message);
-      });
-
     const sheetData = {
       data: [
         {
@@ -116,8 +100,7 @@ const SignUpPage = () => {
           Course: formData.course,
           HearAbout: finalHearAbout,
           Message: formData.message || 'None',
-          Date: new Date().toLocaleString(),
-          Synced: 'yes' // already saved to Supabase directly above — tells the sheet sync script to skip this row
+          Date: new Date().toLocaleString()
         }
       ]
     };
@@ -149,7 +132,7 @@ const SignUpPage = () => {
       }
     } catch (error) {
       console.error('Submission Error:', error);
-      alert('Failed to send application. Please try again or contact us directly on WhatsApp.');
+      alert(t('signUpPage.submitFailedAlert'));
     } finally {
       setIsSending(false);
     }
@@ -472,26 +455,26 @@ const SignUpPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3>Application Received!</h3>
+                <h3>{t('signUpPage.applicationReceived')}</h3>
                 <p>
-                  Thank you, <strong>{formData.fullName}</strong>. Your enquiry has been successfully submitted. <br/><br/>
-                  Our admissions team at Stanton Academy will review your details and contact you shortly.
+                  {t('signUpPage.thankYouPrefix')} <strong>{formData.fullName}</strong>. {t('signUpPage.thankYouSuffix')} <br/><br/>
+                  {t('signUpPage.thankYouLine2')}
                 </p>
                 <button className="btn-call" onClick={handleResetForm} style={{ maxWidth: '300px' }}>
-                  Done
+                  {t('signUpPage.done')}
                 </button>
               </div>
             ) : (
               <>
-                <h2>ENQUIRE NOW</h2>
-                
+                <h2>{t('signUpPage.heading')}</h2>
+
                 <form onSubmit={handleSubmit} className="signup-form fade-in">
-                  
+
                   <div className="form-col">
-                    <label className="form-label">Full Name (As in IC/ Passport)<span>*</span></label>
-                    <input 
-                      type="text" 
-                      required 
+                    <label className="form-label">{t('signUpPage.fullNameLabel')}<span>*</span></label>
+                    <input
+                      type="text"
+                      required
                       className="form-control"
                       value={formData.fullName}
                       onChange={(e) => setFormData({...formData, fullName: e.target.value})}
@@ -501,11 +484,11 @@ const SignUpPage = () => {
 
                   <div className="form-row">
                     <div className="form-col">
-                      <label className="form-label">Nationality<span>*</span></label>
-                      <input 
-                        type="text" 
-                        placeholder="Please Select"
-                        required 
+                      <label className="form-label">{t('signUpPage.nationalityLabel')}<span>*</span></label>
+                      <input
+                        type="text"
+                        placeholder={t('signUpPage.pleaseSelect')}
+                        required
                         className="form-control"
                         value={formData.nationality}
                         onChange={(e) => setFormData({...formData, nationality: e.target.value})}
@@ -513,10 +496,10 @@ const SignUpPage = () => {
                       />
                     </div>
                     <div className="form-col">
-                      <label className="form-label">Age<span>*</span></label>
-                      <input 
-                        type="number" 
-                        required 
+                      <label className="form-label">{t('signUpPage.ageLabel')}<span>*</span></label>
+                      <input
+                        type="number"
+                        required
                         min="1"
                         max="100"
                         className="form-control"
@@ -526,10 +509,10 @@ const SignUpPage = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="form-row">
                     <div className="form-col">
-                      <label className="form-label">Phone number<span>*</span></label>
+                      <label className="form-label">{t('signUpPage.phoneLabel')}<span>*</span></label>
                       <div className="phone-group">
                         <select 
                           className="form-control" 
@@ -555,10 +538,10 @@ const SignUpPage = () => {
                     </div>
 
                     <div className="form-col">
-                      <label className="form-label">Email<span>*</span></label>
-                      <input 
-                        type="email" 
-                        required 
+                      <label className="form-label">{t('signUpPage.emailLabel')}<span>*</span></label>
+                      <input
+                        type="email"
+                        required
                         className="form-control"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -566,56 +549,45 @@ const SignUpPage = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="form-col">
-                    <label className="form-label">Courses<span>*</span></label>
-                    <select 
-                      required 
+                    <label className="form-label">{t('signUpPage.coursesLabel')}<span>*</span></label>
+                    <select
+                      required
                       className="form-control"
                       value={formData.course}
                       onChange={(e) => setFormData({...formData, course: e.target.value})}
                       disabled={isSending}
                     >
-                      <option value="" disabled hidden>Please Select</option>
-                      <option value="General English">General English</option>
-                      <option value="IELTS Preparation">IELTS Preparation</option>
-                      <option value="Intensive Speaking English">Intensive Speaking English</option>
-                      <option value="Business English">Business English</option>
-                      <option value="Mandarin">Mandarin</option>
-                      <option value="Japanese">Japanese</option>
-                      <option value="Korean">Korean</option>
-                      <option value="Bahasa Malaysia">Bahasa Malaysia</option>
-                      <option value="German">German</option>
-                      <option value="Summer Camp">Summer Camp</option>
+                      <option value="" disabled hidden>{t('signUpPage.pleaseSelect')}</option>
+                      {Object.keys(t('signUpPage.courses')).map((course) => (
+                        <option key={course} value={course}>{t('signUpPage.courses')[course]}</option>
+                      ))}
                     </select>
                   </div>
 
                   <div className="form-col">
-                    <label className="form-label">How did you hear about us?<span>*</span></label>
-                    <select 
-                      required 
+                    <label className="form-label">{t('signUpPage.hearAboutLabel')}<span>*</span></label>
+                    <select
+                      required
                       className="form-control"
                       value={formData.hearAbout}
                       onChange={(e) => setFormData({...formData, hearAbout: e.target.value})}
                       disabled={isSending}
                     >
-                      <option value="" disabled hidden>Please Select</option>
-                      <option value="Google Search">Google Search</option>
-                      <option value="Instagram">Instagram</option>
-                      <option value="Facebook">Facebook</option>
-                      <option value="Friends">Friends</option>
-                      <option value="Family">Family</option>
-                      <option value="Agent or Agency">Agent or Agency</option>
-                      <option value="Other">Other</option>
+                      <option value="" disabled hidden>{t('signUpPage.pleaseSelect')}</option>
+                      {Object.keys(t('signUpPage.hearAboutOptions')).map((opt) => (
+                        <option key={opt} value={opt}>{t('signUpPage.hearAboutOptions')[opt]}</option>
+                      ))}
                     </select>
                   </div>
 
                   {formData.hearAbout === 'Other' && (
                     <div className="form-col fade-in">
-                      <label className="form-label">If you have selected Other, please specify here:<span>*</span></label>
-                      <input 
-                        type="text" 
-                        required 
+                      <label className="form-label">{t('signUpPage.otherSpecifyLabel')}<span>*</span></label>
+                      <input
+                        type="text"
+                        required
                         className="form-control"
                         value={formData.hearAboutOther}
                         onChange={(e) => setFormData({...formData, hearAboutOther: e.target.value})}
@@ -625,8 +597,8 @@ const SignUpPage = () => {
                   )}
 
                   <div className="form-col">
-                    <label className="form-label">Any questions or messages for us?</label>
-                    <textarea 
+                    <label className="form-label">{t('signUpPage.messageLabel')}</label>
+                    <textarea
                       className="form-control"
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
@@ -635,12 +607,12 @@ const SignUpPage = () => {
                   </div>
 
                   <button type="submit" className="btn-call" disabled={isSending}>
-                    {isSending ? 'SENDING...' : 'SUBMIT ENQUIRY'}
+                    {isSending ? t('signUpPage.sending') : t('signUpPage.submit')}
                   </button>
                 </form>
 
                 <button className="btn-back" onClick={() => navigate(-1)}>
-                  &larr; Go back
+                  {t('signUpPage.goBack')}
                 </button>
               </>
             )}

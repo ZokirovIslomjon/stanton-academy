@@ -213,7 +213,6 @@ const CoursesPage = () => {
                     <option value="Japanese">Japanese</option>
                     <option value="Korean">Korean</option>
                     <option value="Bahasa Malaysia">Bahasa Malaysia</option>
-                    <option value="German">German</option>
                     <option value="Summer Camp">Summer Camp</option>
                   </select>
                 </div>

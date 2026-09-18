@@ -11,7 +11,6 @@ import mandarinImg from '../assets/mandarin-class.jpg';
 import japaneseImg from '../assets/japanese-class.jpg';
 import koreanImg from '../assets/korean-class.jpg';
 import bmImg from '../assets/bahasa-malaya.jpg';
-import germanImg from '../assets/german-class.jpg';
 
 // Theme color + image are presentational, not translated text, so they stay here
 // keyed by langId; the actual course copy (title/overview/focus/etc.) comes from
@@ -21,7 +20,6 @@ const languageMeta = {
   'japanese': { themeColor: '#22c55e', image: japaneseImg },
   'korean': { themeColor: '#3b82f6', image: koreanImg },
   'bahasa-malaysia': { themeColor: '#f97316', image: bmImg },
-  'german': { themeColor: '#ef4444', image: germanImg },
 };
 
 const IMAGE_KEY_BY_LANG = {
@@ -29,7 +27,6 @@ const IMAGE_KEY_BY_LANG = {
   japanese: 'language_japanese',
   korean: 'language_korean',
   'bahasa-malaysia': 'language_bahasa_malaysia',
-  german: 'language_german',
 };
 
 const LanguagePage = () => {

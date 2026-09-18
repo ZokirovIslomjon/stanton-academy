@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useSiteImages } from '../lib/SiteImagesContext';
 import { supabase } from '../lib/supabaseClient';
 import { parseListItems } from '../lib/contentHelpers';
-import { buildCalendarGrid, MONTH_NAMES } from '../lib/calendarGrid';
+import { buildCalendarGrid } from '../lib/calendarGrid';
+import { useLanguage } from '../lib/LanguageContext';
 
 // Import local images from assets folder
 import cityTourImg from '../assets/City Tour.jpg';
@@ -39,23 +40,33 @@ function featureIconStatus(status) {
   return false;
 }
 
+// Trip name/description text lives in translations.js (holidayCampPage.trips.<key>);
+// this array only carries the presentational image, keyed the same way.
 const TRIPS = [
-  { name: 'City Tour', image: cityTourImg, desc: 'Experience the vibrant culture, iconic landmarks and hidden gems.' },
-  { name: 'Batu Caves', image: batuCavesImg, desc: 'Explore the majestic caves and immerse in spiritual and cultural heritage.' },
-  { name: 'Sunway Lagoon', image: sunwayLagoonImg, desc: 'Fun-filled adventures and excitement for the whole family.' },
-  { name: 'Genting Highlands', image: gentingHighlandsImg, desc: 'Breathtaking views, cool weather and world class entertainment.' },
-  { name: 'Melaka Trip', image: melakaTripImg, desc: 'Step back in time and discover rich history and heritage.' },
-  { name: 'Port Dickson', image: portDicksonImg, desc: 'Relax on the sandy beaches and enjoy the coastal charm.' },
+  { key: 'cityTour', image: cityTourImg },
+  { key: 'batuCaves', image: batuCavesImg },
+  { key: 'sunwayLagoon', image: sunwayLagoonImg },
+  { key: 'gentingHighlands', image: gentingHighlandsImg },
+  { key: 'melakaTrip', image: melakaTripImg },
+  { key: 'portDickson', image: portDicksonImg },
 ];
 
 const TRIP_IMAGE_KEYS = {
-  'City Tour': 'camp_city_tour',
-  'Batu Caves': 'camp_batu_caves',
-  'Sunway Lagoon': 'camp_sunway_lagoon',
-  'Genting Highlands': 'camp_genting_highlands',
-  'Melaka Trip': 'camp_melaka_trip',
-  'Port Dickson': 'camp_port_dickson',
+  cityTour: 'camp_city_tour',
+  batuCaves: 'camp_batu_caves',
+  sunwayLagoon: 'camp_sunway_lagoon',
+  gentingHighlands: 'camp_genting_highlands',
+  melakaTrip: 'camp_melaka_trip',
+  portDickson: 'camp_port_dickson',
 };
+
+// page_content stores one English row per key (`value`); translated copies live in
+// `value_ar`/`value_zh` on that same row (see AboutPage.jsx for the same pattern).
+function localizedContent(content, key, lang) {
+  if (lang === 'en') return content[key] || '';
+  return content[`${key}_${lang}`] || content[key] || '';
+}
+const valueField = (lang) => (lang === 'en' ? 'value' : `value_${lang}`);
 
 function FeatureIcon({ status }) {
   if (status === true || status === 'info') {
@@ -76,6 +87,7 @@ const ThemeIcon = ({ theme }) => {
 };
 
 export default function HolidayCampPage() {
+  const { t, lang } = useLanguage();
   const images = useSiteImages();
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const [months, setMonths] = useState([]);
@@ -92,14 +104,18 @@ export default function HolidayCampPage() {
     let cancelled = false;
 
     async function loadContent() {
-      const { data, error } = await supabase.from('page_content').select('key, value').eq('page', 'holiday_camp');
+      const { data, error } = await supabase.from('page_content').select('key, value, value_ar, value_zh').eq('page', 'holiday_camp');
       if (cancelled) return;
       if (error) {
         console.error('Failed to load page content:', error.message);
         return;
       }
       const map = {};
-      (data || []).forEach((row) => { map[row.key] = row.value; });
+      (data || []).forEach((row) => {
+        map[row.key] = row.value;
+        map[`${row.key}_ar`] = row.value_ar;
+        map[`${row.key}_zh`] = row.value_zh;
+      });
       setContent((prev) => ({ ...prev, ...map }));
     }
 
@@ -427,38 +443,41 @@ export default function HolidayCampPage() {
         
         <div className="hc-hero-content">
           <h1 className="hc-hero-title-modern">
-            <span style={{ color: 'var(--green)', display: 'inline' }}>{content.camp_hero_title_green}</span>
-            <span style={{ color: 'var(--gold)', display: 'inline' }}>{content.camp_hero_title_gold}</span>
+            <span style={{ color: 'var(--green)', display: 'inline' }}>{localizedContent(content, 'camp_hero_title_green', lang)}</span>
+            <span style={{ color: 'var(--gold)', display: 'inline' }}>{localizedContent(content, 'camp_hero_title_gold', lang)}</span>
           </h1>
 
           <p className="hc-hero-desc-modern">
-            {content.camp_hero_desc}
+            {localizedContent(content, 'camp_hero_desc', lang)}
           </p>
 
           <div className="hc-hero-btn-group">
             <button onClick={(e) => scrollToForm(e)} className="hc-btn-primary-modern">
-              Choose Package <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              {t('holidayCampPage.choosePackage')} <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </button>
-            <a href="#packages" className="hc-btn-secondary-modern">View Packages</a>
+            <a href="#packages" className="hc-btn-secondary-modern">{t('holidayCampPage.viewPackages')}</a>
           </div>
         </div>
 
         {/* ── TRIPS & ACTIVITIES (Overlapping section) ── */}
         <div className="hc-hero-trips-wrapper">
           <div className="hc-trips-grid">
-            {TRIPS.map((t, i) => (
-              <div key={i} className="hc-trip-card">
-                <img src={images[TRIP_IMAGE_KEYS[t.name]] || t.image} alt={t.name} className="hc-trip-bg" />
-                <div className="hc-trip-overlay"></div>
-                <div className="hc-trip-content">
-                  <h3 className="hc-trip-name">{t.name}</h3>
-                  <div className="hc-trip-desc-container">
-                    <p className="hc-trip-desc">{t.desc}</p>
-                    <div className="hc-trip-divider"></div>
+            {TRIPS.map((trip) => {
+              const tr = t(`holidayCampPage.trips.${trip.key}`);
+              return (
+                <div key={trip.key} className="hc-trip-card">
+                  <img src={images[TRIP_IMAGE_KEYS[trip.key]] || trip.image} alt={tr.name} className="hc-trip-bg" />
+                  <div className="hc-trip-overlay"></div>
+                  <div className="hc-trip-content">
+                    <h3 className="hc-trip-name">{tr.name}</h3>
+                    <div className="hc-trip-desc-container">
+                      <p className="hc-trip-desc">{tr.desc}</p>
+                      <div className="hc-trip-divider"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -468,11 +487,11 @@ export default function HolidayCampPage() {
         <div className="hc-container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="hc-cinematic-content">
             <div className="hc-about-header">
-              <h2 className="hc-about-top-title">ABOUT STANTON ACADEMY</h2>
-              <h1 className="hc-about-signature">Holiday Camp</h1>
+              <h2 className="hc-about-top-title">{t('holidayCampPage.aboutTopTitle')}</h2>
+              <h1 className="hc-about-signature">{t('holidayCampPage.aboutSignature')}</h1>
             </div>
             <div className="hc-about-long-desc">
-              {content.camp_about_desc.split('\n\n').map((para, i) => <p key={i}>{para}</p>)}
+              {localizedContent(content, 'camp_about_desc', lang).split('\n\n').map((para, i) => <p key={i}>{para}</p>)}
             </div>
           </div>
         </div>
@@ -482,14 +501,14 @@ export default function HolidayCampPage() {
       <section className="hc-itinerary-section" id="itinerary">
         <div className="hc-container">
           <div className="hc-section-header">
-            <div className="hc-section-label">Camp Schedule</div>
+            <div className="hc-section-label">{t('holidayCampPage.scheduleLabel')}</div>
             <h2 className="hc-section-title">
-              <span style={{ color: 'var(--green)' }}>Holiday Camp</span> <span style={{ color: '#fabc19' }}>Itinerary</span>
+              <span style={{ color: 'var(--green)' }}>{t('holidayCampPage.itineraryPart1')}</span> <span style={{ color: '#fabc19' }}>{t('holidayCampPage.itineraryPart2')}</span>
             </h2>
           </div>
-          
+
           {months.length === 0 ? (
-            <p style={{ textAlign: 'center', color: 'var(--gray-600)' }}>No camp sessions scheduled yet.</p>
+            <p style={{ textAlign: 'center', color: 'var(--gray-600)' }}>{t('holidayCampPage.noSessions')}</p>
           ) : (
             <>
               <div className="hc-tabs">
@@ -499,7 +518,7 @@ export default function HolidayCampPage() {
                     className={`hc-tab${activeMonthId === m.id ? ' hc-tab--active' : ''}`}
                     onClick={() => setActiveMonthId(m.id)}
                   >
-                    📅 {MONTH_NAMES[m.month - 1]} {m.year}
+                    📅 {t('holidayCampPage.monthNames')[m.month - 1]} {m.year}
                   </button>
                 ))}
               </div>
@@ -507,7 +526,7 @@ export default function HolidayCampPage() {
               {months.filter((m) => m.id === activeMonthId).map((m) => (
                 <div className="hc-calendar" key={m.id}>
                   <div className="hc-cal-header">
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => <div key={d} className="hc-cal-day-name">{d}</div>)}
+                    {t('holidayCampPage.dayNames').map((d, i) => <div key={i} className="hc-cal-day-name">{d}</div>)}
                   </div>
                   <div className="hc-cal-grid">
                     {buildCalendarGrid(m.year, m.month, m.events).map((cell, i) => (
@@ -516,7 +535,7 @@ export default function HolidayCampPage() {
                       ) : (
                         <div key={i} className="hc-cal-cell">
                           <div className="hc-cal-num">{cell.dayLabel}</div>
-                          {cell.event && <div className={`hc-cal-event hc-event--${cell.event.event_type}`}>{cell.event.label}</div>}
+                          {cell.event && <div className={`hc-cal-event hc-event--${cell.event.event_type}`}>{t('holidayCampPage.eventLabels')[cell.event.label] || cell.event.label}</div>}
                         </div>
                       )
                     ))}
@@ -532,34 +551,39 @@ export default function HolidayCampPage() {
       <section className="hc-packages-section" id="packages">
         <div className="hc-container">
           <div className="hc-section-header">
-            <div className="hc-section-label">Packages</div>
+            <div className="hc-section-label">{t('holidayCampPage.packagesLabel')}</div>
             <h2 className="hc-section-title">
-              <span style={{ color: 'var(--green)' }}>Choose Your</span> <span style={{ color: 'var(--gold)' }}>Package</span>
+              <span style={{ color: 'var(--green)' }}>{t('holidayCampPage.choosePkgPart1')}</span> <span style={{ color: 'var(--gold)' }}>{t('holidayCampPage.choosePkgPart2')}</span>
             </h2>
           </div>
-          
+
           <div className="hc-course-grid">
             {packages.length === 0 ? (
-              <p style={{ textAlign: 'center', color: 'var(--gray-600)' }}>No packages configured yet.</p>
+              <p style={{ textAlign: 'center', color: 'var(--gray-600)' }}>{t('holidayCampPage.noPackages')}</p>
             ) : (
-              packages.map((pkg) => (
-                <div key={pkg.id} className={`hc-course-card theme-${pkg.theme} ${pkg.highlight ? 'highlight' : ''}`}>
-                  <div className="hc-course-header">
-                    {pkg.highlight && <div className="hc-popular-badge">⭐ {pkg.badge_label || (pkg.category === 'guardian' ? 'Best Value' : 'Most Popular')}</div>}
-                    <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
-                    <h3 className="hc-course-title">{pkg.name}</h3>
-                    {pkg.price && <div className="hc-course-price">{pkg.price}</div>}
+              packages.map((pkg) => {
+                const badgeText = pkg.badge_label === 'Best Value' || pkg.badge_label === 'Most Popular'
+                  ? t(`holidayCampPage.${pkg.badge_label === 'Best Value' ? 'bestValue' : 'mostPopular'}`)
+                  : pkg.badge_label || t(`holidayCampPage.${pkg.category === 'guardian' ? 'bestValue' : 'mostPopular'}`);
+                return (
+                  <div key={pkg.id} className={`hc-course-card theme-${pkg.theme} ${pkg.highlight ? 'highlight' : ''}`}>
+                    <div className="hc-course-header">
+                      {pkg.highlight && <div className="hc-popular-badge">⭐ {badgeText}</div>}
+                      <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
+                      <h3 className="hc-course-title">{t('holidayCampPage.packageNames')[pkg.name] || pkg.name}</h3>
+                      {pkg.price && <div className="hc-course-price">{pkg.price}</div>}
+                    </div>
+                    <ul className="hc-course-features">
+                      {pkg.features.map((feature) => (
+                        <li key={feature.id}><FeatureIcon status={featureIconStatus(feature.status)} />{t('holidayCampPage.featureTexts')[feature.text] || feature.text}</li>
+                      ))}
+                    </ul>
+                    <div className="hc-course-footer">
+                      <button onClick={(e) => scrollToForm(e, pkg.name)} className="hc-course-btn">{t('holidayCampPage.selectPackage')}</button>
+                    </div>
                   </div>
-                  <ul className="hc-course-features">
-                    {pkg.features.map((feature) => (
-                      <li key={feature.id}><FeatureIcon status={featureIconStatus(feature.status)} />{feature.text}</li>
-                    ))}
-                  </ul>
-                  <div className="hc-course-footer">
-                    <button onClick={(e) => scrollToForm(e, pkg.name)} className="hc-course-btn">Select Package</button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
@@ -570,10 +594,10 @@ export default function HolidayCampPage() {
       <section className="hc-terms-section">
         <div className="hc-terms-container">
           <div className="hc-terms-header">
-            <h2 className="hc-terms-title">FAQ</h2>
+            <h2 className="hc-terms-title">{t('holidayCampPage.faqTitle')}</h2>
           </div>
           <div className="hc-accordion-list">
-            {parseListItems(content.camp_terms_items).map((term, index) => {
+            {parseListItems(localizedContent(content, 'camp_terms_items', lang)).map((term, index) => {
               const isOpen = activeTerm === index;
               return (
                 <div key={index} className={`hc-accordion-item ${isOpen ? 'open' : ''}`}>
@@ -614,69 +638,69 @@ export default function HolidayCampPage() {
               {isSubmitted ? (
                 <div className="hc-success-message">
                   <div className="hc-success-icon">🎉</div>
-                  <h4 style={{ color: 'var(--green)' }}>Application Received!</h4>
+                  <h4 style={{ color: 'var(--green)' }}>{t('holidayCampPage.applicationReceived')}</h4>
                   <p style={{ color: 'var(--gray-600)', marginTop: '10px' }}>
-                    Thank you, {formData.name}. Our team will reach out to you via WhatsApp or Email shortly.
+                    {t('holidayCampPage.thankYouPrefix')} {formData.name}. {t('holidayCampPage.thankYouSuffix')}
                   </p>
                 </div>
               ) : (
                 <>
                   <h2 className="hc-camp-headline">
-                    Join The <span>Summer</span><br/><span>Camp</span>
+                    {t('holidayCampPage.joinThePrefix')} <span>{t('holidayCampPage.joinSummer')}</span><br/><span>{t('holidayCampPage.joinCamp')}</span>
                   </h2>
                   <p className="hc-camp-subtitle">
-                    Multicultural And English language center in Kuala Lumpur
+                    {t('holidayCampPage.campSubtitle')}
                   </p>
-                  <h3 className="hc-camp-cta">Apply for this Summer Today!</h3>
+                  <h3 className="hc-camp-cta">{t('holidayCampPage.applyToday')}</h3>
 
                   <form onSubmit={handleSubmit} className="hc-camp-form-grid">
-                    
+
                     {/* Make Name full width to keep the grid balanced! */}
-                    <input type="text" placeholder="Your Name*" required className="hc-camp-input" style={{ gridColumn: '1 / -1' }}
+                    <input type="text" placeholder={t('holidayCampPage.namePlaceholder')} required className="hc-camp-input" style={{ gridColumn: '1 / -1' }}
                            value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} disabled={isSending} />
-                    
-                    <input type="email" placeholder="Your Email*" required className="hc-camp-input"
+
+                    <input type="email" placeholder={t('holidayCampPage.emailPlaceholder')} required className="hc-camp-input"
                            value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} disabled={isSending} />
-                    
-                    <input type="tel" placeholder="Phone Number*" required className="hc-camp-input"
+
+                    <input type="tel" placeholder={t('holidayCampPage.phonePlaceholder')} required className="hc-camp-input"
                            value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} disabled={isSending} />
-                    
+
                     <select required className="hc-camp-input" style={{ color: formData.location ? '#1a1a1a' : '#9ca3af' }}
                             value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} disabled={isSending}>
-                      <option value="" disabled hidden>Where do you live?*</option>
-                      <option value="Kuala Lumpur">Kuala Lumpur</option>
-                      <option value="Selangor">Selangor</option>
-                      <option value="Other Malaysia">Other (Malaysia)</option>
-                      <option value="International">International</option>
+                      <option value="" disabled hidden>{t('holidayCampPage.whereLiveLabel')}</option>
+                      <option value="Kuala Lumpur">{t('holidayCampPage.locKL')}</option>
+                      <option value="Selangor">{t('holidayCampPage.locSelangor')}</option>
+                      <option value="Other Malaysia">{t('holidayCampPage.locOtherMY')}</option>
+                      <option value="International">{t('holidayCampPage.locIntl')}</option>
                     </select>
 
                     <select required className="hc-camp-input" style={{ color: formData.package ? '#1a1a1a' : '#9ca3af' }}
                             value={formData.package} onChange={(e) => setFormData({...formData, package: e.target.value})} disabled={isSending}>
-                      <option value="" disabled hidden>Select Package*</option>
-                      <optgroup label="Student Packages">
-                        {packages.filter(p => p.category === 'student').map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
+                      <option value="" disabled hidden>{t('holidayCampPage.selectPackagePlaceholder')}</option>
+                      <optgroup label={t('holidayCampPage.studentPackages')}>
+                        {packages.filter(p => p.category === 'student').map(p => <option key={p.id} value={p.name}>{t('holidayCampPage.packageNames')[p.name] || p.name}</option>)}
                       </optgroup>
-                      <optgroup label="Guardian Packages">
-                        {packages.filter(p => p.category === 'guardian').map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
+                      <optgroup label={t('holidayCampPage.guardianPackages')}>
+                        {packages.filter(p => p.category === 'guardian').map(p => <option key={p.id} value={p.name}>{t('holidayCampPage.packageNames')[p.name] || p.name}</option>)}
                       </optgroup>
-                      <option value="Not Sure Yet">Not Sure Yet</option>
+                      <option value="Not Sure Yet">{t('holidayCampPage.notSureYet')}</option>
                     </select>
 
                     <button type="submit" className="hc-camp-submit" disabled={isSending}>
-                      {isSending ? 'SENDING...' : 'SUBMIT APPLICATION'}
+                      {isSending ? t('holidayCampPage.sending') : t('holidayCampPage.submitApplication')}
                     </button>
 
                     {/* NEW: WHATSAPP DIRECT LINK */}
                     <div style={{ gridColumn: '1 / -1', textAlign: 'center', marginTop: '10px' }}>
-                      <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '10px' }}>Or apply directly via WhatsApp:</p>
-                      <a 
+                      <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '10px' }}>{t('holidayCampPage.orApplyWhatsApp')}</p>
+                      <a
                         href={`https://wa.me/601118648860?text=${encodeURIComponent(waMessage)}`}
-                        target="_blank" 
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="hc-wa-btn"
                       >
                         <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        APPLY VIA WHATSAPP
+                        {t('holidayCampPage.applyViaWhatsApp')}
                       </a>
                     </div>
 

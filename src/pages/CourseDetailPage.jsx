@@ -2,12 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import Courses from '../components/Courses';
+import { useLanguage } from '../lib/LanguageContext';
+
+// Picks the field in the current language, falling back to the English (base) field
+// when a translation is missing or blank. Matches the helper in components/Courses.jsx.
+function localized(obj, field, lang) {
+  if (lang === 'en') return obj[field];
+  const value = obj[`${field}_${lang}`];
+  if (Array.isArray(value)) return value.length ? value : obj[field];
+  return value || obj[field];
+}
 
 // Generic course detail page: fixed layout matching GeneralEnglishPage.jsx / IELTSPreparationPage.jsx.
 // Every course without a custom "Page Link" routes here (see AdminCourses.jsx) — content comes from
 // the `courses` row, admin only controls text/features/image/accent color, never layout.
 export default function CourseDetailPage() {
   const { slug } = useParams();
+  const { lang, t } = useLanguage();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -43,15 +54,15 @@ export default function CourseDetailPage() {
   }, [slug]);
 
   if (loading) {
-    return <main style={{ padding: '160px 20px 80px', textAlign: 'center' }}>Loading...</main>;
+    return <main style={{ padding: '160px 20px 80px', textAlign: 'center' }}>{t('courseDetailPage.loading')}</main>;
   }
 
   if (notFound) {
     return (
       <main style={{ padding: '160px 20px 80px', textAlign: 'center' }}>
-        <h1>Course not found</h1>
+        <h1>{t('courseDetailPage.notFoundTitle')}</h1>
         <p>
-          <Link to="/courses">Back to courses</Link>
+          <Link to="/courses">{t('courseDetailPage.backToCourses')}</Link>
         </p>
       </main>
     );
@@ -182,33 +193,33 @@ export default function CourseDetailPage() {
       `}</style>
 
       <div className="cdp-header">
-        <h1>{course.title}</h1>
-        {course.tagline && <p>{course.tagline}</p>}
+        <h1>{localized(course, 'title', lang)}</h1>
+        {localized(course, 'tagline', lang) && <p>{localized(course, 'tagline', lang)}</p>}
       </div>
 
       <div className="cdp-content-container">
         {course.image_url && (
           <div className="cdp-image-wrapper">
-            <img src={course.image_url} alt={course.title} className="cdp-image" />
+            <img src={course.image_url} alt={localized(course, 'title', lang)} className="cdp-image" />
           </div>
         )}
 
         <div className="cdp-details" style={course.image_url ? undefined : { gridColumn: '1 / -1' }}>
-          <h2>{course.title}</h2>
-          {course.overview && <p className="overview">{course.overview}</p>}
+          <h2>{localized(course, 'title', lang)}</h2>
+          {localized(course, 'overview', lang) && <p className="overview">{localized(course, 'overview', lang)}</p>}
 
           {(course.frequency || course.duration) && (
             <div className="cdp-info-bar">
               {course.frequency && (
                 <div className="cdp-info-item">
-                  <span className="cdp-info-label">Frequency</span>
-                  <span className="cdp-info-value">{course.frequency}</span>
+                  <span className="cdp-info-label">{t('courseDetailPage.frequency')}</span>
+                  <span className="cdp-info-value">{localized(course, 'frequency', lang)}</span>
                 </div>
               )}
               {course.duration && (
                 <div className="cdp-info-item">
-                  <span className="cdp-info-label">Duration</span>
-                  <span className="cdp-info-value">{course.duration}</span>
+                  <span className="cdp-info-label">{t('courseDetailPage.duration')}</span>
+                  <span className="cdp-info-value">{localized(course, 'duration', lang)}</span>
                 </div>
               )}
             </div>
@@ -216,35 +227,35 @@ export default function CourseDetailPage() {
 
           {course.features && course.features.length > 0 && (
             <>
-              <div className="cdp-section-title">Focus Areas</div>
+              <div className="cdp-section-title">{t('courseDetailPage.focusAreas')}</div>
               <ul className="cdp-list">
-                {course.features.map((item, index) => (
+                {(localized(course, 'features', lang) || []).map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
             </>
           )}
 
-          {course.best_for && (
+          {localized(course, 'best_for', lang) && (
             <div className="cdp-text-block">
-              <strong>Best For</strong>
-              <p>{course.best_for}</p>
+              <strong>{t('courseDetailPage.bestFor')}</strong>
+              <p>{localized(course, 'best_for', lang)}</p>
             </div>
           )}
 
-          {course.outcome && (
+          {localized(course, 'outcome', lang) && (
             <div className="cdp-text-block">
-              <strong>Outcome</strong>
-              <p>{course.outcome}</p>
+              <strong>{t('courseDetailPage.outcome')}</strong>
+              <p>{localized(course, 'outcome', lang)}</p>
             </div>
           )}
         </div>
       </div>
 
       <div className="cdp-cta-container">
-        <p>Ready to get started? Secure your spot today.</p>
+        <p>{t('courseDetailPage.ctaText')}</p>
         <Link to="/signup" className="cdp-cta-btn">
-          Enquire Now
+          {t('courseDetailPage.enquireNow')}
         </Link>
       </div>
 
