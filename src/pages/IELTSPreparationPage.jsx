@@ -33,7 +33,7 @@ const IELTSPreparationPage = () => {
           padding-top: 120px; 
           padding-bottom: 80px;
           min-height: 100vh;
-          font-family: 'Poppins', sans-serif;
+          font-family: 'Inter', sans-serif;
           color: #1a1a1a;
           position: relative;
           z-index: 1;

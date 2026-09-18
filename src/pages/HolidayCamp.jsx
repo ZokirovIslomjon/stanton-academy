@@ -211,7 +211,7 @@ export default function HolidayCampPage() {
   return (
     <div className="hc-page">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap');
 
         :root {
           --green:       #006B3F;
@@ -228,7 +228,7 @@ export default function HolidayCampPage() {
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .hc-page { font-family: 'Poppins', sans-serif; color: var(--gray-800); overflow-x: hidden; background: var(--white); }
+        .hc-page { font-family: 'Inter', sans-serif; color: var(--gray-800); overflow-x: hidden; background: var(--white); }
 
         /* ── HERO SECTION (White/Modern Design) ── */
         .hc-hero-modern { position: relative; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; padding: 200px 0 0; text-align: center; z-index: 1; }

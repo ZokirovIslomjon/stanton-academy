@@ -349,8 +349,8 @@ export default function ChatWidget() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-        .sa-widget * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .sa-widget * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
         :root {
           --sa-green: #006B3F; --sa-green-dark: #00502f;
           --sa-gold: #FFC72C; --sa-gold-dark: #e6b000;
@@ -409,7 +409,7 @@ export default function ChatWidget() {
         .sa-whatsapp-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: #25D366; color: white; border-radius: 12px; text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; }
         .sa-whatsapp-btn:hover { background: #1ebe5d; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,211,102,0.35); }
         .sa-input-bar { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: white; border-top: 1px solid var(--sa-gray-200); flex-shrink: 0; }
-        .sa-input { flex: 1; border: 1.5px solid var(--sa-gray-200); border-radius: 24px; padding: 9px 16px; font-size: 0.82rem; color: var(--sa-gray-800); background: var(--sa-gray-50); outline: none; font-family: 'Poppins', sans-serif; transition: border 0.2s; }
+        .sa-input { flex: 1; border: 1.5px solid var(--sa-gray-200); border-radius: 24px; padding: 9px 16px; font-size: 0.82rem; color: var(--sa-gray-800); background: var(--sa-gray-50); outline: none; font-family: 'Inter', sans-serif; transition: border 0.2s; }
         .sa-input:focus { border-color: var(--sa-green); background: white; }
         .sa-input::placeholder { color: var(--sa-gray-400); }
         .sa-send-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--sa-green); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
