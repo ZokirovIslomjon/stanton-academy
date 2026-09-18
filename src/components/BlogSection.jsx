@@ -42,9 +42,7 @@ const BlogSection = () => {
     <section className="blog-section">
       <style>{`
         .blog-section { padding: 80px 0; background-color: #ffffff; }
-        .blog-section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; gap: 20px; flex-wrap: wrap; }
-        .blog-section-header h2 { font-size: 2.5rem; font-weight: 800; color: var(--primary-green); }
-        .blog-section-header h2 span { color: var(--primary-gold); }
+        .blog-section-header { display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 40px; gap: 20px; flex-wrap: wrap; }
         .blog-view-all { font-weight: 700; color: var(--primary-green); white-space: nowrap; }
         .blog-view-all:hover { text-decoration: underline; }
 
@@ -90,7 +88,6 @@ const BlogSection = () => {
 
       <div className="container">
         <div className="blog-section-header">
-          <h2>Latest From Our <span>Blog</span></h2>
           <Link to="/blog" className="blog-view-all">View All Articles →</Link>
         </div>
 

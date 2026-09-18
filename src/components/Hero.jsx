@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <section className="new-hero">
       <style>{`
-        .new-hero { position: relative; padding: 120px 0 0; overflow: hidden; background-color: var(--bg-light); }
+        .new-hero { position: relative; padding: 120px 0 40px; overflow: hidden; background-color: var(--bg-light); }
         .new-hero::before { content: ''; position: absolute; top: -15%; right: -10%; width: 55%; height: 70%; background: radial-gradient(circle, rgba(0, 107, 63, 0.08) 0%, transparent 70%); z-index: 0; pointer-events: none; }
 
         .new-hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 0.85fr 1.3fr; gap: 40px; align-items: center; }
