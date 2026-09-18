@@ -1,52 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Courses from '../components/Courses';
-
-const courseDetails = {
-  '1month': {
-    title: 'General English — 1 Month (Intensive Foundation)',
-    overview: 'A fast-paced introduction or refresher designed for students who need quick, practical improvement in a short time — ideal for travelers, short-term visa holders, or anyone testing whether English classes are right for them.',
-    focus: [
-      'Everyday conversation & survival English',
-      'Core grammar refresh (tenses, sentence structure)',
-      'Basic vocabulary building by theme (travel, work, daily life)',
-      'Listening & pronunciation practice'
-    ],
-    bestFor: 'Beginners needing a quick start, or intermediate students wanting a short refresher before a bigger commitment.',
-    outcome: 'Noticeable confidence boost in daily conversations; clear sense of current level and next steps.'
-  },
-  '2months': {
-    title: 'General English — 2 Months (Skill Building)',
-    overview: 'A balanced program that moves beyond survival English into genuine skill development across all four core competencies — reading, writing, listening, and speaking.',
-    focus: [
-      'Structured grammar progression (one CEFR sub-level of growth typical)',
-      'Expanded vocabulary (academic, professional, and social contexts)',
-      'Writing practice: emails, short essays, structured paragraphs',
-      'Speaking fluency drills, discussions, and presentations',
-      'Regular progress checkpoints (mid-course + final assessment)'
-    ],
-    bestFor: 'Students preparing for work, further study, or those who completed the 1-month course and want to build real fluency.',
-    outcome: 'Measurable level increase (e.g., A2→B1 or B1→B2 depending on starting point), stronger writing and speaking accuracy.'
-  },
-  '3months': {
-    title: 'General English — 3 Months (Comprehensive Program)',
-    overview: 'The full-depth program for students committed to a meaningful jump in proficiency — ideal preparation for academic study, career advancement, or exam pathways (IELTS/TOEFL follow-on).',
-    focus: [
-      'Full grammar mastery across all major structures',
-      'Advanced vocabulary + idiomatic expression',
-      'Extended writing: essays, reports, formal correspondence',
-      'Advanced speaking: debates, presentations, spontaneous discussion',
-      'Exam-readiness foundation (optional IELTS/TOEFL bridge module)',
-      'Continuous assessment with a final proficiency evaluation & certificate'
-    ],
-    bestFor: 'Students aiming for a full CEFR level jump, university preparation, or long-term skill investment.',
-    outcome: 'Strong, well-rounded fluency; certificate of completion; readiness for exam-prep courses if needed.'
-  }
-};
+import { useLanguage } from '../lib/LanguageContext';
 
 const GeneralEnglishPage = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('1month');
-  const activeData = courseDetails[activeTab];
+  const activeData = t(`generalEnglishPage.plans.${activeTab}`);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -284,29 +244,29 @@ const GeneralEnglishPage = () => {
 
       <div className="ge-header">
         <h1>
-          <span style={{ color: '#006B3F' }}>GENERAL</span> <span style={{ color: '#FFC72C' }}>ENGLISH</span>
+          <span style={{ color: '#006B3F' }}>{t('generalEnglishPage.headingPart1')}</span> <span style={{ color: '#FFC72C' }}>{t('generalEnglishPage.headingPart2')}</span>
         </h1>
-        <p style={{ color: '#006B3F' }}>Beyond English. Build Confidence. Speak Naturally.</p>
+        <p style={{ color: '#006B3F' }}>{t('generalEnglishPage.tagline')}</p>
       </div>
 
       <div className="ge-tabs-container">
-        <button 
+        <button
           className={`ge-tab-btn ${activeTab === '1month' ? 'active' : ''}`}
           onClick={() => setActiveTab('1month')}
         >
-          1 Month
+          {t('generalEnglishPage.tab1Month')}
         </button>
-        <button 
+        <button
           className={`ge-tab-btn ${activeTab === '2months' ? 'active' : ''}`}
           onClick={() => setActiveTab('2months')}
         >
-          2 Months
+          {t('generalEnglishPage.tab2Months')}
         </button>
-        <button 
+        <button
           className={`ge-tab-btn ${activeTab === '3months' ? 'active' : ''}`}
           onClick={() => setActiveTab('3months')}
         >
-          3 Months
+          {t('generalEnglishPage.tab3Months')}
         </button>
       </div>
 
@@ -324,7 +284,7 @@ const GeneralEnglishPage = () => {
           <h2>{activeData.title}</h2>
           <p className="overview">{activeData.overview}</p>
 
-          <div className="ge-section-title">Focus Areas</div>
+          <div className="ge-section-title">{t('coursePage.focusAreas')}</div>
           <ul className="ge-list">
             {activeData.focus.map((item, index) => (
               <li key={index}>{item}</li>
@@ -332,12 +292,12 @@ const GeneralEnglishPage = () => {
           </ul>
 
           <div className="ge-text-block">
-            <strong>Best For</strong>
+            <strong>{t('coursePage.bestFor')}</strong>
             <p>{activeData.bestFor}</p>
           </div>
 
           <div className="ge-text-block">
-            <strong>Outcome</strong>
+            <strong>{t('coursePage.outcome')}</strong>
             <p>{activeData.outcome}</p>
           </div>
 
@@ -345,9 +305,9 @@ const GeneralEnglishPage = () => {
       </div>
 
       <div className="ge-cta-container">
-        <p>Learn English the way it's meant to be used — naturally, confidently, and effectively.</p>
+        <p>{t('generalEnglishPage.ctaText')}</p>
         <Link to="/signup" className="ge-cta-btn">
-          Enquire Now
+          {t('coursePage.enquireNow')}
         </Link>
       </div>
 

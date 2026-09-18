@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { useLanguage } from '../lib/LanguageContext';
+
+// Picks the field in the current language, falling back to the English (base) field
+// when a translation is missing or blank.
+function localized(obj, field, lang) {
+  if (lang === 'en') return obj[field];
+  const value = obj[`${field}_${lang}`];
+  if (Array.isArray(value)) return value.length ? value : obj[field];
+  return value || obj[field];
+}
 
 const Courses = ({ onOpenModal }) => {
+  const { t, lang } = useLanguage();
   const [courseData, setCourseData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,12 +46,12 @@ const Courses = ({ onOpenModal }) => {
     <section className="courses-section" id="courses">
       <div className="container">
         <div className="section-header">
-          <h2>Our <span>Courses</span></h2>
-          <p>Discover the courses available and choose the one that suits you best</p>
+          <h2>{t('courses.heading')}<span>{t('courses.headingHighlight')}</span></h2>
+          <p>{t('courses.subheading')}</p>
         </div>
 
         {loading ? (
-          <p style={{ textAlign: 'center' }}>Loading courses...</p>
+          <p style={{ textAlign: 'center' }}>{t('courses.loading')}</p>
         ) : (
         <div className="pricing-grid">
           {courseData.map((course) => (
@@ -53,24 +64,24 @@ const Courses = ({ onOpenModal }) => {
                    {course.theme === 'green' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>}
                    {course.theme === 'red' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>}
                 </div>
-                <h3>{course.title}</h3>
+                <h3>{localized(course, 'title', lang)}</h3>
               </div>
-              
+
               <div className="course-info-block" style={{ textAlign: 'center', padding: '0 20px 20px 20px', borderBottom: '1px solid #f3f4f6', marginBottom: '20px' }}>
                 <div className="course-meta" style={{ display: 'flex', gap: '15px', justifyContent: 'center', fontSize: '0.85rem', color: '#6b7280' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    {course.frequency}
+                    {localized(course, 'frequency', lang)}
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    {course.duration}
+                    {localized(course, 'duration', lang)}
                   </span>
                 </div>
               </div>
-              
+
               <ul className="feature-list" style={{ marginTop: '0' }}>
-                {(course.features || []).map((feature, index) => (
+                {(localized(course, 'features', lang) || []).map((feature, index) => (
                   <li key={index}>
                     <span className="check-icon">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -82,7 +93,7 @@ const Courses = ({ onOpenModal }) => {
 
               <div className="card-footer">
                 <Link to={course.link || "/signup"} className="btn-full-width">
-                    {course.btn_text || "Sign up"}
+                    {localized(course, 'btn_text', lang) || t('courses.signUpDefault')}
                 </Link>
               </div>
             </div>

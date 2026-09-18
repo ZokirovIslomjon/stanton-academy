@@ -1,28 +1,16 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Courses from '../components/Courses';
+import { useLanguage } from '../lib/LanguageContext';
 
 const IELTSPreparationPage = () => {
+  const { t } = useLanguage();
   // Forces the page to scroll to the top when it loads
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Centralized data for easy editing
-  const courseData = {
-    title: 'IELTS Preparation',
-    overview: 'A rigorous, highly focused program designed to equip you with the essential skills, proven strategies, and time-management techniques required to excel in the IELTS examination and achieve your target band.',
-    frequency: '5x a week',
-    duration: '4 hours / session',
-    focus: [
-      'Intensive focus on Reading, Writing, Listening, and Speaking.',
-      'Learn proven test-taking strategies and time management.',
-      'Regular mock tests with personalized, detailed feedback.',
-      'Target Band 7.0+ with expert instructor guidance.'
-    ],
-    bestFor: 'Students planning to study abroad, professionals seeking global career opportunities, or anyone needing to prove their highest level of English proficiency.',
-    outcome: 'Comprehensive understanding of the test format, improved pacing, heightened accuracy across all four sections, and readiness to score Band 7.0 or higher.'
-  };
+  const courseData = t('ieltsPage');
 
   return (
     <main className="ielts-page-wrapper">
@@ -260,9 +248,9 @@ const IELTSPreparationPage = () => {
 
       <div className="ge-header">
         <h1>
-          <span style={{ color: '#006B3F' }}>IELTS</span> <span style={{ color: '#FFC72C' }}>PREPARATION</span>
+          <span style={{ color: '#006B3F' }}>{t('ieltsPage.headingPart1')}</span> <span style={{ color: '#FFC72C' }}>{t('ieltsPage.headingPart2')}</span>
         </h1>
-        <p style={{ color: '#006B3F' }}>Master Strategies. Ace the Exam. Achieve Band 7.0+.</p>
+        <p style={{ color: '#006B3F' }}>{t('ieltsPage.tagline')}</p>
       </div>
 
       <div className="ge-content-container">
@@ -281,16 +269,16 @@ const IELTSPreparationPage = () => {
 
           <div className="ge-info-bar">
             <div className="ge-info-item">
-              <span className="ge-info-label">Frequency</span>
+              <span className="ge-info-label">{t('coursePage.frequency')}</span>
               <span className="ge-info-value">{courseData.frequency}</span>
             </div>
             <div className="ge-info-item">
-              <span className="ge-info-label">Duration</span>
+              <span className="ge-info-label">{t('coursePage.duration')}</span>
               <span className="ge-info-value">{courseData.duration}</span>
             </div>
           </div>
 
-          <div className="ge-section-title">Focus Areas</div>
+          <div className="ge-section-title">{t('coursePage.focusAreas')}</div>
           <ul className="ge-list">
             {courseData.focus.map((item, index) => (
               <li key={index}>{item}</li>
@@ -298,12 +286,12 @@ const IELTSPreparationPage = () => {
           </ul>
 
           <div className="ge-text-block">
-            <strong>Best For</strong>
+            <strong>{t('coursePage.bestFor')}</strong>
             <p>{courseData.bestFor}</p>
           </div>
 
           <div className="ge-text-block">
-            <strong>Outcome</strong>
+            <strong>{t('coursePage.outcome')}</strong>
             <p>{courseData.outcome}</p>
           </div>
 
@@ -311,9 +299,9 @@ const IELTSPreparationPage = () => {
       </div>
 
       <div className="ge-cta-container">
-        <p>Ready to hit your target band? Secure your spot in our next intake.</p>
+        <p>{t('ieltsPage.ctaText')}</p>
         <Link to="/signup" className="ge-cta-btn">
-          Enquire Now
+          {t('coursePage.enquireNow')}
         </Link>
       </div>
 

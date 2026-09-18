@@ -26,9 +26,11 @@ import BlogPostPage from './pages/BlogPostPage';
 import AdminApp from './admin/AdminApp';
 import { SiteImagesProvider } from './lib/SiteImagesContext';
 import { EditModeProvider } from './lib/EditModeContext';
+import { LanguageProvider } from './lib/LanguageContext';
 
 function PublicSite() {
   return (
+    <LanguageProvider>
     <EditModeProvider>
       <SiteImagesProvider>
         {/* 👇 2. Add it right here! Now it watches every route change */}
@@ -59,6 +61,7 @@ function PublicSite() {
         <FloatingSocials />
       </SiteImagesProvider>
     </EditModeProvider>
+    </LanguageProvider>
   );
 }
 

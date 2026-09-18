@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import heroDefaultImg from '../assets/student.png';
 import { useSiteImages } from '../lib/SiteImagesContext';
+import { useLanguage } from '../lib/LanguageContext';
 
 const Hero = () => {
   const images = useSiteImages();
+  const { t } = useLanguage();
 
   return (
     <section className="new-hero">
@@ -45,18 +47,18 @@ const Hero = () => {
       <div className="container">
         <div className="new-hero-grid">
           <div className="new-hero-text">
-            <span className="new-hero-pretitle">Language Education For A Global Future</span>
+            <span className="new-hero-pretitle">{t('hero.pretitle')}</span>
             <h1 className="new-hero-title">
-              Stanton Academy<br />
-              High-Quality Language Courses<br />
-              for Global Learners
+              {t('hero.titleLine1')}<br />
+              {t('hero.titleLine2')}<br />
+              {t('hero.titleLine3')}{t('hero.titleHighlight')}
             </h1>
             <p className="new-hero-subtitle">
-              Build your language skills with practical courses designed for real-world communication.
+              {t('hero.subtitle')}
             </p>
             <div className="new-hero-btn-group">
-              <Link to="/signup" className="btn btn-primary">Apply Now ↗</Link>
-              <Link to="/courses" className="btn btn-secondary-outline">Explore Courses</Link>
+              <Link to="/signup" className="btn btn-primary">{t('hero.applyNow')}</Link>
+              <Link to="/courses" className="btn btn-secondary-outline">{t('hero.exploreCourses')}</Link>
             </div>
           </div>
 

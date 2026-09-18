@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import Editable from './Editable';
+import { useLanguage } from '../lib/LanguageContext';
+
+// Picks the field in the current language, falling back to the English (base) field
+// when a translation is missing or blank. Also returns the matching DB column name,
+// so the inline Editable widget saves back to the field actually being viewed.
+function localizedField(obj, field, lang) {
+  const key = lang === 'en' ? field : `${field}_${lang}`;
+  const value = obj[key];
+  return { key, value: value || obj[field] };
+}
 
 const FAQ = () => {
+  const { t, lang } = useLanguage();
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openId, setOpenId] = useState(null);
@@ -51,21 +62,23 @@ const FAQ = () => {
       <div className="container">
         <div className="section-header">
           <h2>
-            Frequently Asked <span>Questions</span>
+            {t('faq.heading')}<span>{t('faq.headingHighlight')}</span>
           </h2>
         </div>
         <div className="faq-list">
           {faqs.map((faq) => {
             const isOpen = openId === faq.id;
+            const question = localizedField(faq, 'question', lang);
+            const answer = localizedField(faq, 'answer', lang);
             return (
               <div className="faq-item" key={faq.id}>
                 <button className="faq-question" onClick={() => setOpenId(isOpen ? null : faq.id)}>
                   <Editable
                     table="faqs"
                     match={{ id: faq.id }}
-                    field="question"
-                    value={faq.question}
-                    onSaved={(v) => setFaqs((prev) => prev.map((f) => (f.id === faq.id ? { ...f, question: v } : f)))}
+                    field={question.key}
+                    value={question.value}
+                    onSaved={(v) => setFaqs((prev) => prev.map((f) => (f.id === faq.id ? { ...f, [question.key]: v } : f)))}
                   >
                     {(v) => <span>{v}</span>}
                   </Editable>
@@ -76,10 +89,10 @@ const FAQ = () => {
                     <Editable
                       table="faqs"
                       match={{ id: faq.id }}
-                      field="answer"
-                      value={faq.answer}
+                      field={answer.key}
+                      value={answer.value}
                       multiline
-                      onSaved={(v) => setFaqs((prev) => prev.map((f) => (f.id === faq.id ? { ...f, answer: v } : f)))}
+                      onSaved={(v) => setFaqs((prev) => prev.map((f) => (f.id === faq.id ? { ...f, [answer.key]: v } : f)))}
                     >
                       {(v) => <span>{v}</span>}
                     </Editable>

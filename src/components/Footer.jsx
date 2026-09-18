@@ -4,6 +4,7 @@ import logo from '../assets/logo-new.png';
 import whatsappIcon from '../assets/whatsapp.png';
 import { supabase } from '../lib/supabaseClient';
 import { useSiteImages } from '../lib/SiteImagesContext';
+import { useLanguage } from '../lib/LanguageContext';
 
 const DEFAULT_SETTINGS = {
   phone: '+60 1118648860',
@@ -17,6 +18,7 @@ const DEFAULT_SETTINGS = {
 const Footer = () => {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const images = useSiteImages();
+  const { t } = useLanguage();
 
   useEffect(() => {
     let cancelled = false;
@@ -50,27 +52,27 @@ const Footer = () => {
           </div>
 
           <div className="footer-col links-col">
-            <h4>Stanton Academy</h4>
+            <h4>{t('footer.title')}</h4>
             <ul className="footer-menu-list">
-              <li><Link to="/courses" className="footer-link">Courses</Link></li>
-              <li><Link to="/location" className="footer-link">Branches</Link></li>
-              <li><Link to="/about" className="footer-link">About Us</Link></li>
-              <li><Link to="/contact" className="footer-link">Contact</Link></li>
-              <li><Link to="/holiday-camp" className="footer-link">Holiday Camp</Link></li>
+              <li><Link to="/courses" className="footer-link">{t('footer.courses')}</Link></li>
+              <li><Link to="/location" className="footer-link">{t('footer.branches')}</Link></li>
+              <li><Link to="/about" className="footer-link">{t('footer.aboutUs')}</Link></li>
+              <li><Link to="/contact" className="footer-link">{t('footer.contact')}</Link></li>
+              <li><Link to="/holiday-camp" className="footer-link">{t('footer.holidayCamp')}</Link></li>
             </ul>
           </div>
 
           <div className="footer-col contact-col">
-            <h4>Our contacts</h4>
+            <h4>{t('footer.ourContacts')}</h4>
             <p className="phone-number">
               <svg style={{width:'16px', marginRight:'8px'}} fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-              {settings.phone}
+              <span dir="ltr">{settings.phone}</span>
             </p>
             <p className="email-address">{settings.email}</p>
           </div>
 
           <div className="footer-col social-col">
-            <h4>Our social media</h4>
+            <h4>{t('footer.ourSocial')}</h4>
             <div className="social-icons">
               
               {/* WhatsApp (Links to your phone number) */}

@@ -4,6 +4,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 // 1. Import your Courses component for the bottom section
 import Courses from '../components/Courses';
 import { useSiteImages } from '../lib/SiteImagesContext';
+import { useLanguage } from '../lib/LanguageContext';
 
 // 2. Exact image imports based on your exact file names
 import mandarinImg from '../assets/mandarin-class.jpg';
@@ -12,87 +13,15 @@ import koreanImg from '../assets/korean-class.jpg';
 import bmImg from '../assets/bahasa-malaya.jpg';
 import germanImg from '../assets/german-class.jpg';
 
-const languageData = {
-  'mandarin': {
-    title: 'Mandarin',
-    themeColor: '#ef4444', 
-    overview: 'Our Mandarin course is designed to take you from absolute beginner to confident speaker. Whether for business or personal growth, immerse yourself in one of the world\'s most spoken languages.',
-    frequency: '4x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Master the Pinyin system and the 4 tones of Mandarin.',
-      'Learn essential vocabulary for daily conversations.',
-      'Introduction to reading and writing Chinese characters.',
-      'Explore Chinese culture, etiquette, and traditions.'
-    ],
-    bestFor: 'Students and professionals looking to tap into the Asian market, or anyone passionate about exploring Chinese culture.',
-    outcome: 'Strong foundation in Pinyin, basic character recognition, and the ability to confidently hold everyday conversations.',
-    image: mandarinImg 
-  },
-  'japanese': {
-    title: 'Japanese',
-    themeColor: '#22c55e', 
-    overview: 'Immerse yourself in the Japanese language and culture. This course builds a solid foundation for JLPT preparation and practical, everyday communication.',
-    frequency: '5x a week',
-    duration: '4 hours / session',
-    focus: [
-      'Learn to read and write Hiragana and Katakana fluently.',
-      'Introduction to essential everyday Kanji characters.',
-      'Practice conversational Japanese for travel and business.',
-      'Build a strong foundation for the JLPT N5 examination.'
-    ],
-    bestFor: 'Anime enthusiasts, future expats, or students aiming to study/work in Japan and pass the JLPT N5.',
-    outcome: 'Fluency in basic reading and writing systems, and the ability to navigate standard travel and business conversations.',
-    image: japaneseImg
-  },
-  'korean': {
-    title: 'Korean',
-    themeColor: '#3b82f6', 
-    overview: 'From pop culture to corporate business, learn to read, write, and speak Korean naturally with proper honorifics and natural intonation.',
-    frequency: '5x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Master the Hangul alphabet quickly and easily.',
-      'Learn natural pronunciation, intonation, and honorifics.',
-      'Understand core grammar structures for everyday phrases.',
-      'Engage in practical dialogues for travel and daily life.'
-    ],
-    bestFor: 'K-culture fans, professionals dealing with Korean companies, and prospective students in South Korea.',
-    outcome: 'Complete mastery of reading Hangul, and the confidence to hold natural, polite conversations with native speakers.',
-    image: koreanImg
-  },
-  'bahasa-malaysia': {
-    title: 'Bahasa Malaysia',
-    themeColor: '#f97316', 
-    overview: 'The perfect course for expats and international students to effortlessly navigate daily life in Malaysia, understand local slang, and speak fluently.',
-    frequency: '1x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Learn proper pronunciation and fundamental grammar.',
-      'Build a strong, practical vocabulary for everyday use.',
-      'Practice useful phrases for shopping, dining, and navigating.',
-      'Understand local cultural contexts and conversational slang.'
-    ],
-    bestFor: 'Expatriates, international students, and foreign workers looking to integrate smoothly into Malaysian society.',
-    outcome: 'Ability to confidently converse with locals, order food, shop, and navigate everyday Malaysian life like a pro.',
-    image: bmImg
-  },
-  'german': {
-    title: 'German',
-    themeColor: '#ef4444', 
-    overview: 'Master standard Hochdeutsch with a strong focus on core grammar, precise pronunciation, and foundational skills required for Goethe-Institut exams.',
-    frequency: '2x a week',
-    duration: '2 hours / session',
-    focus: [
-      'Master standard German (Hochdeutsch) pronunciation.',
-      'Learn core grammar rules, including cases and sentence structure.',
-      'Build conversational skills for living or studying in Germany.',
-      'Preparation foundation for Goethe-Institut examinations.'
-    ],
-    bestFor: 'Engineers, students applying to German universities, and anyone looking to relocate to DACH region countries.',
-    outcome: 'Solid grasp of German cases and syntax, plus the foundational knowledge needed to begin formal exam preparations.',
-    image: germanImg
-  }
+// Theme color + image are presentational, not translated text, so they stay here
+// keyed by langId; the actual course copy (title/overview/focus/etc.) comes from
+// translations.js via t(`languagePage.${langId}`).
+const languageMeta = {
+  'mandarin': { themeColor: '#ef4444', image: mandarinImg },
+  'japanese': { themeColor: '#22c55e', image: japaneseImg },
+  'korean': { themeColor: '#3b82f6', image: koreanImg },
+  'bahasa-malaysia': { themeColor: '#f97316', image: bmImg },
+  'german': { themeColor: '#ef4444', image: germanImg },
 };
 
 const IMAGE_KEY_BY_LANG = {
@@ -105,7 +34,10 @@ const IMAGE_KEY_BY_LANG = {
 
 const LanguagePage = () => {
   const { langId } = useParams();
-  const course = languageData[langId];
+  const { t } = useLanguage();
+  const meta = languageMeta[langId];
+  const content = t(`languagePage.${langId}`);
+  const course = meta && content && content !== `languagePage.${langId}` ? { ...meta, ...content } : null;
   const images = useSiteImages();
 
   useEffect(() => {
@@ -255,9 +187,9 @@ const LanguagePage = () => {
 
       <div className="ge-header">
         <h1>
-          <span style={{ color: '#006B3F' }}>LEARN</span> <span style={{ color: course.themeColor }}>{course.title}</span>
+          <span style={{ color: '#006B3F' }}>{t('languagePage.learnPrefix')}</span> <span style={{ color: course.themeColor }}>{course.title}</span>
         </h1>
-        <p>Beyond Words. Build Confidence. Speak Naturally.</p>
+        <p>{t('languagePage.tagline')}</p>
       </div>
 
       <div className="ge-content-container">
@@ -266,21 +198,21 @@ const LanguagePage = () => {
         </div>
 
         <div className="ge-details">
-          <h2>{course.title} Intensive Course</h2>
+          <h2>{course.title} {t('languagePage.intensiveCourseLabel')}</h2>
           <p className="overview">{course.overview}</p>
 
           <div className="ge-info-bar">
             <div className="ge-info-item">
-              <span className="ge-info-label">Frequency</span>
+              <span className="ge-info-label">{t('coursePage.frequency')}</span>
               <span className="ge-info-value">{course.frequency}</span>
             </div>
             <div className="ge-info-item">
-              <span className="ge-info-label">Duration</span>
+              <span className="ge-info-label">{t('coursePage.duration')}</span>
               <span className="ge-info-value">{course.duration}</span>
             </div>
           </div>
 
-          <div className="ge-section-title">Focus Areas</div>
+          <div className="ge-section-title">{t('coursePage.focusAreas')}</div>
           <ul className="ge-list">
             {course.focus.map((item, index) => (
               <li key={index}>{item}</li>
@@ -288,12 +220,12 @@ const LanguagePage = () => {
           </ul>
 
           <div className="ge-text-block">
-            <strong>Best For</strong>
+            <strong>{t('coursePage.bestFor')}</strong>
             <p>{course.bestFor}</p>
           </div>
 
           <div className="ge-text-block">
-            <strong>Outcome</strong>
+            <strong>{t('coursePage.outcome')}</strong>
             <p>{course.outcome}</p>
           </div>
 
@@ -301,8 +233,8 @@ const LanguagePage = () => {
       </div>
 
       <div className="ge-cta-container">
-        <p>Start your language journey with us today.</p>
-        <Link to="/signup" className="ge-cta-btn">Enquire Now</Link>
+        <p>{t('languagePage.ctaText')}</p>
+        <Link to="/signup" className="ge-cta-btn">{t('coursePage.enquireNow')}</Link>
       </div>
 
       {/* 4. OTHER COURSES SECTION */}

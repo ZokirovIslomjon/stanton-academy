@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { useLanguage } from '../lib/LanguageContext';
+
+// Picks the field in the current language, falling back to the English (base) field
+// when a translation is missing or blank.
+function localized(obj, field, lang) {
+  if (lang === 'en') return obj[field];
+  return obj[`${field}_${lang}`] || obj[field];
+}
 
 const BlogListPage = () => {
+  const { t, lang } = useLanguage();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,23 +58,23 @@ const BlogListPage = () => {
 
       <div className="container">
         <div className="blog-list-header">
-          <h1>News &amp; <span>Blog</span></h1>
-          <p>Insights on language learning, exam prep, and life in Malaysia.</p>
+          <h1>{t('blogPage.heading')}<span>{t('blogPage.headingHighlight')}</span></h1>
+          <p>{t('blogPage.subheading')}</p>
         </div>
 
         {loading ? (
-          <p style={{ textAlign: 'center' }}>Loading articles...</p>
+          <p style={{ textAlign: 'center' }}>{t('blog.loading')}</p>
         ) : posts.length === 0 ? (
-          <p style={{ textAlign: 'center' }}>No articles yet — check back soon.</p>
+          <p style={{ textAlign: 'center' }}>{t('blogPage.empty')}</p>
         ) : (
           <div className="blog-list-grid">
             {posts.map((post) => (
               <Link key={post.id} to={`/blog/${post.slug}`} className="blog-list-card">
-                {post.cover_image_url && <img src={post.cover_image_url} alt={post.title} className="blog-list-card-img" />}
+                {post.cover_image_url && <img src={post.cover_image_url} alt={localized(post, 'title', lang)} className="blog-list-card-img" />}
                 <div className="blog-list-card-body">
-                  <h2 className="blog-list-card-title">{post.title}</h2>
-                  <p className="blog-list-card-excerpt">{post.excerpt}</p>
-                  <span className="blog-list-card-link">Read More →</span>
+                  <h2 className="blog-list-card-title">{localized(post, 'title', lang)}</h2>
+                  <p className="blog-list-card-excerpt">{localized(post, 'excerpt', lang)}</p>
+                  <span className="blog-list-card-link">{t('blog.readMore')}</span>
                 </div>
               </Link>
             ))}

@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { useLanguage } from '../lib/LanguageContext';
+
+// Picks the field in the current language, falling back to the English (base) field
+// when a translation is missing or blank.
+function localized(obj, field, lang) {
+  if (lang === 'en') return obj[field];
+  return obj[`${field}_${lang}`] || obj[field];
+}
 
 const BlogSection = () => {
+  const { t } = useLanguage();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -88,11 +97,11 @@ const BlogSection = () => {
 
       <div className="container">
         <div className="blog-section-header">
-          <Link to="/blog" className="blog-view-all">View All Articles →</Link>
+          <Link to="/blog" className="blog-view-all">{t('blog.viewAll')}</Link>
         </div>
 
         {loading ? (
-          <p>Loading articles...</p>
+          <p>{t('blog.loading')}</p>
         ) : featured ? (
           <div className="blog-grid-featured">
             <BlogCard post={posts[0]} variant="light" />
@@ -115,14 +124,16 @@ const BlogSection = () => {
 };
 
 function BlogCard({ post, variant }) {
+  const { t, lang } = useLanguage();
+  const title = localized(post, 'title', lang);
   return (
     <Link to={`/blog/${post.slug}`} className={`blog-card blog-card--${variant}`}>
-      {post.cover_image_url && <img src={post.cover_image_url} alt={post.title} className="blog-card-img" />}
+      {post.cover_image_url && <img src={post.cover_image_url} alt={title} className="blog-card-img" />}
       <div className="blog-card-body">
-        <span className="blog-card-tag">News</span>
-        <h3 className="blog-card-title">{post.title}</h3>
-        {variant !== 'dark' && <p className="blog-card-excerpt">{post.excerpt}</p>}
-        <span className="blog-card-link">{variant === 'dark' ? 'Read' : 'Read More →'}</span>
+        <span className="blog-card-tag">{t('blog.newsTag')}</span>
+        <h3 className="blog-card-title">{title}</h3>
+        {variant !== 'dark' && <p className="blog-card-excerpt">{localized(post, 'excerpt', lang)}</p>}
+        <span className="blog-card-link">{variant === 'dark' ? t('blog.read') : t('blog.readMore')}</span>
       </div>
     </Link>
   );

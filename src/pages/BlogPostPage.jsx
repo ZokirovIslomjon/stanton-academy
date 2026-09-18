@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { useLanguage } from '../lib/LanguageContext';
+
+// Picks the field in the current language, falling back to the English (base) field
+// when a translation is missing or blank.
+function localized(obj, field, lang) {
+  if (lang === 'en') return obj[field];
+  return obj[`${field}_${lang}`] || obj[field];
+}
 
 const BlogPostPage = () => {
+  const { t, lang } = useLanguage();
   const { slug } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -50,18 +59,18 @@ const BlogPostPage = () => {
 
       <div className="container">
         <div className="blog-post-content">
-          <Link to="/blog" className="blog-post-back">← Back to Blog</Link>
+          <Link to="/blog" className="blog-post-back">{t('blogPage.backToBlog')}</Link>
 
           {loading ? (
-            <p>Loading article...</p>
+            <p>{t('blogPage.loadingArticle')}</p>
           ) : notFound ? (
-            <p>Article not found. <Link to="/blog">Return to the blog.</Link></p>
+            <p>{t('blogPage.notFound')} <Link to="/blog">{t('blogPage.returnToBlog')}</Link></p>
           ) : (
             <>
-              <h1 className="blog-post-title">{post.title}</h1>
-              {post.cover_image_url && <img src={post.cover_image_url} alt={post.title} className="blog-post-img" />}
+              <h1 className="blog-post-title">{localized(post, 'title', lang)}</h1>
+              {post.cover_image_url && <img src={post.cover_image_url} alt={localized(post, 'title', lang)} className="blog-post-img" />}
               <div className="blog-post-body">
-                {(post.body || '').split('\n').filter((p) => p.trim()).map((paragraph, i) => (
+                {(localized(post, 'body', lang) || '').split('\n').filter((p) => p.trim()).map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}
               </div>

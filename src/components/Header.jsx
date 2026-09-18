@@ -3,10 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import logoWhite from '../assets/logo-new.png';
 import { useSiteImages } from '../lib/SiteImagesContext';
+import { useLanguage } from '../lib/LanguageContext';
+import { LANGUAGES } from '../locales/translations';
 
 const Header = () => {
   const images = useSiteImages();
+  const { lang, setLang, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   
@@ -52,6 +56,18 @@ const Header = () => {
     >
       <style>{`
         .right-side-nav { display: flex; align-items: center; gap: 15px; }
+
+        .lang-switcher { position: relative; }
+        .lang-switcher-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; cursor: pointer; transition: background-color 0.2s ease; }
+        .theme-light .lang-switcher-btn { color: #1f2937; }
+        .theme-dark .lang-switcher-btn { color: #ffffff; }
+        .lang-switcher-btn:hover { background-color: rgba(0, 107, 63, 0.1); }
+        .lang-switcher-menu { position: absolute; top: 46px; right: 0; background: #ffffff; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 6px; min-width: 130px; list-style: none; margin: 0; z-index: 1002; }
+        .lang-switcher-menu li button { display: block; width: 100%; text-align: left; background: transparent; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #1f2937; cursor: pointer; }
+        .lang-switcher-menu li button:hover { background-color: #f4f5f7; }
+        .lang-switcher-menu li button.active { color: #006B3F; background-color: #e6f4ed; }
+        [dir="rtl"] .lang-switcher-menu { right: auto; left: 0; }
+        [dir="rtl"] .lang-switcher-menu li button { text-align: right; }
         .nav-links { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; }
         .nav-links li a { text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.3s ease; }
         
@@ -101,16 +117,35 @@ const Header = () => {
           </div>
           
           <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-            <li><Link to="/courses" onClick={closeMenu}>Programs</Link></li>
-            <li><Link to="/blog" onClick={closeMenu}>Blogs</Link></li>
-            <li><Link to="/about" onClick={closeMenu}>About</Link></li>
-            <li><Link to="/holiday-camp" onClick={closeMenu}>Holiday Camp</Link></li>
+            <li><Link to="/courses" onClick={closeMenu}>{t('nav.programs')}</Link></li>
+            <li><Link to="/blog" onClick={closeMenu}>{t('nav.blogs')}</Link></li>
+            <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>
+            <li><Link to="/holiday-camp" onClick={closeMenu}>{t('nav.holidayCamp')}</Link></li>
           </ul>
 
           <div className="right-side-nav">
+            <div className="lang-switcher">
+              <button className="lang-switcher-btn" onClick={() => setIsLangOpen(!isLangOpen)} aria-label="Change language">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </button>
+              {isLangOpen && (
+                <ul className="lang-switcher-menu">
+                  {LANGUAGES.map((l) => (
+                    <li key={l.code}>
+                      <button
+                        className={l.code === lang ? 'active' : ''}
+                        onClick={() => { setLang(l.code); setIsLangOpen(false); }}
+                      >
+                        {l.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <div className="auth-buttons">
               <Link to="/signup" className="btn btn-primary btn-apply" onClick={closeMenu}>
-                Apply
+                {t('nav.apply')}
               </Link>
             </div>
             <button className={`hamburger-btn ${isMenuOpen ? 'open' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
