@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import './admin.css';
 
@@ -8,9 +9,50 @@ const defaultContent = {
   heading: { text: '', level: 'h2' },
   text: { text: '' },
   image: { url: '', alt: '' },
-  cta: { text: '', link: '' },
+  cta: { text: '', link: '/signup' },
   spacer: { height: 40 },
 };
+
+// Real pages already live on the site. These are not stored in the `pages` table (they're
+// hand-built React pages, not block-based) — this is just a directory so admin can find where
+// each one is actually edited today.
+const SITE_PAGES = [
+  {
+    title: 'Home',
+    url: '/',
+    edits: [
+      { label: 'Courses', href: '/admin/courses' },
+      { label: 'FAQ', href: '/admin/faq' },
+      { label: 'Contact Info', href: '/admin/settings' },
+      { label: 'Images', href: '/admin/images' },
+    ],
+  },
+  { title: 'About', url: '/about', edits: [{ label: 'Sections', href: '/admin/sections' }] },
+  {
+    title: 'Contact',
+    url: '/contact',
+    edits: [
+      { label: 'Sections', href: '/admin/sections' },
+      { label: 'Contact Info', href: '/admin/settings' },
+    ],
+  },
+  { title: 'Location', url: '/location', edits: [{ label: 'Contact Info', href: '/admin/settings' }] },
+  {
+    title: 'Holiday Camp',
+    url: '/holiday-camp',
+    edits: [
+      { label: 'Calendar & Packages', href: '/admin/holiday-camp' },
+      { label: 'Sections', href: '/admin/sections' },
+    ],
+  },
+  { title: 'General English', url: '/general-english', edits: [] },
+  { title: 'IELTS Preparation', url: '/ielts-preparation', edits: [] },
+  {
+    title: 'Language Pages (Mandarin, Japanese, Korean, Bahasa Malaysia, German)',
+    url: '/language/mandarin',
+    edits: [{ label: 'Images', href: '/admin/images' }],
+  },
+];
 
 export default function AdminPages() {
   const [pages, setPages] = useState([]);
@@ -35,6 +77,15 @@ export default function AdminPages() {
   useEffect(() => {
     loadPages();
   }, []);
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const slug = searchParams.get('slug');
+    if (!slug) return;
+    const match = pages.find((p) => p.slug === slug);
+    if (match && match.id !== selectedPageId) selectPage(match);
+  }, [pages, searchParams]);
 
   async function loadBlocks(pageId) {
     setBlocksLoading(true);
@@ -147,6 +198,49 @@ export default function AdminPages() {
       </p>
 
       {error && <div className="admin-alert admin-alert-error">{error}</div>}
+
+      <h2 className="admin-section-title">Your Website Pages</h2>
+      <p className="admin-empty" style={{ marginBottom: 12 }}>
+        Every real page on the site, and where to edit each one.
+      </p>
+      <table className="admin-table" style={{ marginBottom: 24 }}>
+        <thead>
+          <tr>
+            <th>Page</th>
+            <th>Live URL</th>
+            <th>Edit here</th>
+          </tr>
+        </thead>
+        <tbody>
+          {SITE_PAGES.map((sp) => (
+            <tr key={sp.url}>
+              <td>{sp.title}</td>
+              <td>
+                <a href={sp.url} target="_blank" rel="noreferrer">
+                  {sp.url}
+                </a>
+              </td>
+              <td className="admin-table-actions">
+                {sp.edits.length > 0 ? (
+                  sp.edits.map((e, i) => (
+                    <React.Fragment key={e.href}>
+                      {i > 0 && ' · '}
+                      <Link to={e.href}>{e.label}</Link>
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <span className="admin-empty">Not yet editable from admin</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h2 className="admin-section-title">Custom Pages</h2>
+      <p className="admin-empty" style={{ marginBottom: 12 }}>
+        Pages you build here from blocks (e.g. a course detail page created via Courses → Manage Page).
+      </p>
 
       <form className="admin-inline-form" onSubmit={handleCreatePage}>
         <input

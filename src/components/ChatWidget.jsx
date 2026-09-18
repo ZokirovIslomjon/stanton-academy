@@ -31,7 +31,7 @@ const STEPS = {
 const FAQ = [
   {
     keywords: ['where', 'location', 'address', 'campus', 'located', 'kl', 'place'],
-    reply: "📍 We are located at **No 112 & 114, 5th Floor, Wisma Hainan, Jalan Pudu 55100, Kuala Lumpur**. Easy to reach by public transport! 🚇"
+    reply: "📍 We are located at **116 Jalan Pudu, 50200 Kampung Cendana, Kuala Lumpur**. Easy to reach by public transport! 🚇"
   },
   {
     keywords: ['price', 'fee', 'cost', 'how much', 'rm', 'payment', 'expensive', 'harga', 'bayaran'],

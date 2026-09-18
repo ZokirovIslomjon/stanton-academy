@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Location from '../components/Location';
+import Editable from '../components/Editable';
 import { supabase } from '../lib/supabaseClient';
 
 const DEFAULT_CONTENT = {
@@ -106,7 +107,16 @@ const ContactPage = () => {
 
       <section className="contact-hero">
         <h1><span style={{ color: '#006B3F' }}>Contact</span> <span style={{ color: '#FFC72C' }}>Us</span></h1>
-        <p>{content.contact_intro}</p>
+        <Editable
+          table="page_content"
+          match={{ key: 'contact_intro' }}
+          field="value"
+          value={content.contact_intro}
+          multiline
+          onSaved={(v) => setContent((c) => ({ ...c, contact_intro: v }))}
+        >
+          {(v) => <p>{v}</p>}
+        </Editable>
       </section>
 
       <section className="contact-form-section">

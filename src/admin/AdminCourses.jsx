@@ -9,6 +9,11 @@ const emptyForm = {
   slug: '',
   title: '',
   theme: 'blue',
+  tagline: '',
+  overview: '',
+  best_for: '',
+  outcome: '',
+  accent_color: '#006B3F',
   frequency: '',
   duration: '',
   price: '',
@@ -55,6 +60,11 @@ export default function AdminCourses() {
       level_note: course.level_note ?? '',
       image_url: course.image_url ?? '',
       link: course.link ?? '',
+      tagline: course.tagline ?? '',
+      overview: course.overview ?? '',
+      best_for: course.best_for ?? '',
+      outcome: course.outcome ?? '',
+      accent_color: course.accent_color || '#006B3F',
       features: (course.features || []).join('\n'),
     });
   const closeForm = () => setForm(null);
@@ -64,10 +74,17 @@ export default function AdminCourses() {
     setSaving(true);
     setError('');
 
+    const slug = form.slug.trim();
+
     const payload = {
-      slug: form.slug.trim(),
+      slug,
       title: form.title.trim(),
       theme: form.theme,
+      tagline: form.tagline.trim() || null,
+      overview: form.overview.trim() || null,
+      best_for: form.best_for.trim() || null,
+      outcome: form.outcome.trim() || null,
+      accent_color: form.accent_color || '#006B3F',
       frequency: form.frequency.trim() || null,
       duration: form.duration.trim() || null,
       price: form.price === '' ? null : Number(form.price),
@@ -78,7 +95,8 @@ export default function AdminCourses() {
         .map((f) => f.trim())
         .filter(Boolean),
       image_url: form.image_url.trim() || null,
-      link: form.link.trim() || null,
+      // No custom link set? Point it at the standard course page template instead of leaving it blank.
+      link: form.link.trim() || `/course/${slug}`,
       display_order: Number(form.display_order) || 0,
       is_active: form.is_active,
     };
@@ -143,7 +161,7 @@ export default function AdminCourses() {
             </label>
 
             <label className="admin-field">
-              <span>Theme Color</span>
+              <span>Theme Color (course card on homepage)</span>
               <select className="admin-select" value={form.theme} onChange={(e) => setForm({ ...form, theme: e.target.value })}>
                 {THEMES.map((t) => (
                   <option key={t} value={t}>
@@ -151,6 +169,26 @@ export default function AdminCourses() {
                   </option>
                 ))}
               </select>
+            </label>
+
+            <label className="admin-field">
+              <span>Tagline (short line under the course page title)</span>
+              <input
+                className="admin-input"
+                placeholder="e.g. Build Confidence. Speak Naturally."
+                value={form.tagline}
+                onChange={(e) => setForm({ ...form, tagline: e.target.value })}
+              />
+            </label>
+
+            <label className="admin-field">
+              <span>Text Color (course page headings &amp; accents)</span>
+              <input
+                className="admin-input"
+                type="color"
+                value={form.accent_color}
+                onChange={(e) => setForm({ ...form, accent_color: e.target.value })}
+              />
             </label>
 
             <label className="admin-field">
@@ -206,7 +244,7 @@ export default function AdminCourses() {
             </label>
 
             <label className="admin-field">
-              <span>Page Link</span>
+              <span>Page Link (leave blank to use the standard course page)</span>
               <input
                 className="admin-input"
                 placeholder="/general-english"
@@ -237,12 +275,42 @@ export default function AdminCourses() {
           </div>
 
           <label className="admin-field">
-            <span>Features (one per line)</span>
+            <span>Overview (main description on the course page)</span>
+            <textarea
+              className="admin-textarea"
+              rows={3}
+              value={form.overview}
+              onChange={(e) => setForm({ ...form, overview: e.target.value })}
+            />
+          </label>
+
+          <label className="admin-field">
+            <span>Features / Focus Areas (one per line)</span>
             <textarea
               className="admin-textarea"
               rows={4}
               value={form.features}
               onChange={(e) => setForm({ ...form, features: e.target.value })}
+            />
+          </label>
+
+          <label className="admin-field">
+            <span>Best For</span>
+            <textarea
+              className="admin-textarea"
+              rows={2}
+              value={form.best_for}
+              onChange={(e) => setForm({ ...form, best_for: e.target.value })}
+            />
+          </label>
+
+          <label className="admin-field">
+            <span>Outcome</span>
+            <textarea
+              className="admin-textarea"
+              rows={2}
+              value={form.outcome}
+              onChange={(e) => setForm({ ...form, outcome: e.target.value })}
             />
           </label>
 

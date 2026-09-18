@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import WhyChooseUs from '../components/WhyChooseUs';
+import Editable from '../components/Editable';
 import { supabase } from '../lib/supabaseClient';
 import { renderListItems } from '../lib/contentHelpers';
 
@@ -114,21 +115,44 @@ const AboutPage = () => {
         <div className="content-container">
           <div className="content-block">
             <h2>About Stanton Academy</h2>
-            <p>{content.about_intro}</p>
+            <Editable
+              table="page_content"
+              match={{ key: 'about_intro' }}
+              field="value"
+              value={content.about_intro}
+              multiline
+              onSaved={(v) => setContent((c) => ({ ...c, about_intro: v }))}
+            >
+              {(v) => <p>{v}</p>}
+            </Editable>
           </div>
 
           <div className="content-block">
             <h2>The Boutique Advantage</h2>
-            <ul className="content-list">
-              {renderListItems(content.about_advantage_items)}
-            </ul>
+            <Editable
+              table="page_content"
+              match={{ key: 'about_advantage_items' }}
+              field="value"
+              value={content.about_advantage_items}
+              multiline
+              onSaved={(v) => setContent((c) => ({ ...c, about_advantage_items: v }))}
+            >
+              {(v) => <ul className="content-list">{renderListItems(v)}</ul>}
+            </Editable>
           </div>
 
           <div className="content-block">
             <h2>Our Programs</h2>
-            <ul className="content-list">
-              {renderListItems(content.about_programs_items)}
-            </ul>
+            <Editable
+              table="page_content"
+              match={{ key: 'about_programs_items' }}
+              field="value"
+              value={content.about_programs_items}
+              multiline
+              onSaved={(v) => setContent((c) => ({ ...c, about_programs_items: v }))}
+            >
+              {(v) => <ul className="content-list">{renderListItems(v)}</ul>}
+            </Editable>
           </div>
         </div>
       </section>

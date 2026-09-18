@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import Editable from './Editable';
 
 const FAQ = () => {
   const [faqs, setFaqs] = useState([]);
@@ -59,10 +60,31 @@ const FAQ = () => {
             return (
               <div className="faq-item" key={faq.id}>
                 <button className="faq-question" onClick={() => setOpenId(isOpen ? null : faq.id)}>
-                  {faq.question}
+                  <Editable
+                    table="faqs"
+                    match={{ id: faq.id }}
+                    field="question"
+                    value={faq.question}
+                    onSaved={(v) => setFaqs((prev) => prev.map((f) => (f.id === faq.id ? { ...f, question: v } : f)))}
+                  >
+                    {(v) => <span>{v}</span>}
+                  </Editable>
                   <span className={`faq-icon ${isOpen ? 'open' : ''}`}>+</span>
                 </button>
-                {isOpen && <div className="faq-answer">{faq.answer}</div>}
+                {isOpen && (
+                  <div className="faq-answer">
+                    <Editable
+                      table="faqs"
+                      match={{ id: faq.id }}
+                      field="answer"
+                      value={faq.answer}
+                      multiline
+                      onSaved={(v) => setFaqs((prev) => prev.map((f) => (f.id === faq.id ? { ...f, answer: v } : f)))}
+                    >
+                      {(v) => <span>{v}</span>}
+                    </Editable>
+                  </div>
+                )}
               </div>
             );
           })}

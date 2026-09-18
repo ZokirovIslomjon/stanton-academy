@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import Editable from './Editable';
 
 const DEFAULT_SETTINGS = {
-  address: 'No 112 & 114, 5th Floor, Wisma Hainan, Jalan Pudu 55100, Kuala Lumpur',
+  address: 'Stanton Academy, 116 Jalan Pudu, 50200 Kampung Cendana, Kuala Lumpur',
   phone: '+60 1118648860',
   email: 'info@stanton-academy.com',
 };
@@ -47,7 +48,16 @@ const Location = () => {
                 </div>
                 <div>
                     <h3>Our Office</h3>
-                    <p>{settings.address}</p>
+                    <Editable
+                      table="site_settings"
+                      match={{ id: 1 }}
+                      field="address"
+                      value={settings.address}
+                      multiline
+                      onSaved={(v) => setSettings((s) => ({ ...s, address: v }))}
+                    >
+                      {(v) => <p>{v}</p>}
+                    </Editable>
                 </div>
             </div>
 
@@ -57,7 +67,15 @@ const Location = () => {
                 </div>
                 <div>
                     <h3>Phone</h3>
-                    <p>{settings.phone}</p>
+                    <Editable
+                      table="site_settings"
+                      match={{ id: 1 }}
+                      field="phone"
+                      value={settings.phone}
+                      onSaved={(v) => setSettings((s) => ({ ...s, phone: v }))}
+                    >
+                      {(v) => <p>{v}</p>}
+                    </Editable>
                 </div>
             </div>
 
@@ -67,13 +85,21 @@ const Location = () => {
                 </div>
                 <div>
                     <h3>Email</h3>
-                    <p>{settings.email}</p>
+                    <Editable
+                      table="site_settings"
+                      match={{ id: 1 }}
+                      field="email"
+                      value={settings.email}
+                      onSaved={(v) => setSettings((s) => ({ ...s, email: v }))}
+                    >
+                      {(v) => <p>{v}</p>}
+                    </Editable>
                 </div>
             </div>
           </div>
 
           <div className="map-container">
-             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.81043071722!2d101.70306767586877!3d3.1446806968307426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc49d6399439ad%3A0x25c4210ca0a69381!2sThe%20Federation%20Of%20Hainan%20Association%20Malaysia!5e0!3m2!1sen!2smy!4v1769869773255!5m2!1sen!2smy" width="100%" height="450" style={{ border: 0, display: 'block' }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+             <iframe src="https://www.google.com/maps?q=Stanton+Academy%2C+116+Jalan+Pudu%2C+50200+Kampung+Cendana%2C+Kuala+Lumpur&output=embed" width="100%" height="450" style={{ border: 0, display: 'block' }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
           </div>
 
         </div>

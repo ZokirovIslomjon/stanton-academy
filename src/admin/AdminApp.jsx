@@ -8,6 +8,7 @@ import AdminOverview from './AdminOverview';
 import AdminStudents from './AdminStudents';
 import AdminCourses from './AdminCourses';
 import AdminFAQ from './AdminFAQ';
+import AdminBlog from './AdminBlog';
 import AdminMedia from './AdminMedia';
 import AdminImages from './AdminImages';
 import AdminPages from './AdminPages';
@@ -32,6 +33,7 @@ export default function AdminApp() {
           <Route path="students" element={<AdminStudents />} />
           <Route path="courses" element={<AdminCourses />} />
           <Route path="faq" element={<AdminFAQ />} />
+          <Route path="blog" element={<AdminBlog />} />
           <Route path="media" element={<AdminMedia />} />
           <Route path="images" element={<AdminImages />} />
           <Route path="pages" element={<AdminPages />} />

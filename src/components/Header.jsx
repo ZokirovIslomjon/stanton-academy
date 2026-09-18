@@ -101,10 +101,9 @@ const Header = () => {
           </div>
           
           <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-            <li><Link to="/courses" onClick={closeMenu}>Courses</Link></li>
-            <li><Link to="/location" onClick={closeMenu}>Branch</Link></li>
-            <li><Link to="/about" onClick={closeMenu}>About Us</Link></li>
-            <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>
+            <li><Link to="/courses" onClick={closeMenu}>Programs</Link></li>
+            <li><Link to="/blog" onClick={closeMenu}>Blogs</Link></li>
+            <li><Link to="/about" onClick={closeMenu}>About</Link></li>
             <li><Link to="/holiday-camp" onClick={closeMenu}>Holiday Camp</Link></li>
           </ul>
 
