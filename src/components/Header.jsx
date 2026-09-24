@@ -118,9 +118,9 @@ const Header = () => {
           
           <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
             <li><Link to="/courses" onClick={closeMenu}>{t('nav.programs')}</Link></li>
-            <li><Link to="/blog" onClick={closeMenu}>{t('nav.blogs')}</Link></li>
-            <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>
             <li><Link to="/holiday-camp" onClick={closeMenu}>{t('nav.holidayCamp')}</Link></li>
+            <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>
+            <li><Link to="/blog" onClick={closeMenu}>{t('nav.blogs')}</Link></li>
           </ul>
 
           <div className="right-side-nav">

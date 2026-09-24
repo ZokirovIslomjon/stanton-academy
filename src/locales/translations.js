@@ -45,7 +45,7 @@ export const translations = {
       heading: 'Visit our ', headingHighlight: 'Campus', subheading: 'We are waiting for you!',
       ourOffice: 'Our Office', phone: 'Phone', email: 'Email',
     },
-    blog: { viewAll: 'View All Articles →', loading: 'Loading articles...', newsTag: 'News', readMore: 'Read More →', read: 'Read' },
+    blog: { viewAll: 'View All Articles →', loading: 'Loading articles...', newsTag: 'Blogs', readMore: 'Read More →', read: 'Read' },
     blogPage: {
       heading: 'News & ', headingHighlight: 'Blog',
       subheading: 'Insights on language learning, exam prep, and life in Malaysia.',
@@ -338,7 +338,7 @@ export const translations = {
       heading: 'زوروا ', headingHighlight: 'حرمنا الجامعي', subheading: 'بانتظارك!',
       ourOffice: 'مكتبنا', phone: 'الهاتف', email: 'البريد الإلكتروني',
     },
-    blog: { viewAll: '← عرض جميع المقالات', loading: 'جارٍ تحميل المقالات...', newsTag: 'أخبار', readMore: '← قراءة المزيد', read: 'قراءة' },
+    blog: { viewAll: '← عرض جميع المقالات', loading: 'جارٍ تحميل المقالات...', newsTag: 'المدونة', readMore: '← قراءة المزيد', read: 'قراءة' },
     blogPage: {
       heading: 'الأخبار ', headingHighlight: 'والمدونة',
       subheading: 'رؤى حول تعلم اللغات، التحضير للاختبارات، والحياة في ماليزيا.',
@@ -631,7 +631,7 @@ export const translations = {
       heading: '参观我们的', headingHighlight: '校园', subheading: '我们期待您的到来！',
       ourOffice: '我们的办公室', phone: '电话', email: '邮箱',
     },
-    blog: { viewAll: '查看所有文章 →', loading: '正在加载文章...', newsTag: '新闻', readMore: '阅读更多 →', read: '阅读' },
+    blog: { viewAll: '查看所有文章 →', loading: '正在加载文章...', newsTag: '博客', readMore: '阅读更多 →', read: '阅读' },
     blogPage: {
       heading: '新闻与', headingHighlight: '博客',
       subheading: '关于语言学习、考试备考和马来西亚生活的资讯。',
@@ -887,6 +887,5 @@ export const translations = {
 
 export const LANGUAGES = [
   { code: 'en', label: 'English' },
-  { code: 'ar', label: 'العربية' },
   { code: 'zh', label: '中文' },
 ];

@@ -4,9 +4,16 @@ import { translations } from '../locales/translations';
 const LanguageContext = createContext(null);
 
 const RTL_LANGS = ['ar'];
+const SUPPORTED_LANGS = ['en', 'zh'];
 
 export function LanguageProvider({ children }) {
-  const [lang, setLangState] = useState(() => localStorage.getItem('sa_lang') || 'en');
+  const [lang, setLangState] = useState(() => {
+    const stored = localStorage.getItem('sa_lang');
+    // Arabic was removed from the language switcher; fall back to English for
+    // any returning visitor whose browser still has 'ar' saved, so they aren't
+    // stuck on a language with no way to switch out of it.
+    return SUPPORTED_LANGS.includes(stored) ? stored : 'en';
+  });
 
   useEffect(() => {
     document.documentElement.lang = lang;

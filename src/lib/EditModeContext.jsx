@@ -21,7 +21,7 @@ function EditModeInner({ children }) {
           onClick={() => setEditMode((v) => !v)}
           style={{
             position: 'fixed',
-            bottom: 24,
+            bottom: 100,
             right: 24,
             zIndex: 9999,
             background: editMode ? '#006B3F' : '#1a1a1a',

@@ -43,9 +43,9 @@ const BlogSection = () => {
 
   if (!loading && posts.length === 0) return null;
 
-  // With exactly 4 posts, lay them out like the reference: one plain card, one
-  // bold highlighted card, and two smaller cards stacked in the third column.
-  const featured = posts.length === 4;
+  // With 3 or more posts, lay them out like the reference: one plain card, one
+  // bold highlighted card, and the rest stacked as smaller cards in the third column.
+  const featured = posts.length >= 3;
 
   return (
     <section className="blog-section">
@@ -107,8 +107,9 @@ const BlogSection = () => {
             <BlogCard post={posts[0]} variant="light" />
             <BlogCard post={posts[1]} variant="bold" />
             <div className="blog-card-stack">
-              <BlogCard post={posts[2]} variant="dark" />
-              <BlogCard post={posts[3]} variant="dark" />
+              {posts.slice(2).map((post) => (
+                <BlogCard key={post.id} post={post} variant="dark" />
+              ))}
             </div>
           </div>
         ) : (

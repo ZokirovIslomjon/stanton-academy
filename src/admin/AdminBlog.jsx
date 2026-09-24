@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import './admin.css';
 
@@ -27,6 +27,56 @@ export default function AdminBlog() {
   const [error, setError] = useState('');
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingRow, setUploadingRow] = useState(false);
+  const coverInputRef = useRef(null);
+  const rowInputRef = useRef(null);
+
+  // Same upload pattern as AdminMedia.jsx: store in the 'media' bucket under a
+  // timestamped, sanitized filename, then return its public URL.
+  async function uploadToMedia(file) {
+    const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')}`;
+    const { error: uploadError } = await supabase.storage.from('media').upload(safeName, file);
+    if (uploadError) throw uploadError;
+    return supabase.storage.from('media').getPublicUrl(safeName).data.publicUrl;
+  }
+
+  const handleUploadCover = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    setError('');
+    try {
+      const url = await uploadToMedia(file);
+      setForm((f) => ({ ...f, cover_image_url: url }));
+    } catch (err) {
+      setError(err.message);
+    }
+    setUploadingCover(false);
+    if (coverInputRef.current) coverInputRef.current.value = '';
+  };
+
+  // Uploads 1-3 photos and appends them to the body as one "[[img]]url|url|url"
+  // line, which BlogPostPage.jsx's renderBody() turns into a side-by-side row —
+  // the same layout used on the "Why Study English in Malaysia" article.
+  const handleInsertImageRow = async (e) => {
+    const files = Array.from(e.target.files || []).slice(0, 3);
+    if (files.length === 0) return;
+    setUploadingRow(true);
+    setError('');
+    try {
+      const urls = [];
+      for (const file of files) {
+        urls.push(await uploadToMedia(file));
+      }
+      const line = `[[img]]${urls.join('|')}`;
+      setForm((f) => ({ ...f, body: f.body ? `${f.body}\n${line}` : line }));
+    } catch (err) {
+      setError(err.message);
+    }
+    setUploadingRow(false);
+    if (rowInputRef.current) rowInputRef.current.value = '';
+  };
 
   async function loadPosts() {
     setLoading(true);
@@ -45,7 +95,17 @@ export default function AdminBlog() {
   }, []);
 
   const openAdd = () => setForm({ ...emptyForm, display_order: posts.length });
-  const openEdit = (post) => setForm({ ...post });
+  // Nullable DB fields (excerpt, body, cover_image_url can all be null) must be
+  // normalized to '' here — otherwise handleSave's `.trim()` calls throw on a
+  // null value, which happens before setSaving(false) runs, leaving the Save
+  // button stuck on "Saving..." forever. Same pattern as AdminCourses.jsx.
+  const openEdit = (post) =>
+    setForm({
+      ...post,
+      excerpt: post.excerpt ?? '',
+      body: post.body ?? '',
+      cover_image_url: post.cover_image_url ?? '',
+    });
   const closeForm = () => setForm(null);
 
   const handleSave = async (e) => {
@@ -122,10 +182,21 @@ export default function AdminBlog() {
               <input className="admin-input" placeholder="why-learn-english-in-malaysia" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
             </label>
 
-            <label className="admin-field">
+            <div className="admin-field">
               <span>Cover Image URL</span>
               <input className="admin-input" value={form.cover_image_url} onChange={(e) => setForm({ ...form, cover_image_url: e.target.value })} />
-            </label>
+              <label className="admin-btn admin-btn-ghost admin-upload-label" style={{ marginTop: 8, display: 'inline-block' }}>
+                {uploadingCover ? 'Uploading...' : '+ Upload Cover Image'}
+                <input
+                  ref={coverInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUploadCover}
+                  disabled={uploadingCover}
+                  className="admin-upload-input"
+                />
+              </label>
+            </div>
 
             <label className="admin-field">
               <span>Display Order</span>
@@ -143,10 +214,22 @@ export default function AdminBlog() {
             <textarea className="admin-textarea" rows={2} value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} />
           </label>
 
-          <label className="admin-field" style={{ marginTop: 12 }}>
-            <span>Body (full article text — leave a blank line between paragraphs)</span>
+          <div className="admin-field" style={{ marginTop: 12 }}>
+            <span>Body — one paragraph per line. Start a line with "## " for a heading (e.g. "## Discover Kuala Lumpur"). Use "+ Add Image Row" below to insert photos.</span>
             <textarea className="admin-textarea" rows={8} value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} required />
-          </label>
+            <label className="admin-btn admin-btn-ghost admin-upload-label" style={{ marginTop: 8, display: 'inline-block' }}>
+              {uploadingRow ? 'Uploading...' : '+ Add Image Row (1–3 photos)'}
+              <input
+                ref={rowInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleInsertImageRow}
+                disabled={uploadingRow}
+                className="admin-upload-input"
+              />
+            </label>
+          </div>
 
           <div className="admin-form-actions">
             <button type="button" className="admin-btn admin-btn-ghost" onClick={closeForm}>
