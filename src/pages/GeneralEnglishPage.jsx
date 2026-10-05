@@ -7,9 +7,9 @@ import { useLanguage } from '../lib/LanguageContext';
 // General English has a different fee per duration tab, so these override the
 // single price stored on the course row (see CourseFees.jsx).
 const GE_FEES = {
-  '1month': { local: 600, international: 600 },
-  '2months': { local: 1000, international: 1000 },
-  '3months': { local: 1750, international: 1750 },
+  '1month': 600,
+  '2months': 1000,
+  '3months': 1750,
 };
 
 const GeneralEnglishPage = () => {

@@ -17,7 +17,6 @@ const emptyForm = {
   frequency: '',
   duration: '',
   price: '',
-  price_international: '',
   capacity: '',
   level_note: '',
   features: '',
@@ -57,7 +56,6 @@ export default function AdminCourses() {
       frequency: course.frequency ?? '',
       duration: course.duration ?? '',
       price: course.price ?? '',
-      price_international: course.price_international ?? '',
       capacity: course.capacity ?? '',
       level_note: course.level_note ?? '',
       image_url: course.image_url ?? '',
@@ -90,7 +88,6 @@ export default function AdminCourses() {
       frequency: form.frequency.trim() || null,
       duration: form.duration.trim() || null,
       price: form.price === '' ? null : Number(form.price),
-      price_international: form.price_international === '' ? null : Number(form.price_international),
       capacity: form.capacity === '' ? null : Number(form.capacity),
       level_note: form.level_note.trim() || null,
       features: form.features
@@ -222,17 +219,6 @@ export default function AdminCourses() {
                 step="0.01"
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
-              />
-            </label>
-
-            <label className="admin-field">
-              <span>International Price (RM — leave blank to use the price above)</span>
-              <input
-                className="admin-input"
-                type="number"
-                step="0.01"
-                value={form.price_international}
-                onChange={(e) => setForm({ ...form, price_international: e.target.value })}
               />
             </label>
 

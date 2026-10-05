@@ -58,18 +58,14 @@ export const translations = {
       bestFor: 'Best For', outcome: 'Outcome', enquireNow: 'Enquire Now',
     },
     courseFees: {
-      tuitionLocals: 'Tuition fee (Locals)', tuitionInternational: 'Tuition fee (International students)',
+      tuitionFee: 'Tuition Fee*',
       fromPrefix: 'From ', fromSuffix: '',
       extras: [
-        { label: 'Registration fee (paid once only)', amount: 200 },
-        { label: 'EMGS fee (International students)', amount: 3000 },
-        { label: 'Books and learning materials', amount: 500 },
-        { label: 'Insurance for international students (more than a month)', amount: 800, asterisk: true },
+        { label: 'Registration fee', amount: 200 },
       ],
       notes: [
-        'Up to 30% discounts apply on a first come, first served basis.',
-        'Fees exclude book & materials fee and include 6% SST.',
-        '* additional charges subject to depending on duration of the course',
+        'Up to 30% discounts apply on a first come, first served basis. (terms and conditions apply)',
+        '* additional charges subject to depending on course duration & nationality of applicants',
       ],
     },
     generalEnglishPage: {
@@ -659,18 +655,14 @@ export const translations = {
       bestFor: '适合人群', outcome: '学习成果', enquireNow: '立即咨询',
     },
     courseFees: {
-      tuitionLocals: '学费（本地学生）', tuitionInternational: '学费（国际学生）',
+      tuitionFee: '学费*',
       fromPrefix: '', fromSuffix: ' 起',
       extras: [
-        { label: '注册费（仅需缴付一次）', amount: 200 },
-        { label: 'EMGS 费用（国际学生）', amount: 3000 },
-        { label: '书籍及学习资料费', amount: 500 },
-        { label: '国际学生保险（超过一个月）', amount: 800, asterisk: true },
+        { label: '注册费', amount: 200 },
       ],
       notes: [
-        '最高可享 30% 折扣，先到先得。',
-        '费用不含书籍及学习资料费，已包含 6% SST。',
-        '* 额外费用视课程时长而定。',
+        '最高可享 30% 折扣，先到先得。（须遵守条款及细则）',
+        '* 额外费用视课程时长及申请人国籍而定',
       ],
     },
     generalEnglishPage: {
