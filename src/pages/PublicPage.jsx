@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import CourseFees from '../components/CourseFees';
 
 export default function PublicPage() {
   const { slug } = useParams();
@@ -73,6 +74,8 @@ export default function PublicPage() {
         {blocks.map((block) => (
           <PageBlock key={block.id} block={block} />
         ))}
+        {/* Shows the fee box only when this page's slug matches a course (e.g. business-english) */}
+        <CourseFees slug={slug} />
       </div>
     </main>
   );

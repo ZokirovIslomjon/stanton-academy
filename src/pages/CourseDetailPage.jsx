@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import Courses from '../components/Courses';
+import CourseFees from '../components/CourseFees';
 import { useLanguage } from '../lib/LanguageContext';
 
 // Picks the field in the current language, falling back to the English (base) field
@@ -249,6 +250,8 @@ export default function CourseDetailPage() {
               <p>{localized(course, 'outcome', lang)}</p>
             </div>
           )}
+
+          <CourseFees slug={course.slug} />
         </div>
       </div>
 

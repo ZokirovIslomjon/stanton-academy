@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 
 // 1. Import your Courses component for the bottom section
 import Courses from '../components/Courses';
+import CourseFees from '../components/CourseFees';
 import { useSiteImages } from '../lib/SiteImagesContext';
 import { useLanguage } from '../lib/LanguageContext';
 
@@ -226,6 +227,7 @@ const LanguagePage = () => {
             <p>{course.outcome}</p>
           </div>
 
+          <CourseFees slug={langId} />
         </div>
       </div>
 

@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Courses from '../components/Courses';
+import CourseFees from '../components/CourseFees';
 import { useLanguage } from '../lib/LanguageContext';
+
+// General English has a different fee per duration tab, so these override the
+// single price stored on the course row (see CourseFees.jsx).
+const GE_FEES = {
+  '1month': { local: 600, international: 600 },
+  '2months': { local: 1000, international: 1000 },
+  '3months': { local: 1750, international: 1750 },
+};
 
 const GeneralEnglishPage = () => {
   const { t } = useLanguage();
@@ -301,6 +310,7 @@ const GeneralEnglishPage = () => {
             <p>{activeData.outcome}</p>
           </div>
 
+          <CourseFees slug="general-english" override={GE_FEES[activeTab]} />
         </div>
       </div>
 

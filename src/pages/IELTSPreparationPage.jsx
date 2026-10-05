@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Courses from '../components/Courses';
+import CourseFees from '../components/CourseFees';
 import { useLanguage } from '../lib/LanguageContext';
 
 const IELTSPreparationPage = () => {
@@ -295,6 +296,7 @@ const IELTSPreparationPage = () => {
             <p>{courseData.outcome}</p>
           </div>
 
+          <CourseFees slug="ielts-preparation" />
         </div>
       </div>
 
