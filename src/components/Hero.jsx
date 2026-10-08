@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../lib/LocalizedRouter';
 import heroDefaultImg from '../assets/student.png';
 import { useSiteImages } from '../lib/SiteImagesContext';
 import { useLanguage } from '../lib/LanguageContext';

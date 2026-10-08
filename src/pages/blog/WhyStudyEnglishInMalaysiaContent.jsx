@@ -1,4 +1,7 @@
 import React from 'react';
+import { useLanguage } from '../../lib/LanguageContext';
+// Arabic / Chinese / Russian text, one entry per non-image block below (same order).
+import translations from './WhyStudyEnglishInMalaysiaTranslations';
 
 // Dedicated rich content for the "Why Study English in Malaysia" blog post.
 // The images here are bundled as static imports (same pattern as the Holiday
@@ -158,6 +161,10 @@ const blocks = [
 ];
 
 export default function WhyStudyEnglishInMalaysiaContent() {
+  const { lang } = useLanguage();
+  const translated = translations[lang]; // undefined for English
+  let textIndex = -1;
+
   return (
     <div className="wsem-body">
       <style>{`
@@ -173,13 +180,15 @@ export default function WhyStudyEnglishInMalaysiaContent() {
         }
       `}</style>
       {blocks.map((block, i) => {
-        if (block.type === 'subtitle') return <p key={i} className="wsem-subtitle">{block.text}</p>;
-        if (block.type === 'h2') return <h2 key={i}>{block.text}</h2>;
-        if (block.type === 'p') return <p key={i}>{block.text}</p>;
+        if (block.type !== 'images') textIndex += 1;
+        const tr = translated ? translated[textIndex] : undefined;
+        if (block.type === 'subtitle') return <p key={i} className="wsem-subtitle">{tr ?? block.text}</p>;
+        if (block.type === 'h2') return <h2 key={i}>{tr ?? block.text}</h2>;
+        if (block.type === 'p') return <p key={i}>{tr ?? block.text}</p>;
         if (block.type === 'ul') {
           return (
             <ul key={i}>
-              {block.items.map((item, j) => (
+              {(tr ?? block.items).map((item, j) => (
                 <li key={j}>{item}</li>
               ))}
             </ul>

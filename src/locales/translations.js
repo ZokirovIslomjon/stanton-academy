@@ -3,6 +3,8 @@
 // translated here — actual database content (course names/features, FAQ text, blog
 // articles) still comes from the DB in English only until Phase 3 adds per-language columns.
 
+import { ru } from './ru';
+
 export const translations = {
   en: {
     nav: { programs: 'Programs', blogs: 'Blogs', about: 'About', holidayCamp: 'Holiday Camp', apply: 'Apply' },
@@ -219,6 +221,7 @@ export const translations = {
       notSureYet: 'Not Sure Yet',
       sending: 'SENDING...', submitApplication: 'SUBMIT APPLICATION',
       orApplyWhatsApp: 'Or apply directly via WhatsApp:', applyViaWhatsApp: 'APPLY VIA WHATSAPP',
+      applyError: 'Failed to send application. Please contact us on WhatsApp.',
       dayNames: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       trips: {
@@ -360,6 +363,17 @@ export const translations = {
     coursePage: {
       frequency: 'التكرار', duration: 'المدة', focusAreas: 'مجالات التركيز',
       bestFor: 'الأنسب لـ', outcome: 'النتيجة', enquireNow: 'استفسر الآن',
+    },
+    courseFees: {
+      tuitionFee: 'الرسوم الدراسية*',
+      fromPrefix: 'ابتداءً من ', fromSuffix: '',
+      extras: [
+        { label: 'رسوم التسجيل', amount: 200 },
+      ],
+      notes: [
+        'تُطبّق خصومات تصل إلى 30% على أساس الأسبقية في الحجز. (تُطبّق الشروط والأحكام)',
+        '* رسوم إضافية تختلف حسب مدة الدورة وجنسية مقدّم الطلب',
+      ],
     },
     generalEnglishPage: {
       headingPart1: 'اللغة', headingPart2: 'الإنجليزية العامة',
@@ -512,6 +526,7 @@ export const translations = {
       notSureYet: 'لست متأكدًا بعد',
       sending: 'جارٍ الإرسال...', submitApplication: 'إرسال الطلب',
       orApplyWhatsApp: 'أو قدّم طلبك مباشرة عبر واتساب:', applyViaWhatsApp: 'التقديم عبر واتساب',
+      applyError: 'تعذّر إرسال الطلب. يرجى التواصل معنا عبر واتساب.',
       dayNames: ['إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت', 'أحد'],
       monthNames: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
       trips: {
@@ -816,6 +831,7 @@ export const translations = {
       notSureYet: '还未确定',
       sending: '发送中...', submitApplication: '提交申请',
       orApplyWhatsApp: '或直接通过WhatsApp申请：', applyViaWhatsApp: '通过WHATSAPP申请',
+      applyError: '申请发送失败，请通过WhatsApp联系我们。',
       dayNames: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
       monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
       trips: {
@@ -905,9 +921,12 @@ export const translations = {
       },
     },
   },
+  ru,
 };
 
 export const LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'zh', label: '中文' },
+  { code: 'ar', label: 'العربية' },
+  { code: 'ru', label: 'Русский' },
 ];

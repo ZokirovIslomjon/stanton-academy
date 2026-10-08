@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../lib/LocalizedRouter';
 import Courses from '../components/Courses';
 import CourseFees from '../components/CourseFees';
 import { useLanguage } from '../lib/LanguageContext';
@@ -314,4 +314,4 @@ const IELTSPreparationPage = () => {
   );
 };
 
-export default IELTSPreparationPage;
+export default IELTSPreparationPage;

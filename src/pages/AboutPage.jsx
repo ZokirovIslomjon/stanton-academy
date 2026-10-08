@@ -40,7 +40,7 @@ const AboutPage = () => {
     let cancelled = false;
 
     async function loadContent() {
-      const { data, error } = await supabase.from('page_content').select('key, value, value_ar, value_zh').eq('page', 'about');
+      const { data, error } = await supabase.from('page_content').select('key, value, value_ar, value_zh, value_ru').eq('page', 'about');
       if (cancelled) return;
       if (error) {
         console.error('Failed to load page content:', error.message);
@@ -51,6 +51,7 @@ const AboutPage = () => {
         map[row.key] = row.value;
         map[`${row.key}_ar`] = row.value_ar;
         map[`${row.key}_zh`] = row.value_zh;
+        map[`${row.key}_ru`] = row.value_ru;
       });
       setContent((prev) => ({ ...prev, ...map }));
     }

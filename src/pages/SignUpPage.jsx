@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Link } from '../lib/LocalizedRouter';
 import logo from '../assets/logo-new.png';
 
 import poster1 from '../assets/poster1.jpeg';
@@ -625,4 +626,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default SignUpPage;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -26,7 +26,7 @@ import BlogPostPage from './pages/BlogPostPage';
 import AdminApp from './admin/AdminApp';
 import { SiteImagesProvider } from './lib/SiteImagesContext';
 import { EditModeProvider } from './lib/EditModeContext';
-import { LanguageProvider } from './lib/LanguageContext';
+import { LanguageProvider, SUPPORTED_LANGS, getPreferredLang } from './lib/LanguageContext';
 
 function PublicSite() {
   return (
@@ -65,16 +65,28 @@ function PublicSite() {
   );
 }
 
+// Public pages live under /en, /ru, /ar, /zh. A URL without a valid prefix
+// (the bare "/" or an old "/courses" link) is redirected to the visitor's language.
+function LangGate() {
+  const { lang } = useParams();
+  const { pathname, search, hash } = useLocation();
+  if (!SUPPORTED_LANGS.includes(lang)) {
+    return <Navigate replace to={`/${getPreferredLang()}${pathname}${search}${hash}`} />;
+  }
+  return <PublicSite />;
+}
+
 function App() {
   return (
     <Router>
       <Routes>
         {/* Admin panel renders its own layout — no public Header/Footer/ChatWidget */}
         <Route path="/admin/*" element={<AdminApp />} />
-        <Route path="/*" element={<PublicSite />} />
+        <Route path="/" element={<Navigate replace to={`/${getPreferredLang()}`} />} />
+        <Route path="/:lang/*" element={<LangGate />} />
       </Routes>
     </Router>
   );
 }
 
-export default App;
+export default App;

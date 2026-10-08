@@ -104,7 +104,7 @@ export default function HolidayCampPage() {
     let cancelled = false;
 
     async function loadContent() {
-      const { data, error } = await supabase.from('page_content').select('key, value, value_ar, value_zh').eq('page', 'holiday_camp');
+      const { data, error } = await supabase.from('page_content').select('key, value, value_ar, value_zh, value_ru').eq('page', 'holiday_camp');
       if (cancelled) return;
       if (error) {
         console.error('Failed to load page content:', error.message);
@@ -115,6 +115,7 @@ export default function HolidayCampPage() {
         map[row.key] = row.value;
         map[`${row.key}_ar`] = row.value_ar;
         map[`${row.key}_zh`] = row.value_zh;
+        map[`${row.key}_ru`] = row.value_ru;
       });
       setContent((prev) => ({ ...prev, ...map }));
     }
@@ -203,7 +204,7 @@ export default function HolidayCampPage() {
         setIsSubmitted(true);
       }
     } catch (error) {
-      alert('Failed to send application. Please contact us on WhatsApp.');
+      alert(t('holidayCampPage.applyError'));
     } finally {
       setIsSending(false);
     }

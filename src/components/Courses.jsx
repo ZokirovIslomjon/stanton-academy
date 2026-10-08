@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../lib/LocalizedRouter';
 import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from '../lib/LanguageContext';
 
@@ -105,4 +105,4 @@ const Courses = ({ onOpenModal }) => {
   );
 };
 
-export default Courses;
+export default Courses;

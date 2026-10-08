@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '../lib/LocalizedRouter';
 import { supabase } from '../lib/supabaseClient';
 import CourseFees from '../components/CourseFees';
 

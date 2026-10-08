@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link, Navigate } from '../lib/LocalizedRouter';
 
 // 1. Import your Courses component for the bottom section
 import Courses from '../components/Courses';
@@ -244,4 +245,4 @@ const LanguagePage = () => {
   );
 };
 
-export default LanguagePage;
+export default LanguagePage;

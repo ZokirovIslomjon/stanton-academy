@@ -1,28 +1,46 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { translations } from '../locales/translations';
+import React, { createContext, useContext, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { translations, LANGUAGES } from '../locales/translations';
 
 const LanguageContext = createContext(null);
 
 const RTL_LANGS = ['ar'];
-const SUPPORTED_LANGS = ['en', 'zh'];
+export const SUPPORTED_LANGS = LANGUAGES.map((l) => l.code);
 
-export function LanguageProvider({ children }) {
-  const [lang, setLangState] = useState(() => {
+// Last language the visitor used. Only consulted to pick where a URL with no
+// language prefix (e.g. "/" or an old "/courses" link) should send them.
+export function getPreferredLang() {
+  try {
     const stored = localStorage.getItem('sa_lang');
-    // Arabic was removed from the language switcher; fall back to English for
-    // any returning visitor whose browser still has 'ar' saved, so they aren't
-    // stuck on a language with no way to switch out of it.
     return SUPPORTED_LANGS.includes(stored) ? stored : 'en';
-  });
+  } catch {
+    return 'en';
+  }
+}
+
+// The language is owned by the URL: /en/..., /ru/..., /ar/..., /zh/...
+export function LanguageProvider({ children }) {
+  const { lang: urlLang } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const lang = SUPPORTED_LANGS.includes(urlLang) ? urlLang : 'en';
 
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = RTL_LANGS.includes(lang) ? 'rtl' : 'ltr';
+    try {
+      localStorage.setItem('sa_lang', lang);
+    } catch {
+      /* storage unavailable — the URL still carries the language */
+    }
   }, [lang]);
 
+  // Switching language swaps the prefix and keeps the rest of the URL, so
+  // /en/course/ielts becomes /ru/course/ielts.
   const setLang = (next) => {
-    localStorage.setItem('sa_lang', next);
-    setLangState(next);
+    if (next === lang) return;
+    const rest = location.pathname.slice(lang.length + 1);
+    navigate(`/${next}${rest}${location.search}${location.hash}`);
   };
 
   const t = (key) => {

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '../lib/LocalizedRouter';
 import React, { useEffect, useState } from 'react';
 import logo from '../assets/logo-new.png';
 import whatsappIcon from '../assets/whatsapp.png';
@@ -112,4 +112,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Footer;

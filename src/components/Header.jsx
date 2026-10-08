@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { Link } from '../lib/LocalizedRouter';
 import logo from '../assets/logo.png';
 import logoWhite from '../assets/logo-new.png';
 import { useSiteImages } from '../lib/SiteImagesContext';
 import { useLanguage } from '../lib/LanguageContext';
 import { LANGUAGES } from '../locales/translations';
+import Flag from './Flag';
 
 const Header = () => {
   const images = useSiteImages();
@@ -14,9 +16,11 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   
-  const isDarkBackground = location.pathname === '/signup';
+  // Drop the /:lang prefix so these checks work in every language
+  const path = location.pathname.replace(/^\/[^/]+/, '') || '/';
+  const isDarkBackground = path === '/signup';
   // List of pages that should have a transparent header at the very top
-  const isTransparentPage = ['/', '/about', '/contact'].includes(location.pathname);
+  const isTransparentPage = ['/', '/about', '/contact'].includes(path);
 
   // Listen for scrolling to change header from transparent to solid
   useEffect(() => {
@@ -62,8 +66,8 @@ const Header = () => {
         .theme-light .lang-switcher-btn { color: #1f2937; }
         .theme-dark .lang-switcher-btn { color: #ffffff; }
         .lang-switcher-btn:hover { background-color: rgba(0, 107, 63, 0.1); }
-        .lang-switcher-menu { position: absolute; top: 46px; right: 0; background: #ffffff; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 6px; min-width: 130px; list-style: none; margin: 0; z-index: 1002; }
-        .lang-switcher-menu li button { display: block; width: 100%; text-align: left; background: transparent; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #1f2937; cursor: pointer; }
+        .lang-switcher-menu { position: absolute; top: 46px; right: 0; background: #ffffff; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 6px; min-width: 160px; list-style: none; margin: 0; z-index: 1002; }
+        .lang-switcher-menu li button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: transparent; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #1f2937; cursor: pointer; }
         .lang-switcher-menu li button:hover { background-color: #f4f5f7; }
         .lang-switcher-menu li button.active { color: #006B3F; background-color: #e6f4ed; }
         [dir="rtl"] .lang-switcher-menu { right: auto; left: 0; }
@@ -136,6 +140,7 @@ const Header = () => {
                         className={l.code === lang ? 'active' : ''}
                         onClick={() => { setLang(l.code); setIsLangOpen(false); }}
                       >
+                        <Flag code={l.code} />
                         {l.label}
                       </button>
                     </li>
@@ -159,4 +164,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header;
