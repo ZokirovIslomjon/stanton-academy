@@ -203,6 +203,7 @@ export const ru = {
     noSessions: 'Смены лагеря пока не назначены.',
     packagesLabel: 'Пакеты',
     choosePkgPart1: 'Выберите свой', choosePkgPart2: 'пакет',
+    packageNote: '*Обед, трансфер из аэропорта и проживание могут быть предоставлены за дополнительную плату.',
     noPackages: 'Пакеты пока не настроены.',
     bestValue: 'Лучшая цена', mostPopular: 'Самый популярный',
     selectPackage: 'Выбрать пакет',
@@ -248,6 +249,7 @@ export const ru = {
       'Start Day': 'День начала',
     },
     packageNames: {
+      'Holiday Program Fee': 'Стоимость праздничной программы',
       'Economy Guardian': 'Эконом (сопровождающий)',
       'Gold Guardian': 'Золотой (сопровождающий)',
       'Economy': 'Эконом',

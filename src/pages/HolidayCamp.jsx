@@ -572,11 +572,13 @@ export default function HolidayCampPage() {
                       <h3 className="hc-course-title">{t('holidayCampPage.packageNames')[pkg.name] || pkg.name}</h3>
                       {pkg.price && <div className="hc-course-price">{t('courseFees.fromPrefix')}{pkg.price}{t('courseFees.fromSuffix')}</div>}
                     </div>
-                    <ul className="hc-course-features">
-                      {pkg.features.map((feature) => (
-                        <li key={feature.id}><FeatureIcon status={featureIconStatus(feature.status)} />{t('holidayCampPage.featureTexts')[feature.text] || feature.text}</li>
-                      ))}
-                    </ul>
+                    {pkg.features.length > 0 && (
+                      <ul className="hc-course-features">
+                        {pkg.features.map((feature) => (
+                          <li key={feature.id}><FeatureIcon status={featureIconStatus(feature.status)} />{t('holidayCampPage.featureTexts')[feature.text] || feature.text}</li>
+                        ))}
+                      </ul>
+                    )}
                     <div className="hc-course-footer">
                       <button onClick={(e) => scrollToForm(e, pkg.name)} className="hc-course-btn">{t('holidayCampPage.selectPackage')}</button>
                     </div>
@@ -585,6 +587,10 @@ export default function HolidayCampPage() {
               })
             )}
           </div>
+
+          {packages.length > 0 && (
+            <p style={{ textAlign: 'center', color: 'var(--gray-600)', fontSize: '0.9rem', margin: '-24px 0 0' }}>{t('holidayCampPage.packageNote')}</p>
+          )}
 
         </div>
       </section>

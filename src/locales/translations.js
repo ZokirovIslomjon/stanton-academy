@@ -207,6 +207,7 @@ export const translations = {
       noSessions: 'No camp sessions scheduled yet.',
       packagesLabel: 'Packages',
       choosePkgPart1: 'Choose Your', choosePkgPart2: 'Package',
+      packageNote: '*Lunch, Airport transfer, Rooms might be provided for additional charge.',
       noPackages: 'No packages configured yet.',
       bestValue: 'Best Value', mostPopular: 'Most Popular',
       selectPackage: 'Select Package',
@@ -252,6 +253,7 @@ export const translations = {
         'Start Day': 'Start Day',
       },
       packageNames: {
+        'Holiday Program Fee': 'Holiday Program Fee',
         'Economy Guardian': 'Economy Guardian',
         'Gold Guardian': 'Gold Guardian',
         'Economy': 'Economy',
@@ -515,6 +517,7 @@ export const translations = {
       noSessions: 'لا توجد جلسات مخيم مجدولة بعد.',
       packagesLabel: 'الباقات',
       choosePkgPart1: 'اختر', choosePkgPart2: 'باقتك',
+      packageNote: '*قد تتوفر خدمات الغداء والنقل من المطار والإقامة مقابل رسوم إضافية.',
       noPackages: 'لا توجد باقات مُعدّة بعد.',
       bestValue: 'الأفضل قيمة', mostPopular: 'الأكثر شيوعًا',
       selectPackage: 'اختر الباقة',
@@ -560,6 +563,7 @@ export const translations = {
         'Start Day': 'يوم البدء',
       },
       packageNames: {
+        'Holiday Program Fee': 'رسوم برنامج العطلة',
         'Economy Guardian': 'ولي الأمر - اقتصادي',
         'Gold Guardian': 'ولي الأمر - ذهبي',
         'Economy': 'اقتصادي',
@@ -823,6 +827,7 @@ export const translations = {
       noSessions: '暂无已安排的营期。',
       packagesLabel: '套餐',
       choosePkgPart1: '选择您的', choosePkgPart2: '套餐',
+      packageNote: '*午餐、机场接送和住宿可能需额外收费提供。',
       noPackages: '暂无已配置的套餐。',
       bestValue: '超值优选', mostPopular: '最受欢迎',
       selectPackage: '选择套餐',
@@ -868,6 +873,7 @@ export const translations = {
         'Start Day': '开营日',
       },
       packageNames: {
+        'Holiday Program Fee': '假期项目费用',
         'Economy Guardian': '经济监护',
         'Gold Guardian': '黄金监护',
         'Economy': '经济版',
