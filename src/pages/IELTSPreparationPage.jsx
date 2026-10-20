@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from '../lib/LocalizedRouter';
+import { Link } from 'react-router-dom';
 import Courses from '../components/Courses';
 import CourseFees from '../components/CourseFees';
 import { useLanguage } from '../lib/LanguageContext';
@@ -270,12 +270,8 @@ const IELTSPreparationPage = () => {
 
           <div className="ge-info-bar">
             <div className="ge-info-item">
-              <span className="ge-info-label">{t('coursePage.frequency')}</span>
-              <span className="ge-info-value">{courseData.frequency}</span>
-            </div>
-            <div className="ge-info-item">
-              <span className="ge-info-label">{t('coursePage.duration')}</span>
-              <span className="ge-info-value">{courseData.duration}</span>
+              <span className="ge-info-label">{t('studyMode.label')}</span>
+              <span className="ge-info-value">{t('studyMode.both')}</span>
             </div>
           </div>
 
@@ -314,4 +310,4 @@ const IELTSPreparationPage = () => {
   );
 };
 
-export default IELTSPreparationPage;
+export default IELTSPreparationPage;

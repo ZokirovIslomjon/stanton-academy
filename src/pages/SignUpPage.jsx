@@ -69,6 +69,7 @@ const SignUpPage = () => {
     phone: '',
     email: '',
     course: '',
+    studyMode: '',
     hearAbout: '',
     hearAboutOther: '',
     message: ''
@@ -98,7 +99,7 @@ const SignUpPage = () => {
           Age: formData.age,
           Phone: `(${selectedCountry.code}) ${formData.phone}`,
           Email: formData.email,
-          Course: formData.course,
+          Course: `${formData.course} (${formData.studyMode})`,
           HearAbout: finalHearAbout,
           Message: formData.message || 'None',
           Date: new Date().toLocaleString()
@@ -564,6 +565,21 @@ const SignUpPage = () => {
                       {Object.keys(t('signUpPage.courses')).map((course) => (
                         <option key={course} value={course}>{t('signUpPage.courses')[course]}</option>
                       ))}
+                    </select>
+                  </div>
+
+                  <div className="form-col">
+                    <label className="form-label">{t('studyMode.label')}<span>*</span></label>
+                    <select
+                      required
+                      className="form-control"
+                      value={formData.studyMode}
+                      onChange={(e) => setFormData({...formData, studyMode: e.target.value})}
+                      disabled={isSending}
+                    >
+                      <option value="" disabled hidden>{t('signUpPage.pleaseSelect')}</option>
+                      <option value="Online">{t('studyMode.online')}</option>
+                      <option value="In class">{t('studyMode.inClass')}</option>
                     </select>
                   </div>
 

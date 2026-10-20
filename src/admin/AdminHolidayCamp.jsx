@@ -22,7 +22,7 @@ const STATUSES = [
 
 const emptyMonthForm = { year: 2026, month: 7 };
 const emptyEventForm = { id: null, event_date: '', label: '', event_type: 'trip' };
-const emptyPackageForm = { id: null, category: 'student', name: '', theme: 'blue', highlight: false, badge_label: '', price: '' };
+const emptyPackageForm = { id: null, category: 'student', name: '', theme: 'blue', highlight: false, badge_label: '', price: '', is_active: true };
 const emptyFeatureForm = { id: null, text: '', status: 'included' };
 
 export default function AdminHolidayCamp() {
@@ -321,7 +321,7 @@ function PackagesTab({ onError }) {
   }, []);
 
   const openAddPackage = (category) => setPackageForm({ ...emptyPackageForm, category });
-  const openEditPackage = (pkg) => setPackageForm({ id: pkg.id, category: pkg.category, name: pkg.name, theme: pkg.theme, highlight: pkg.highlight, badge_label: pkg.badge_label || '', price: pkg.price || '' });
+  const openEditPackage = (pkg) => setPackageForm({ id: pkg.id, category: pkg.category, name: pkg.name, theme: pkg.theme, highlight: pkg.highlight, badge_label: pkg.badge_label || '', price: pkg.price || '', is_active: pkg.is_active !== false });
   const closePackageForm = () => setPackageForm(null);
 
   const handleSavePackage = async (e) => {
@@ -335,6 +335,7 @@ function PackagesTab({ onError }) {
       highlight: packageForm.highlight,
       badge_label: packageForm.badge_label.trim() || null,
       price: packageForm.price.trim() || null,
+      is_active: packageForm.is_active,
     };
     const result = packageForm.id
       ? await supabase.from('camp_packages').update(payload).eq('id', packageForm.id)
@@ -423,6 +424,10 @@ function PackagesTab({ onError }) {
             <label className="admin-field admin-field-checkbox">
               <input type="checkbox" checked={packageForm.highlight} onChange={(e) => setPackageForm({ ...packageForm, highlight: e.target.checked })} />
               <span>Highlight this tier (shows the badge)</span>
+            </label>
+            <label className="admin-field admin-field-checkbox">
+              <input type="checkbox" checked={packageForm.is_active} onChange={(e) => setPackageForm({ ...packageForm, is_active: e.target.checked })} />
+              <span>Show on website (untick to hide without deleting)</span>
             </label>
           </div>
           <div className="admin-form-actions">
@@ -528,6 +533,7 @@ function PackageCategoryTable({ title, packages, selectedPackageId, onSelect, on
             <th>Theme</th>
             <th>Price</th>
             <th>Highlight</th>
+            <th>Status</th>
             <th>Features</th>
             <th></th>
           </tr>
@@ -539,6 +545,7 @@ function PackageCategoryTable({ title, packages, selectedPackageId, onSelect, on
               <td>{p.theme}</td>
               <td>{p.price || '—'}</td>
               <td>{p.highlight ? `⭐ ${p.badge_label || ''}` : '—'}</td>
+              <td>{p.is_active === false ? 'Hidden' : 'Visible'}</td>
               <td>{p.features.length}</td>
               <td className="admin-table-actions">
                 <button className="admin-btn admin-btn-ghost" onClick={() => onSelect(p.id)}>Manage Features</button>
@@ -549,7 +556,7 @@ function PackageCategoryTable({ title, packages, selectedPackageId, onSelect, on
           ))}
           {packages.length === 0 && (
             <tr>
-              <td colSpan={6} className="admin-empty">No packages yet. Add one above.</td>
+              <td colSpan={7} className="admin-empty">No packages yet. Add one above.</td>
             </tr>
           )}
         </tbody>

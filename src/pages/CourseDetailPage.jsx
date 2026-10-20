@@ -210,22 +210,12 @@ export default function CourseDetailPage() {
           <h2>{localized(course, 'title', lang)}</h2>
           {localized(course, 'overview', lang) && <p className="overview">{localized(course, 'overview', lang)}</p>}
 
-          {(course.frequency || course.duration) && (
-            <div className="cdp-info-bar">
-              {course.frequency && (
-                <div className="cdp-info-item">
-                  <span className="cdp-info-label">{t('courseDetailPage.frequency')}</span>
-                  <span className="cdp-info-value">{localized(course, 'frequency', lang)}</span>
-                </div>
-              )}
-              {course.duration && (
-                <div className="cdp-info-item">
-                  <span className="cdp-info-label">{t('courseDetailPage.duration')}</span>
-                  <span className="cdp-info-value">{localized(course, 'duration', lang)}</span>
-                </div>
-              )}
+          <div className="cdp-info-bar">
+              <div className="cdp-info-item">
+                <span className="cdp-info-label">{t('studyMode.label')}</span>
+                <span className="cdp-info-value">{t('studyMode.both')}</span>
+              </div>
             </div>
-          )}
 
           {course.features && course.features.length > 0 && (
             <>

@@ -144,7 +144,7 @@ export default function HolidayCampPage() {
     }
 
     async function loadPackages() {
-      const { data: pkgData, error: pkgError } = await supabase.from('camp_packages').select('*').order('category', { ascending: true }).order('display_order', { ascending: true });
+      const { data: pkgData, error: pkgError } = await supabase.from('camp_packages').select('*').eq('is_active', true).order('category', { ascending: true }).order('display_order', { ascending: true });
       if (cancelled) return;
       if (pkgError) {
         console.error('Failed to load camp packages:', pkgError.message);
@@ -321,6 +321,7 @@ export default function HolidayCampPage() {
         /* ── PACKAGES GRID ── */
         .hc-packages-section { background: #ffffff; padding-top: 90px; padding-bottom: 90px; }
         .hc-course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; align-items: stretch; margin-bottom: 40px; padding-top: 25px; }
+        .hc-course-grid--single { grid-template-columns: minmax(260px, 360px); justify-content: center; }
         .hc-course-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; border: 1px solid var(--gray-100); transition: transform 0.3s, box-shadow 0.3s; position: relative; }
         .hc-course-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
         .hc-course-card.highlight { border: 2px solid var(--gold); box-shadow: 0 8px 30px rgba(255,199,44,0.2); }
@@ -553,12 +554,9 @@ export default function HolidayCampPage() {
         <div className="hc-container">
           <div className="hc-section-header">
             <div className="hc-section-label">{t('holidayCampPage.packagesLabel')}</div>
-            <h2 className="hc-section-title">
-              <span style={{ color: 'var(--green)' }}>{t('holidayCampPage.choosePkgPart1')}</span> <span style={{ color: 'var(--gold)' }}>{t('holidayCampPage.choosePkgPart2')}</span>
-            </h2>
           </div>
 
-          <div className="hc-course-grid">
+          <div className={`hc-course-grid${packages.length === 1 ? ' hc-course-grid--single' : ''}`}>
             {packages.length === 0 ? (
               <p style={{ textAlign: 'center', color: 'var(--gray-600)' }}>{t('holidayCampPage.noPackages')}</p>
             ) : (
@@ -572,7 +570,7 @@ export default function HolidayCampPage() {
                       {pkg.highlight && <div className="hc-popular-badge">⭐ {badgeText}</div>}
                       <div className="hc-course-icon"><ThemeIcon theme={pkg.theme} /></div>
                       <h3 className="hc-course-title">{t('holidayCampPage.packageNames')[pkg.name] || pkg.name}</h3>
-                      {pkg.price && <div className="hc-course-price">{pkg.price}</div>}
+                      {pkg.price && <div className="hc-course-price">{t('courseFees.fromPrefix')}{pkg.price}{t('courseFees.fromSuffix')}</div>}
                     </div>
                     <ul className="hc-course-features">
                       {pkg.features.map((feature) => (
@@ -678,12 +676,16 @@ export default function HolidayCampPage() {
                     <select required className="hc-camp-input" style={{ color: formData.package ? '#1a1a1a' : '#9ca3af' }}
                             value={formData.package} onChange={(e) => setFormData({...formData, package: e.target.value})} disabled={isSending}>
                       <option value="" disabled hidden>{t('holidayCampPage.selectPackagePlaceholder')}</option>
-                      <optgroup label={t('holidayCampPage.studentPackages')}>
-                        {packages.filter(p => p.category === 'student').map(p => <option key={p.id} value={p.name}>{t('holidayCampPage.packageNames')[p.name] || p.name}</option>)}
-                      </optgroup>
-                      <optgroup label={t('holidayCampPage.guardianPackages')}>
-                        {packages.filter(p => p.category === 'guardian').map(p => <option key={p.id} value={p.name}>{t('holidayCampPage.packageNames')[p.name] || p.name}</option>)}
-                      </optgroup>
+                      {packages.some(p => p.category === 'student') && (
+                        <optgroup label={t('holidayCampPage.studentPackages')}>
+                          {packages.filter(p => p.category === 'student').map(p => <option key={p.id} value={p.name}>{t('holidayCampPage.packageNames')[p.name] || p.name}</option>)}
+                        </optgroup>
+                      )}
+                      {packages.some(p => p.category === 'guardian') && (
+                        <optgroup label={t('holidayCampPage.guardianPackages')}>
+                          {packages.filter(p => p.category === 'guardian').map(p => <option key={p.id} value={p.name}>{t('holidayCampPage.packageNames')[p.name] || p.name}</option>)}
+                        </optgroup>
+                      )}
                       <option value="Not Sure Yet">{t('holidayCampPage.notSureYet')}</option>
                     </select>
 

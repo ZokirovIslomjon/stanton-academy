@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Link, Navigate } from '../lib/LocalizedRouter';
+import { useParams, Link, Navigate } from 'react-router-dom';
 
 // 1. Import your Courses component for the bottom section
 import Courses from '../components/Courses';
@@ -202,12 +201,8 @@ const LanguagePage = () => {
 
           <div className="ge-info-bar">
             <div className="ge-info-item">
-              <span className="ge-info-label">{t('coursePage.frequency')}</span>
-              <span className="ge-info-value">{course.frequency}</span>
-            </div>
-            <div className="ge-info-item">
-              <span className="ge-info-label">{t('coursePage.duration')}</span>
-              <span className="ge-info-value">{course.duration}</span>
+              <span className="ge-info-label">{t('studyMode.label')}</span>
+              <span className="ge-info-value">{t('studyMode.both')}</span>
             </div>
           </div>
 
@@ -245,4 +240,4 @@ const LanguagePage = () => {
   );
 };
 
-export default LanguagePage;
+export default LanguagePage;

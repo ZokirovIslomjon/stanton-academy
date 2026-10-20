@@ -50,7 +50,7 @@ const CoursesPage = () => {
 
   // Exact state from your SignUpPage
   const [formData, setFormData] = useState({
-    fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', hearAbout: '', hearAboutOther: '', message: ''
+    fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', studyMode: '', hearAbout: '', hearAboutOther: '', message: ''
   });
 
   // Exact submit logic from your SignUpPage
@@ -67,7 +67,7 @@ const CoursesPage = () => {
         Age: formData.age,
         Phone: `(${formData.countryCode}) ${formData.phone}`,
         Email: formData.email,
-        Course: formData.course,
+        Course: `${formData.course} (${formData.studyMode})`,
         HearAbout: finalHearAbout,
         Message: formData.message || 'None',
         Date: new Date().toLocaleString()
@@ -101,7 +101,7 @@ const CoursesPage = () => {
   };
 
   const handleResetForm = () => {
-    setFormData({ fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', hearAbout: '', hearAboutOther: '', message: '' });
+    setFormData({ fullName: '', nationality: '', age: '', countryCode: '+60', phone: '', email: '', course: '', studyMode: '', hearAbout: '', hearAboutOther: '', message: '' });
     setIsSubmitted(false);
   };
 
@@ -214,6 +214,17 @@ const CoursesPage = () => {
                     <option value="Korean">Korean</option>
                     <option value="Bahasa Malaysia">Bahasa Malaysia</option>
                     <option value="Summer Camp">Summer Camp</option>
+                  </select>
+                </div>
+
+                {/* Study Mode Dropdown */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={labelStyle}>Study Mode{requiredMark}</label>
+                  <select required className="course-custom-input" style={{ ...inputStyle, cursor: 'pointer', color: formData.studyMode ? '#1a1a1a' : '#9ca3af' }}
+                          value={formData.studyMode} onChange={(e) => setFormData({...formData, studyMode: e.target.value})} disabled={isSending}>
+                    <option value="" disabled hidden>Please Select</option>
+                    <option value="Online">Online</option>
+                    <option value="In class">In class</option>
                   </select>
                 </div>
 

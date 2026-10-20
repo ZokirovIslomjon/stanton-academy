@@ -55,6 +55,9 @@ export const ru = {
     frequency: 'Частота', duration: 'Длительность', focusAreas: 'Основные направления',
     bestFor: 'Подходит для', outcome: 'Результат', enquireNow: 'Оставить заявку',
   },
+  studyMode: {
+    label: 'Формат обучения', both: 'Онлайн / Очно', online: 'Онлайн', inClass: 'Очно',
+  },
   courseFees: {
     tuitionFee: 'Стоимость обучения*',
     fromPrefix: 'От ', fromSuffix: '',

@@ -59,6 +59,9 @@ export const translations = {
       frequency: 'Frequency', duration: 'Duration', focusAreas: 'Focus Areas',
       bestFor: 'Best For', outcome: 'Outcome', enquireNow: 'Enquire Now',
     },
+    studyMode: {
+      label: 'Study Mode', both: 'Online / In class', online: 'Online', inClass: 'In class',
+    },
     courseFees: {
       tuitionFee: 'Tuition Fee*',
       fromPrefix: 'From ', fromSuffix: '',
@@ -364,6 +367,9 @@ export const translations = {
       frequency: 'التكرار', duration: 'المدة', focusAreas: 'مجالات التركيز',
       bestFor: 'الأنسب لـ', outcome: 'النتيجة', enquireNow: 'استفسر الآن',
     },
+    studyMode: {
+      label: 'نمط الدراسة', both: 'أونلاين / حضوري', online: 'أونلاين', inClass: 'حضوري',
+    },
     courseFees: {
       tuitionFee: 'الرسوم الدراسية*',
       fromPrefix: 'ابتداءً من ', fromSuffix: '',
@@ -668,6 +674,9 @@ export const translations = {
     coursePage: {
       frequency: '频率', duration: '课时', focusAreas: '重点领域',
       bestFor: '适合人群', outcome: '学习成果', enquireNow: '立即咨询',
+    },
+    studyMode: {
+      label: '学习方式', both: '线上 / 面授', online: '线上', inClass: '面授',
     },
     courseFees: {
       tuitionFee: '学费*',

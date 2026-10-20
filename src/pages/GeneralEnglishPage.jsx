@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from '../lib/LocalizedRouter';
+import { Link } from 'react-router-dom';
 import Courses from '../components/Courses';
 import CourseFees from '../components/CourseFees';
 import { useLanguage } from '../lib/LanguageContext';
@@ -140,6 +140,20 @@ const GeneralEnglishPage = () => {
           line-height: 1.7;
           margin-bottom: 30px;
         }
+
+        .ge-info-bar {
+          display: flex;
+          gap: 30px;
+          background: #ffffff;
+          padding: 20px;
+          border-radius: 12px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+          margin-bottom: 30px;
+          border-left: 4px solid #FFC72C;
+        }
+        .ge-info-item { display: flex; flex-direction: column; }
+        .ge-info-label { font-size: 0.85rem; color: #888; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+        .ge-info-value { font-size: 1rem; font-weight: 600; color: #111; }
 
         .ge-section-title {
           font-size: 1.2rem;
@@ -293,6 +307,13 @@ const GeneralEnglishPage = () => {
           <h2>{activeData.title}</h2>
           <p className="overview">{activeData.overview}</p>
 
+          <div className="ge-info-bar">
+            <div className="ge-info-item">
+              <span className="ge-info-label">{t('studyMode.label')}</span>
+              <span className="ge-info-value">{t('studyMode.both')}</span>
+            </div>
+          </div>
+
           <div className="ge-section-title">{t('coursePage.focusAreas')}</div>
           <ul className="ge-list">
             {activeData.focus.map((item, index) => (
@@ -328,4 +349,4 @@ const GeneralEnglishPage = () => {
   );
 };
 
-export default GeneralEnglishPage;
+export default GeneralEnglishPage;
