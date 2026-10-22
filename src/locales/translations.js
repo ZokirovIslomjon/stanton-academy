@@ -12,6 +12,7 @@ export const translations = {
       title: 'Stanton Academy',
       courses: 'Courses', branches: 'Branches', aboutUs: 'About Us', contact: 'Contact', holidayCamp: 'Holiday Camp',
       ourContacts: 'Our contacts', ourSocial: 'Our social media',
+      privacyPolicy: 'Privacy Policy',
     },
     hero: {
       pretitle: 'Language Education For A Global Future',
@@ -322,6 +323,7 @@ export const translations = {
       title: 'أكاديمية ستانتون',
       courses: 'الدورات', branches: 'الفروع', aboutUs: 'من نحن', contact: 'اتصل بنا', holidayCamp: 'المخيم الصيفي',
       ourContacts: 'بيانات التواصل', ourSocial: 'تابعنا على',
+      privacyPolicy: 'سياسة الخصوصية',
     },
     hero: {
       pretitle: 'تعليم اللغات لمستقبل عالمي',
@@ -632,6 +634,7 @@ export const translations = {
       title: '斯坦顿学院',
       courses: '课程', branches: '分校', aboutUs: '关于我们', contact: '联系我们', holidayCamp: '假期营',
       ourContacts: '联系方式', ourSocial: '社交媒体',
+      privacyPolicy: '隐私政策',
     },
     hero: {
       pretitle: '面向全球未来的语言教育',

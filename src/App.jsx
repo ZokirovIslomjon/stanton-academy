@@ -15,6 +15,7 @@ import LocationPage from './pages/LocationPage';
 import HolidayCampPage from './pages/HolidayCamp';
 import SignUpPage from './pages/SignUpPage';
 import PublicPage from './pages/PublicPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 import GeneralEnglishPage from './pages/GeneralEnglishPage';
 import IELTSPreparationPage from './pages/IELTSPreparationPage';
@@ -46,6 +47,7 @@ function PublicSite() {
           <Route path="/location" element={<LocationPage />} />
           <Route path="/holiday-camp" element={<HolidayCampPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
           <Route path="/general-english" element={<GeneralEnglishPage />} />
           <Route path="/ielts-preparation" element={<IELTSPreparationPage />} />

@@ -8,6 +8,7 @@ export const ru = {
     title: 'Stanton Academy',
     courses: 'Курсы', branches: 'Филиалы', aboutUs: 'О нас', contact: 'Контакты', holidayCamp: 'Летний лагерь',
     ourContacts: 'Наши контакты', ourSocial: 'Мы в социальных сетях',
+    privacyPolicy: 'Политика конфиденциальности',
   },
   hero: {
     pretitle: 'Языковое образование для глобального будущего',
