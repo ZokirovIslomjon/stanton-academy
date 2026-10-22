@@ -1,11 +1,18 @@
-import React from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from './AdminAuthContext';
 import './admin.css';
 
 export default function AdminLayout() {
   const { session, signOut } = useAdminAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // On phones the sidebar is a slide-in drawer; close it after every navigation
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -13,7 +20,24 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="admin-shell">
+    <div className={`admin-shell${menuOpen ? ' menu-open' : ''}`}>
+      <div className="admin-mobile-bar">
+        <button
+          type="button"
+          className="admin-menu-btn"
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        Stanton Academy Admin
+      </div>
+      <div className="admin-backdrop" onClick={() => setMenuOpen(false)} />
       <aside className="admin-sidebar">
         <div className="admin-sidebar-brand">
           Stanton Academy
