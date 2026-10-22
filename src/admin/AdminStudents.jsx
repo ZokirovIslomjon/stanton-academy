@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { importStudentsFromSheet } from '../lib/sheetImport';
 import './admin.css';
 
 const STATUSES = ['pending', 'enrolled', 'active', 'completed', 'withdrawn', 'inactive'];
@@ -15,6 +16,8 @@ export default function AdminStudents() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newStudent, setNewStudent] = useState({ name: '', email: '', phone: '', course_name: '', level: '' });
   const [saving, setSaving] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [notice, setNotice] = useState('');
 
   async function loadStudents() {
     setLoading(true);
@@ -35,6 +38,20 @@ export default function AdminStudents() {
   useEffect(() => {
     loadStudents();
   }, []);
+
+  const handleImport = async () => {
+    setImporting(true);
+    setError('');
+    setNotice('');
+    try {
+      const added = await importStudentsFromSheet();
+      setNotice(added > 0 ? `Imported ${added} new registration${added === 1 ? '' : 's'} from the Google Sheet.` : 'Google Sheet checked — no new registrations.');
+      if (added > 0) await loadStudents();
+    } catch (err) {
+      setError(err.message || 'Import from the Google Sheet failed.');
+    }
+    setImporting(false);
+  };
 
   const handleStatusChange = async (id, status) => {
     const previous = students;
@@ -92,12 +109,18 @@ export default function AdminStudents() {
     <div className="admin-page">
       <div className="admin-page-header">
         <h1 className="admin-page-title">Students</h1>
-        <button className="admin-btn admin-btn-primary" onClick={() => setShowAddForm((v) => !v)}>
-          {showAddForm ? 'Cancel' : '+ Add Student'}
-        </button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="admin-btn admin-btn-ghost" onClick={handleImport} disabled={importing}>
+            {importing ? 'Importing...' : 'Import from Google Sheet'}
+          </button>
+          <button className="admin-btn admin-btn-primary" onClick={() => setShowAddForm((v) => !v)}>
+            {showAddForm ? 'Cancel' : '+ Add Student'}
+          </button>
+        </div>
       </div>
 
       {error && <div className="admin-alert admin-alert-error">{error}</div>}
+      {notice && <div className="admin-alert" style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac' }}>{notice}</div>}
 
       {showAddForm && (
         <form className="admin-inline-form" onSubmit={handleAddStudent}>
