@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Courses from '../components/Courses';
+import { saveStudent } from '../lib/saveStudent';
 
 // Exact country codes from your SignUpPage
 const countryCodes = [
@@ -88,6 +89,19 @@ const CoursesPage = () => {
              'event_label': formData.course 
           });
         }
+        saveStudent({
+          name: formData.fullName,
+          email: formData.email,
+          phone: `(${formData.countryCode}) ${formData.phone}`,
+          course: formData.course,
+          notes: [
+            `Study mode: ${formData.studyMode}`,
+            `Nationality: ${formData.nationality}`,
+            `Age: ${formData.age}`,
+            `Heard via: ${finalHearAbout}`,
+            formData.message ? `Message: ${formData.message}` : null,
+          ].filter(Boolean).join('\n'),
+        });
         setIsSubmitted(true);
       } else {
         throw new Error('Network response was not ok');

@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 import { parseListItems } from '../lib/contentHelpers';
 import { buildCalendarGrid } from '../lib/calendarGrid';
 import { useLanguage } from '../lib/LanguageContext';
+import { saveStudent } from '../lib/saveStudent';
 
 // Import local images from assets folder
 import cityTourImg from '../assets/City Tour.jpg';
@@ -201,6 +202,16 @@ export default function HolidayCampPage() {
         if (typeof window.gtag !== 'undefined') {
           window.gtag('event', 'ads_conversion_Submit_lead_form_1', { 'event_category': 'Lead Form', 'event_label': 'Holiday Camp' });
         }
+        saveStudent({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          course: 'Summer Camp 2026',
+          notes: [
+            `Package: ${formData.package || 'None selected'}`,
+            `Location: ${formData.location}`,
+          ].join('\n'),
+        });
         setIsSubmitted(true);
       }
     } catch (error) {

@@ -78,6 +78,13 @@ function LangGate() {
   return <PublicSite />;
 }
 
+// The admin panel lives at /admin. Typing /en/admin (or /ru/admin ...) forwards to it.
+function AdminRedirect() {
+  const rest = useParams()['*'];
+  const { search, hash } = useLocation();
+  return <Navigate replace to={`/admin${rest ? `/${rest}` : ''}${search}${hash}`} />;
+}
+
 function App() {
   return (
     <Router>
@@ -85,6 +92,7 @@ function App() {
         {/* Admin panel renders its own layout — no public Header/Footer/ChatWidget */}
         <Route path="/admin/*" element={<AdminApp />} />
         <Route path="/" element={<Navigate replace to={`/${getPreferredLang()}`} />} />
+        <Route path="/:lang/admin/*" element={<AdminRedirect />} />
         <Route path="/:lang/*" element={<LangGate />} />
       </Routes>
     </Router>

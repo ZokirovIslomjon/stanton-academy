@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from '../lib/LocalizedRouter';
+import { saveStudent } from '../lib/saveStudent';
 import logo from '../assets/logo-new.png';
 
 import poster1 from '../assets/poster1.jpeg';
@@ -126,6 +127,20 @@ const SignUpPage = () => {
           });
         }
         
+        saveStudent({
+          name: formData.fullName,
+          email: formData.email,
+          phone: `(${selectedCountry.code}) ${formData.phone}`,
+          course: formData.course,
+          notes: [
+            `Study mode: ${formData.studyMode}`,
+            `Nationality: ${formData.nationality}`,
+            `Age: ${formData.age}`,
+            `Heard via: ${finalHearAbout}`,
+            formData.message ? `Message: ${formData.message}` : null,
+          ].filter(Boolean).join('\n'),
+        });
+
         // Show success screen instead of an alert!
         setIsSubmitted(true);
         
